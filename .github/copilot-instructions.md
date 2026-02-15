@@ -28,12 +28,14 @@ Classical client-server app:
 
 ## UI Guidelines
 
-- Use HTML, CSS, Bootstrap and vanilla JavaScript for the front-end development;
-- Use Bootstrap components and utilities to create a responsive and user-friendly interface;
-- implement a clean, modern and responsive design with semantic HTML and CSS;
-- Use consistent styling across pages;
+- Use HTML, CSS, Bootstrap, and vanilla JavaScript for front-end development. Do not use TypeScript or UI frameworks like React or Vue.
+- All user-facing text, buttons, form fields, navigation, alerts, and messages must be in Bulgarian.
+- Keep a clean, modern, and responsive design.
+- Use Bootstrap components and utilities to create a responsive and user-friendly interface.
+- implement a clean, modern and responsive design with semantic HTML and CSS.
+- Use consistent styling across pages.
 - Use form validation for all user inputs.
-- Use appropriate icons, effects and visual cues to enhance usability;
+- Use appropriate icons, effects and visual cues to enhance usability.
 - Provide loading and error states for async operations.
 
 ## Pages and navigation

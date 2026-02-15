@@ -14,7 +14,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="main-nav">
-          <ul class="navbar-nav ms-auto gap-lg-2">${[{path:"/",label:"Начало"},{path:"/listings",label:"Обяви"},{path:"/favorites",label:"Любими"},{path:"/profile",label:"Профил"},{path:"/admin",label:"Админ"},{path:"/login",label:"Вход"},{path:"/register",label:"Регистрация"}].map(({path:o,label:e})=>`
+          <ul class="navbar-nav ms-auto gap-lg-2">${[{path:"/",label:"Начало"},{path:"/about",label:"За нас"},{path:"/listings",label:"Обяви"},{path:"/favorites",label:"Любими"},{path:"/profile",label:"Профил"},{path:"/admin",label:"Админ"},{path:"/login",label:"Вход"},{path:"/register",label:"Регистрация"}].map(({path:o,label:e})=>`
         <li class="nav-item">
           <a class="nav-link ${a===o?"active":""}" href="#${o}">${e}</a>
         </li>
@@ -60,15 +60,28 @@
     </article>
   `}function p(){return`
     <section class="rounded-4 p-4 p-md-5 bg-light border">
+      <h1 class="h3 fw-bold mb-3">За нас</h1>
+      <p class="mb-3 text-secondary">
+        PropertyMarket е модерна платформа за покупка, продажба и отдаване под наем на жилищни имоти.
+      </p>
+      <p class="mb-3 text-secondary">
+        Нашата мисия е да свързваме собственици, агенти и купувачи чрез ясни обяви, удобна навигация и надеждна информация.
+      </p>
+      <p class="mb-0 text-secondary">
+        Работим за сигурно и приятно потребителско изживяване, за да откриете своя следващ дом по-лесно и по-бързо.
+      </p>
+    </section>
+  `}function b(){return`
+    <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-3">Обяви за имоти</h1>
       <p class="mb-0 text-secondary">Тук ще се визуализират всички публикувани обяви.</p>
     </section>
-  `}function b(){return`
+  `}function m(){return`
     <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-3">Детайли за имот</h1>
       <p class="mb-0 text-secondary">Подробна информация за избраната обява ще бъде налична тук.</p>
     </section>
-  `}function m(){return`
+  `}function u(){return`
     <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-4">Вход</h1>
       <form class="row g-3" novalidate>
@@ -85,7 +98,7 @@
         </div>
       </form>
     </section>
-  `}function u(){return`
+  `}function h(){return`
     <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-4">Регистрация</h1>
       <form class="row g-3" novalidate>
@@ -107,12 +120,12 @@
       <h1 class="h3 fw-bold mb-4">Създай обява</h1>
       <p class="mb-0 text-secondary">Формата за добавяне на нов имот ще бъде имплементирана тук.</p>
     </section>
-  `}function h(){return`
+  `}function g(){return`
     <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-4">Редакция на обява</h1>
       <p class="mb-0 text-secondary">Формата за редакция на съществуващ имот ще бъде имплементирана тук.</p>
     </section>
-  `}function g(){return`
+  `}function y(){return`
     <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-3">Профил</h1>
       <p class="mb-0 text-secondary">Информацията за потребителския профил ще бъде налична тук.</p>
@@ -122,17 +135,17 @@
       <h1 class="h3 fw-bold mb-3">Любими имоти</h1>
       <p class="mb-0 text-secondary">Тук ще се показват имотите, добавени в любими.</p>
     </section>
-  `}function y(){return`
+  `}function w(){return`
     <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-3">Административен панел</h1>
       <p class="mb-0 text-secondary">Инструментите за управление на потребители и обяви ще бъдат тук.</p>
     </section>
-  `}function w(a,t){a.innerHTML=t}const P={"/":d,"/listings":p,"/property":b,"/login":m,"/register":u,"/create-property":f,"/edit-property":h,"/profile":g,"/favorites":v,"/admin":y};function x(){const a=document.getElementById("app");if(!a)throw new Error("Основният контейнер на приложението не е намерен.");const t=()=>{const s=window.location.hash.replace("#","")||"/",o=P[s]||$;w(a,`${c(s)}
+  `}function P(a,t){a.innerHTML=t}const x={"/":d,"/about":p,"/listings":b,"/property":m,"/login":u,"/register":h,"/create-property":f,"/edit-property":g,"/profile":y,"/favorites":v,"/admin":w};function $(){const a=document.getElementById("app");if(!a)throw new Error("Основният контейнер на приложението не е намерен.");const t=()=>{const s=window.location.hash.replace("#","")||"/",o=x[s]||L;P(a,`${c(s)}
       <main class="container py-4">${o()}</main>
-      ${i()}`)};window.addEventListener("hashchange",t),t()}function $(){return`
+      ${i()}`)};window.addEventListener("hashchange",t),t()}function L(){return`
     <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-3">Страницата не е намерена</h1>
       <p class="mb-3 text-secondary">Моля, върнете се към началната страница.</p>
       <a href="#/" class="btn btn-primary">Към начало</a>
     </section>
-  `}x();
+  `}$();

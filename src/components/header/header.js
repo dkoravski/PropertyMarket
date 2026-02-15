@@ -1,6 +1,7 @@
 export function createHeader(currentPath = '/') {
   const navItems = [
     { path: '/', label: 'Начало' },
+    { path: '/about', label: 'За нас' },
     { path: '/listings', label: 'Обяви' },
     { path: '/favorites', label: 'Любими' },
     { path: '/profile', label: 'Профил' },

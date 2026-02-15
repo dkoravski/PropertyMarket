@@ -1,6 +1,7 @@
 import { createHeader } from './components/header/header.js';
 import { createFooter } from './components/footer/footer.js';
 import { createHomePage } from './pages/homePage/homePage.js';
+import { createAboutPage } from './pages/aboutPage/aboutPage.js';
 import { createListingsPage } from './pages/listingsPage/listingsPage.js';
 import { createPropertyDetailsPage } from './pages/propertyDetailsPage/propertyDetailsPage.js';
 import { createLoginPage } from './pages/loginPage/loginPage.js';
@@ -14,6 +15,7 @@ import { render } from './utils/render/render.js';
 
 const routes = {
   '/': createHomePage,
+  '/about': createAboutPage,
   '/listings': createListingsPage,
   '/property': createPropertyDetailsPage,
   '/login': createLoginPage,

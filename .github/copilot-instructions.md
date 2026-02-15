@@ -63,7 +63,7 @@ Classical client-server app:
 
 - Use Supabase Auth for user registration and authentication;
 - Implement RLS (Row Level Security) policies in Supabase to restrict access to data based on user roles and permissions;
-- implement user roles with a separate DB table 'user_roles' + enum 'roles' (e.g., admin, user) to manage user permissions and access control;
+- Implement user roles in the `profiles` table (role: 'user' or 'admin') to manage permissions and access control.
 
 ### Public Access
 - Unauthenticated users can view all property listings and details;

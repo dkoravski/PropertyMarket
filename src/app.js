@@ -1,16 +1,16 @@
-import { createHeader } from './components/header.js';
-import { createFooter } from './components/footer.js';
-import { createHomePage } from './pages/homePage.js';
-import { createListingsPage } from './pages/listingsPage.js';
-import { createPropertyDetailsPage } from './pages/propertyDetailsPage.js';
-import { createLoginPage } from './pages/loginPage.js';
-import { createRegisterPage } from './pages/registerPage.js';
-import { createPropertyPage } from './pages/createPropertyPage.js';
-import { createEditPropertyPage } from './pages/editPropertyPage.js';
-import { createProfilePage } from './pages/profilePage.js';
-import { createFavoritesPage } from './pages/favoritesPage.js';
-import { createAdminPage } from './pages/adminPage.js';
-import { render } from './utils/render.js';
+import { createHeader } from './components/header/header.js';
+import { createFooter } from './components/footer/footer.js';
+import { createHomePage } from './pages/homePage/homePage.js';
+import { createListingsPage } from './pages/listingsPage/listingsPage.js';
+import { createPropertyDetailsPage } from './pages/propertyDetailsPage/propertyDetailsPage.js';
+import { createLoginPage } from './pages/loginPage/loginPage.js';
+import { createRegisterPage } from './pages/registerPage/registerPage.js';
+import { createPropertyPage } from './pages/createPropertyPage/createPropertyPage.js';
+import { createEditPropertyPage } from './pages/editPropertyPage/editPropertyPage.js';
+import { createProfilePage } from './pages/profilePage/profilePage.js';
+import { createFavoritesPage } from './pages/favoritesPage/favoritesPage.js';
+import { createAdminPage } from './pages/adminPage/adminPage.js';
+import { render } from './utils/render/render.js';
 
 const routes = {
   '/': createHomePage,

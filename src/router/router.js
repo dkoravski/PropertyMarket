@@ -14,6 +14,8 @@ const routes = {
   '/': { pageFactory: createHomePage },
   '/about': { pageFactory: createAboutPage },
   '/listings': { pageFactory: createListingsPage },
+  '/listings-sales': { pageFactory: () => createListingsPage('Продажби') },
+  '/listings-rent': { pageFactory: () => createListingsPage('Наеми') },
   '/property': { pageFactory: createPropertyDetailsPage },
   '/login': { pageFactory: createLoginPage },
   '/register': { pageFactory: createRegisterPage },

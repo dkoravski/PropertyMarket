@@ -5,7 +5,12 @@ export function createHeader(currentPath = '/') {
     '/listings-rent',
   ].includes(currentPath);
 
-  const navMarkup = `
+  // Check auth state from localStorage (sync logic for immediate render)
+  const isAuthenticated = localStorage.getItem('pm_is_authenticated') === 'true';
+  const role = localStorage.getItem('pm_user_role');
+  const isAdmin = role === 'admin';
+
+  let navItems = `
     <li class="nav-item">
       <a class="nav-link ${currentPath === '/' ? 'active' : ''}" href="#/">Начало</a>
     </li>
@@ -23,26 +28,47 @@ export function createHeader(currentPath = '/') {
         Обяви
       </a>
       <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#/listings">Всички</a></li>
+        <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" href="#/listings-sales">Продажби</a></li>
         <li><a class="dropdown-item" href="#/listings-rent">Наеми</a></li>
       </ul>
     </li>
-    <li class="nav-item">
-      <a class="nav-link ${currentPath === '/favorites' ? 'active' : ''}" href="#/favorites">Любими</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link ${currentPath === '/profile' ? 'active' : ''}" href="#/profile">Профил</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link ${currentPath === '/admin' ? 'active' : ''}" href="#/admin">Админ</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link ${currentPath === '/login' ? 'active' : ''}" href="#/login">Вход</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link ${currentPath === '/register' ? 'active' : ''}" href="#/register">Регистрация</a>
-    </li>
   `;
+
+  if (isAuthenticated) {
+    navItems += `
+      <li class="nav-item">
+        <a class="nav-link ${currentPath === '/create-property' ? 'active' : ''} text-primary fw-semibold" href="#/create-property">
+          <i class="bi bi-plus-circle me-1"></i>Добави обява
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ${currentPath === '/favorites' ? 'active' : ''}" href="#/favorites">Любими</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ${currentPath === '/profile' ? 'active' : ''}" href="#/profile">Профил</a>
+      </li>
+    `;
+
+    if (isAdmin) {
+      navItems += `
+        <li class="nav-item">
+          <a class="nav-link ${currentPath === '/admin' ? 'active' : ''} text-danger" href="#/admin">Админ</a>
+        </li>
+      `;
+    }
+  } else {
+    // Guest view: Login / Register buttons
+    navItems += `
+      <li class="nav-item ms-lg-2">
+        <a class="btn btn-outline-primary btn-sm px-3" href="#/login">Вход</a>
+      </li>
+      <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+        <a class="btn btn-primary btn-sm px-3" href="#/register">Регистрация</a>
+      </li>
+    `;
+  }
 
   return `
     <header class="bg-white border-bottom shadow-sm sticky-top">
@@ -60,7 +86,9 @@ export function createHeader(currentPath = '/') {
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="main-nav">
-          <ul class="navbar-nav ms-auto gap-lg-2 align-items-lg-center">${navMarkup}</ul>
+          <ul class="navbar-nav ms-auto gap-lg-2 align-items-lg-center">
+            ${navItems}
+          </ul>
         </div>
       </nav>
     </header>

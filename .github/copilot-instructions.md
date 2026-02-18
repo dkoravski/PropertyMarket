@@ -15,7 +15,7 @@ Classical client-server app:
 - Front-end: JavaScript application, HTML, CSS, Bootstrap;
 - Back-end: Supabase (PostgreSQL database);
 - Authentication: Supabase Auth;
-- Build tools: Vite, npm;
+- Build tools: Node.js, Vite, npm;
 - API: Supabase REST API;
 - Hosting: Netlify;
 - Source code: GitHub.

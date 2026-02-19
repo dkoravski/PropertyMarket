@@ -109,6 +109,11 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
   const ownerPhone = property.profiles?.phone || '';
 
   container.innerHTML = `
+    <div class="mb-3">
+      <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Назад
+      </button>
+    </div>
     <div class="row g-4">
       <div class="col-lg-8">
         <div class="position-relative mb-4">

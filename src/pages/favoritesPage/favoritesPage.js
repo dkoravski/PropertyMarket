@@ -5,7 +5,12 @@ export function createFavoritesPage() {
 
   return `
     <div id="favorites-container" class="container py-4">
-    <section class="rounded-4 p-4 p-md-5 bg-light border mb-4">
+      <div class="mb-3">
+        <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i>Назад
+        </button>
+      </div>
+      <section class="rounded-4 p-4 p-md-5 bg-light border mb-4">
       <h1 class="h3 fw-bold mb-3">Любими имоти</h1>
       <p class="mb-4 text-secondary">Списък с вашите запазени обяви.</p>
       

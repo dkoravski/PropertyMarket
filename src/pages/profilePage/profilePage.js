@@ -6,12 +6,14 @@ export function createProfilePage() {
 
   return `
     <div class="container py-4" id="profile-page-container">
+      <div class="mb-3">
+        <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i>Назад
+        </button>
+      </div>
       <section class="max-w-3xl mx-auto rounded-4 p-4 p-md-5 bg-white border shadow-sm">
-        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div class="mb-4 border-bottom pb-3">
           <h1 class="h3 fw-bold mb-0">Моят Профил</h1>
-          <button id="logout-btn" class="btn btn-outline-danger btn-sm">
-            <i class="bi bi-box-arrow-right me-1"></i>Изход
-          </button>
         </div>
         
         <div id="profile-content">
@@ -31,11 +33,6 @@ async function initProfilePage() {
   if (!container) return;
 
   const contentContainer = container.querySelector('#profile-content');
-  const logoutBtn = container.querySelector('#logout-btn');
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', handleLogout);
-  }
 
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -148,24 +145,3 @@ async function handleProfileSave(e, userId) {
 // Remove unused functions
 // async function loadUserProperties(userId, container) { ... }
 // function createMyPropertyCard(property) { ... }
-
-// End of file
-async function handleLogout() {
-  try {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    
-    // Clear storage
-    localStorage.removeItem('pm_is_authenticated');
-    localStorage.removeItem('pm_user_role');
-    
-    // Redirect
-    window.location.hash = '#/';
-    window.location.reload(); 
-    
-  } catch (err) {
-    console.error('Logout error:', err);
-    localStorage.clear(); 
-    window.location.reload();
-  }
-}

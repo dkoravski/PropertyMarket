@@ -6,6 +6,11 @@ export function createMyListingsPage() {
 
   return `
     <div class="container py-4" id="my-listings-page-container">
+      <div class="mb-3">
+        <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i>Назад
+        </button>
+      </div>
       <section class="rounded-4 p-4 p-md-5 bg-white border shadow-sm">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h1 class="h3 fw-bold mb-0">Моите Обяви</h1>

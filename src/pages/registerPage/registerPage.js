@@ -1,4 +1,5 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showPageFeedback } from '../../utils/ui.js';
 
 export function createRegisterPage() {
   setTimeout(() => {
@@ -49,12 +50,12 @@ async function handleRegister(e) {
 
     if (error) throw error;
 
-    alert('Регистрацията успешна! Моля, потвърдете имейла си или влезте в системата.');
-    window.location.hash = '#/login';
-    
+    showPageFeedback('success', 'Регистрацията е успешна! Моля, потвърдете имейла си, след което влезте в системата.');
+    setTimeout(() => { window.location.hash = '#/login'; }, 2000);
+
   } catch (err) {
     console.error('Registration error:', err);
-    alert('Грешка при регистрация: ' + err.message);
+    showPageFeedback('danger', 'Грешка при регистрация: ' + err.message);
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'Създай профил';

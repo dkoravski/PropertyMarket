@@ -4,6 +4,11 @@ export function createAdminPage() {
   setTimeout(initAdminPage, 0);
 
   return `
+    <div class="mb-3">
+      <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Назад
+      </button>
+    </div>
     <section class="rounded-4 p-4 p-md-5 bg-light border">
       <h1 class="h3 fw-bold mb-4">Административен панел</h1>
       

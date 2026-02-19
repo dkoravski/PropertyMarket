@@ -1,4 +1,5 @@
-import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+﻿import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showPageFeedback } from '../../utils/ui.js';
 
 export function createLoginPage() {
   setTimeout(() => {
@@ -68,7 +69,7 @@ async function handleLogin(e) {
     
   } catch (err) {
     console.error('Login error:', err);
-    alert('Грешка при вход: ' + err.message);
+    showPageFeedback('danger', 'Грешка при вход: ' + err.message);
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'Влез';

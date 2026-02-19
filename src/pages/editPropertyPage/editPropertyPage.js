@@ -68,6 +68,11 @@ async function loadPropertyForEdit(id, container) {
 
 function renderEditForm(container, property) {
   container.innerHTML = `
+    <div class="mb-3">
+      <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Назад
+      </button>
+    </div>
     <section class="max-w-3xl mx-auto rounded-4 p-4 p-md-5 bg-white shadow-sm border">
       <h1 class="h3 fw-bold mb-4">Редакция на обява</h1>
       

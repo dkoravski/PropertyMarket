@@ -34,3 +34,11 @@ main {
 .card-title {
   color: var(--bs-primary);
 }
+
+.property-carousel-image {
+  transition: transform 0.35s ease;
+}
+
+.property-carousel-image:hover {
+  transform: scale(1.04);
+}

@@ -31,7 +31,20 @@ export function initRouter(onRouteChange, options = {}) {
 
   const renderCurrentRoute = () => {
     const path = getCurrentPath();
-    const route = routes[path];
+    let route = routes[path];
+    let routeParams = {};
+
+    // Basic dynamic route matching
+    if (!route) {
+      if (path.startsWith('/property/')) {
+        route = routes['/property'];
+        routeParams.id = path.split('/')[2];
+      } else if (path.startsWith('/edit-property/')) {
+        route = routes['/edit-property'];
+        routeParams.id = path.split('/')[2];
+      }
+    }
+    
     const authState = normalizeAuthState(getAuthState());
 
     if (!route) {
@@ -60,7 +73,7 @@ export function initRouter(onRouteChange, options = {}) {
 
     onRouteChange({
       path,
-      pageContent: route.pageFactory(),
+      pageContent: route.pageFactory(routeParams.id), // Pass ID if available
     });
   };
 

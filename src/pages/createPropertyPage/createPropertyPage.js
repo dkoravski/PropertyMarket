@@ -69,9 +69,9 @@ export function createPropertyPage() {
 
         <!-- Image Upload -->
         <div class="col-12">
-          <label for="prop-image" class="form-label">Снимка на имота *</label>
-          <input class="form-control" type="file" id="prop-image" accept="image/*" required>
-          <div class="form-text">Изберете основна снимка за имота (JPG, PNG).</div>
+          <label for="prop-images" class="form-label">Снимки на имота *</label>
+          <input class="form-control" type="file" id="prop-images" accept="image/*" multiple required>
+          <div class="form-text">Можете да изберете повече от една снимка. Първата избрана ще бъде корица.</div>
         </div>
 
         <!-- Submit -->
@@ -111,10 +111,13 @@ async function handleCreateProperty(e) {
   const rooms = parseInt(document.getElementById('prop-rooms').value);
   const city = document.getElementById('prop-city').value.trim();
   const address = document.getElementById('prop-address').value.trim();
-  const imageFile = document.getElementById('prop-image').files[0];
+  
+  // Get multiple files
+  const imageInput = document.getElementById('prop-images');
+  const imageFiles = imageInput.files;
 
-  if (!imageFile) {
-    alert('Моля, изберете снимка за имота.');
+  if (imageFiles.length === 0) {
+    alert('Моля, изберете поне една снимка за имота.');
     return;
   }
 
@@ -148,32 +151,44 @@ async function handleCreateProperty(e) {
 
     if (propError) throw propError;
     
+    // propertyData is the inserted object
     const propertyId = propertyData.id;
 
-    // 3. Upload Image to Storage
-    const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${propertyId}/cover.${fileExt}`;
-    const filePath = fileName;
+    // 3. Upload Images Loop
+    const uploadPromises = Array.from(imageFiles).map(async (file, index) => {
+      const fileExt = file.name.split('.').pop();
+      // Unique filename: propertyId/timestamp_index.ext
+      const fileName = `${propertyId}/${Date.now()}_${index}.${fileExt}`;
+      
+      // Upload to Storage
+      const { error: uploadError } = await supabase.storage
+        .from('properties') // Ensure this bucket exists
+        .upload(fileName, file);
 
-    const { error: uploadError } = await supabase.storage
-      .from('properties')
-      .upload(filePath, imageFile);
+      if (uploadError) throw uploadError;
 
-    if (uploadError) throw uploadError;
+      // Get Public URL
+      const { data } = supabase.storage
+        .from('properties')
+        .getPublicUrl(fileName);
+        
+      const publicUrl = data.publicUrl;
 
-    // 4. Get Public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('properties')
-      .getPublicUrl(filePath);
-
-    // 5. Save Image Record
-    const { error: imgError } = await supabase
-      .from('property_images')
-      .insert({
+      // Prepare DB insert object
+      return {
         property_id: propertyId,
         image_url: publicUrl,
-        is_cover: true
-      });
+        is_cover: index === 0 // First image is cover
+      };
+    });
+
+    // Wait for all uploads to complete
+    const imagesToInsert = await Promise.all(uploadPromises);
+
+    // 4. Save Image Records to DB
+    const { error: imgError } = await supabase
+      .from('property_images')
+      .insert(imagesToInsert);
 
     if (imgError) throw imgError;
 
@@ -184,7 +199,6 @@ async function handleCreateProperty(e) {
   } catch (err) {
     console.error('Error creating property:', err);
     alert('Възникна грешка: ' + err.message);
-  } finally {
     submitBtn.disabled = false;
     spinner.classList.add('d-none');
     submitText.textContent = 'Публикувай обявата';

@@ -1,50 +1,51 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showPageFeedback } from '../../utils/ui.js';
 
 export function createProfilePage() {
-  const container = document.createElement('div');
-  container.className = 'container py-4';
-  container.innerHTML = `
-    <section class="rounded-4 p-4 p-md-5 bg-light border mb-5">
-      <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-        <h1 class="h3 fw-bold mb-0">Моят Профил</h1>
-        <button id="logout-btn" class="btn btn-outline-danger btn-sm">
-          <i class="bi bi-box-arrow-right me-1"></i>Изход
-        </button>
-      </div>
-      
-      <div id="profile-content">
-        <div class="text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Зареждане...</span>
+  setTimeout(initProfilePage, 0);
+
+  return `
+    <div class="container py-4" id="profile-page-container">
+      <section class="rounded-4 p-4 p-md-5 bg-light border mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+          <h1 class="h3 fw-bold mb-0">Моят Профил</h1>
+          <button id="logout-btn" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-box-arrow-right me-1"></i>Изход
+          </button>
+        </div>
+        
+        <div id="profile-content">
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Зареждане...</span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- My Properties Section -->
-    <section class="rounded-4 p-4 p-md-5 bg-white border shadow-sm" id="my-properties-section" style="display: none;">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="h4 fw-bold mb-0">Моите Обяви</h2>
-        <a href="#/create-property" class="btn btn-primary btn-sm">
-          <i class="bi bi-plus-lg me-1"></i>Добави нова
-        </a>
-      </div>
-      <div id="my-properties-list" class="row g-4">
-         <!-- Properties will be loaded here -->
-         <div class="col-12 text-center py-4">
-            <div class="spinner-border text-secondary spinner-border-sm" role="status"></div>
-         </div>
-      </div>
-    </section>
+      <!-- My Properties Section -->
+      <section class="rounded-4 p-4 p-md-5 bg-white border shadow-sm" id="my-properties-section" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="h4 fw-bold mb-0">Моите Обяви</h2>
+          <a href="#/create-property" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Добави нова
+          </a>
+        </div>
+        <div id="my-properties-list" class="row g-4">
+           <!-- Properties will be loaded here -->
+           <div class="col-12 text-center py-4">
+              <div class="spinner-border text-secondary spinner-border-sm" role="status"></div>
+           </div>
+        </div>
+      </section>
+    </div>
   `;
-
-  // Init logic
-  setTimeout(() => initProfile(container), 0);
-
-  return container;
 }
 
-async function initProfile(container) {
+async function initProfilePage() {
+  const container = document.getElementById('profile-page-container');
+  if (!container) return;
+
   const contentContainer = container.querySelector('#profile-content');
   const logoutBtn = container.querySelector('#logout-btn');
 
@@ -153,10 +154,10 @@ async function handleProfileSave(e, userId) {
 
     if (error) throw error;
 
-    alert('Профилът е обновен успешно!');
+    showPageFeedback('success', 'Профилът е обновен успешно!');
   } catch (err) {
     console.error('Update error:', err);
-    alert('Грешка: ' + err.message);
+    showPageFeedback('danger', 'Грешка: ' + err.message);
   } finally {
     submitBtn.disabled = false;
     spinner.classList.add('d-none');

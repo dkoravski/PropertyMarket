@@ -1,23 +1,28 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showPageFeedback } from '../../utils/ui.js';
 
 export function createEditPropertyPage(id) {
-  const container = document.createElement('div');
-  container.className = 'container py-4';
-  container.id = 'edit-property-container';
+  setTimeout(() => initEditPage(id), 0);
 
-  container.innerHTML = `
-    <div class="text-center py-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Зареждане...</span>
+  return `
+    <div class="container py-4" id="edit-property-container">
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Зареждане...</span>
+        </div>
       </div>
     </div>
   `;
-
-  loadPropertyForEdit(id, container);
-
-  return container;
 }
 
+async function initEditPage(id) {
+  const container = document.getElementById('edit-property-container');
+  if (!container) return;
+  
+  loadPropertyForEdit(id, container);
+}
+
+// Keep loadPropertyForEdit as is, but remove 'if (!id)' check or handle it inside
 async function loadPropertyForEdit(id, container) {
   if (!id) {
     container.innerHTML = `<div class="alert alert-danger">Невалиден ID.</div>`;
@@ -153,33 +158,60 @@ async function handleEditSubmit(e, propertyId) {
   e.preventDefault();
   const form = e.target;
   
-  if (!form.checkValidity()) {
+  // Input validation
+  const titleInput = document.getElementById('prop-title');
+  const descInput = document.getElementById('prop-desc');
+  const cityInput = document.getElementById('prop-city');
+  const addressInput = document.getElementById('prop-address');
+  
+  // Create update object
+  const updates = {
+    title: titleInput.value.trim(),
+    description: descInput.value.trim(),
+    property_type: document.getElementById('prop-type').value,
+    listing_type: document.getElementById('listing-type').value,
+    price: parseFloat(document.getElementById('prop-price').value),
+    area_sq_m: parseFloat(document.getElementById('prop-area').value),
+    rooms: parseInt(document.getElementById('prop-rooms').value),
+    city: cityInput.value.trim(),
+    address: addressInput.value.trim()
+  };
+
+  // Manual Validation for trimmed values
+  if (!form.checkValidity() || 
+      updates.title.length < 5 || 
+      updates.description.length < 20 ||
+      updates.city.length < 2 ||
+      updates.address.length < 5 ||
+      updates.price <= 0 ||
+      updates.area_sq_m <= 0 ||
+      updates.rooms <= 0) {
+    
     e.stopPropagation();
     form.classList.add('was-validated');
+    
+    if (updates.description.length < 20) {
+        showPageFeedback('danger', 'Описанието трябва да е поне 20 символа.');
+    } else if (updates.title.length < 5) {
+        showPageFeedback('danger', 'Заглавието трябва да е поне 5 символа.');
+    } else if (updates.city.length < 2) {
+        showPageFeedback('danger', 'Градът трябва да е поне 2 символа.');
+    } else if (updates.address.length < 5) {
+        showPageFeedback('danger', 'Адресът трябва да е поне 5 символа.');
+    } else if (updates.price <= 0 || updates.area_sq_m <= 0 || updates.rooms <= 0) {
+        showPageFeedback('danger', 'Моля, въведете валидни стойности за цена, площ и стаи.');
+    } else {
+        showPageFeedback('danger', 'Моля, попълнете коректно всички полета.');
+    }
     return;
   }
 
   const submitBtn = form.querySelector('button[type="submit"]');
   const spinner = submitBtn.querySelector('.spinner-border');
   const submitText = submitBtn.querySelector('.submit-text');
-  
-  // Inputs
-  const updates = {
-    title: document.getElementById('prop-title').value.trim(),
-    description: document.getElementById('prop-desc').value.trim(),
-    property_type: document.getElementById('prop-type').value,
-    listing_type: document.getElementById('listing-type').value,
-    price: parseFloat(document.getElementById('prop-price').value),
-    area_sq_m: parseFloat(document.getElementById('prop-area').value),
-    rooms: parseInt(document.getElementById('prop-rooms').value),
-    city: document.getElementById('prop-city').value.trim(),
-    address: document.getElementById('prop-address').value.trim(),
-    // updated_at is handled by DB? Usually manual or trigger. Let's rely on default or set it.
-    // Supabase doesn't auto-update updated_at unless trigger exists.
-    // Assuming simple update.
-  };
+  const imageInput = document.getElementById('prop-image');
+  const imageFile = imageInput && imageInput.files ? imageInput.files[0] : null;
 
-  const imageFile = document.getElementById('prop-image').files[0];
 
   try {
     submitBtn.disabled = true;
@@ -196,7 +228,6 @@ async function handleEditSubmit(e, propertyId) {
 
     // 2. Handle Image if new one selected
     if (imageFile) {
-      // Upload new image
       const fileExt = imageFile.name.split('.').pop();
       const fileName = `${propertyId}/${Date.now()}.${fileExt}`;
       
@@ -206,11 +237,13 @@ async function handleEditSubmit(e, propertyId) {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
+      const { data } = supabase.storage
         .from('properties')
         .getPublicUrl(fileName);
+        
+      const publicUrl = data.publicUrl;
 
-      // Set old covers to false
+      // Update old covers to false
       await supabase
         .from('property_images')
         .update({ is_cover: false })
@@ -228,13 +261,14 @@ async function handleEditSubmit(e, propertyId) {
       if (imgError) throw imgError;
     }
 
-    alert('Промените са запазени успешно!');
-    window.location.hash = `#/property/${propertyId}`;
+    showPageFeedback('success', 'Промените са запазени успешно!');
+    setTimeout(() => {
+        window.location.hash = `#/property/${propertyId}`;
+    }, 1500);
 
   } catch (err) {
     console.error('Update error:', err);
-    alert('Грешка при обновяване: ' + err.message);
-  } finally {
+    showPageFeedback('danger', 'Грешка при обновяване: ' + err.message);
     submitBtn.disabled = false;
     spinner.classList.add('d-none');
     submitText.textContent = 'Запази промените';

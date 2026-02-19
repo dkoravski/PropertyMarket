@@ -245,14 +245,18 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
   const btnDelete = container.querySelector('#btn-delete');
   if (btnDelete) {
     btnDelete.addEventListener('click', async () => {
-      if(confirm('Сигурни ли сте, че искате да изтриете тази обява?')) {
+      const isConfirmed = await showConfirmModal('Сигурни ли сте, че искате да изтриете тази обява?');
+      if (!isConfirmed) return;
+
+      try {
         const { error } = await supabase.from('properties').delete().eq('id', property.id);
-        if(!error) {
-          alert('Обявата е изтрита успешно!');
+        if (error) throw error;
+        showPageFeedback(container, 'Обявата е изтрита успешно!', 'success');
+        setTimeout(() => {
           window.location.hash = '#/listings';
-        } else {
-          alert('Грешка: ' + error.message);
-        }
+        }, 500);
+      } catch (err) {
+        showPageFeedback(container, 'Грешка: ' + err.message, 'danger');
       }
     });
   }
@@ -266,24 +270,81 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
           await supabase.from('favorites').delete().eq('id', favoriteId);
           isFavorited = false;
           favoriteId = null;
-          alert('Премахнато от любими');
+          showPageFeedback(container, 'Премахнато от любими', 'info');
         } else {
           const { data, error } = await supabase.from('favorites').insert({ user_id: user.id, property_id: property.id }).select().single();
           if (error) throw error;
           isFavorited = true;
           favoriteId = data.id;
-          alert('Добавено в любими');
+          showPageFeedback(container, 'Добавено в любими', 'success');
         }
         // Update UI
         btnFav.className = `btn ${isFavorited ? 'btn-danger' : 'btn-outline-danger'} w-100 py-3 rounded-4 shadow-sm fw-bold`;
         btnFav.innerHTML = `<i class="bi bi-heart${isFavorited ? '-fill' : ''} me-2"></i>${isFavorited ? 'Премахни от любими' : 'Добави в любими'}`;
       } catch (err) {
         console.error(err);
-        alert('Възникна грешка.');
+        showPageFeedback(container, 'Възникна грешка.', 'danger');
       } finally {
         btnFav.disabled = false;
       }
     });
   }
+}
+
+function showPageFeedback(container, message, type = 'success') {
+  const oldAlert = container.querySelector('#property-details-feedback');
+  if (oldAlert) oldAlert.remove();
+
+  container.insertAdjacentHTML('afterbegin', `
+    <div id="property-details-feedback" class="alert alert-${type} alert-dismissible fade show mb-4" role="alert">
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
+    </div>
+  `);
+}
+
+function showConfirmModal(message) {
+  return new Promise((resolve) => {
+    const modalId = `confirm-modal-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const modalMarkup = `
+      <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+              <h5 class="modal-title">Потвърждение</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+            </div>
+            <div class="modal-body">
+              <p class="mb-0">${message}</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отказ</button>
+              <button type="button" class="btn btn-danger" id="${modalId}-confirm">Потвърди</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalMarkup);
+    const modalEl = document.getElementById(modalId);
+    const confirmBtn = document.getElementById(`${modalId}-confirm`);
+    const modalInstance = new bootstrap.Modal(modalEl);
+
+    let resolved = false;
+
+    confirmBtn.addEventListener('click', () => {
+      resolved = true;
+      resolve(true);
+      modalInstance.hide();
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', () => {
+      if (!resolved) resolve(false);
+      modalEl.remove();
+    }, { once: true });
+
+    modalInstance.show();
+  });
 }
 

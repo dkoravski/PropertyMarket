@@ -1,4 +1,5 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showPageFeedback } from '../../utils/ui.js';
 
 export function createPropertyPage() {
   setTimeout(initCreatePropertyPage, 0);
@@ -97,6 +98,14 @@ async function handleCreateProperty(e) {
   e.preventDefault();
   
   const form = e.target;
+  
+  // Custom validation check
+  if (!form.checkValidity()) {
+    e.stopPropagation();
+    form.classList.add('was-validated');
+    return;
+  }
+
   const submitBtn = form.querySelector('button[type="submit"]');
   const spinner = submitBtn.querySelector('.spinner-border');
   const submitText = submitBtn.querySelector('.submit-text');
@@ -117,8 +126,44 @@ async function handleCreateProperty(e) {
   const imageFiles = imageInput.files;
 
   if (imageFiles.length === 0) {
-    alert('Моля, изберете поне една снимка за имота.');
+    showPageFeedback('danger', 'Моля, изберете поне една снимка за имота.');
     return;
+  }
+
+  // Double check critical lengths after trim (HTML5 validation might pass with spaces)
+  if (title.length < 5) {
+     showPageFeedback('danger', 'Заглавието трябва да е поне 5 символа.');
+     return;
+  }
+  
+  if (description.length < 20) {
+     showPageFeedback('danger', 'Описанието трябва да съдържа поне 20 символа (без празните места).');
+     return;
+  }
+
+  if (city.length < 2) {
+     showPageFeedback('danger', 'Градът трябва да е поне 2 символа.');
+     return;
+  }
+
+  if (address.length < 5) {
+     showPageFeedback('danger', 'Адресът трябва да е поне 5 символа.');
+     return; 
+  }
+
+  if (price <= 0) {
+     showPageFeedback('danger', 'Цената трябва да е положително число.');
+     return;
+  }
+
+  if (area <= 0) {
+     showPageFeedback('danger', 'Площта трябва да е положително число.');
+     return;
+  }
+
+  if (rooms <= 0) {
+     showPageFeedback('danger', 'Броят стаи трябва да е поне 1.');
+     return;
   }
 
   try {
@@ -130,6 +175,8 @@ async function handleCreateProperty(e) {
     // 1. Get current user
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Трябва да сте влезли в профила си.');
+
+    await ensureCurrentUserProfile(user);
 
     // 2. Insert Property Data
     const { data: propertyData, error: propError } = await supabase
@@ -193,14 +240,53 @@ async function handleCreateProperty(e) {
     if (imgError) throw imgError;
 
     // Success
-    alert('Обявата е създадена успешно!');
-    window.location.hash = '#/listings';
+    showPageFeedback('success', 'Обявата е създадена успешно! Пренасочване...');
+    setTimeout(() => {
+        window.location.hash = '#/listings';
+    }, 1500);
 
   } catch (err) {
     console.error('Error creating property:', err);
-    alert('Възникна грешка: ' + err.message);
+    // Extract message properly from Supabase error object
+    const msg = err.message || err.error_description || 'Неизвестна грешка';
+    showPageFeedback('danger', 'Възникна грешка: ' + msg);
+    
     submitBtn.disabled = false;
     spinner.classList.add('d-none');
     submitText.textContent = 'Публикувай обявата';
+  }
+}
+
+async function ensureCurrentUserProfile(user) {
+  const { data: profile, error: selectError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (selectError) {
+    throw selectError;
+  }
+
+  if (profile) {
+    return;
+  }
+
+  const fallbackName =
+    (user.user_metadata?.full_name || '').trim() ||
+    (user.email ? user.email.split('@')[0] : 'Потребител') ||
+    'Потребител';
+
+  const { error: createProfileError } = await supabase
+    .from('profiles')
+    .insert({
+      id: user.id,
+      email: user.email,
+      full_name: fallbackName,
+      role: 'user'
+    });
+
+  if (createProfileError) {
+    throw createProfileError;
   }
 }

@@ -1,11 +1,10 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 
 export function createFavoritesPage() {
-  const container = document.createElement('div');
-  container.className = 'container py-4';
-  container.id = 'favorites-container';
+  setTimeout(() => loadFavorites(), 0);
 
-  container.innerHTML = `
+  return `
+    <div id="favorites-container" class="container py-4">
     <section class="rounded-4 p-4 p-md-5 bg-light border mb-4">
       <h1 class="h3 fw-bold mb-3">Любими имоти</h1>
       <p class="mb-4 text-secondary">Списък с вашите запазени обяви.</p>
@@ -18,14 +17,14 @@ export function createFavoritesPage() {
         </div>
       </div>
     </section>
+    </div>
   `;
-
-  loadFavorites(container);
-
-  return container;
 }
 
-async function loadFavorites(container) {
+async function loadFavorites() {
+  const container = document.getElementById('favorites-container');
+  if (!container) return;
+
   const listContainer = container.querySelector('#favorites-list');
   
   try {
@@ -93,7 +92,8 @@ async function loadFavorites(container) {
 }
 
 async function removeFavorite(favId, container) {
-  if (!confirm('Сигурни ли сте, че искате да премахнете този имот от любими?')) return;
+  const isConfirmed = await showConfirmModal('Сигурни ли сте, че искате да премахнете този имот от любими?');
+  if (!isConfirmed) return;
 
   try {
     const { error } = await supabase
@@ -102,13 +102,74 @@ async function removeFavorite(favId, container) {
       .eq('id', favId);
 
     if (error) throw error;
+    showPageFeedback(container, 'Имотът е премахнат от любими.', 'success');
     
     // Reload list
     loadFavorites(container);
 
   } catch (err) {
-    alert('Грешка при премахване: ' + err.message);
+    showPageFeedback(container, 'Грешка при премахване: ' + err.message, 'danger');
   }
+}
+
+function showPageFeedback(container, message, type = 'success') {
+  const oldAlert = container.querySelector('#favorites-feedback');
+  if (oldAlert) oldAlert.remove();
+
+  const section = container.querySelector('section');
+  if (!section) return;
+
+  section.insertAdjacentHTML('afterbegin', `
+    <div id="favorites-feedback" class="alert alert-${type} alert-dismissible fade show mb-4" role="alert">
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
+    </div>
+  `);
+}
+
+function showConfirmModal(message) {
+  return new Promise((resolve) => {
+    const modalId = `confirm-modal-${Date.now()}`;
+    const modalMarkup = `
+      <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+              <h5 class="modal-title">Потвърждение</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+            </div>
+            <div class="modal-body">
+              <p class="mb-0">${message}</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отказ</button>
+              <button type="button" class="btn btn-danger" id="${modalId}-confirm">Премахни</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalMarkup);
+    const modalEl = document.getElementById(modalId);
+    const confirmBtn = document.getElementById(`${modalId}-confirm`);
+    const modalInstance = new bootstrap.Modal(modalEl);
+
+    let resolved = false;
+
+    confirmBtn.addEventListener('click', () => {
+      resolved = true;
+      resolve(true);
+      modalInstance.hide();
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', () => {
+      if (!resolved) resolve(false);
+      modalEl.remove();
+    }, { once: true });
+
+    modalInstance.show();
+  });
 }
 
 function createFavoriteCard(fav) {
@@ -129,14 +190,15 @@ function createFavoriteCard(fav) {
   return `
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card h-100 shadow-sm border-0">
-        <div class="position-relative overflow-hidden rounded-top">
+        <div class="position-relative overflow-hidden rounded-top fav-image-wrap">
           <img src="${coverUrl}" class="card-img-top object-fit-cover" style="height: 200px;" alt="${property.title}">
-          <span class="position-absolute top-0 start-0 m-3 badge ${property.listing_type === 'sale' ? 'bg-success' : 'bg-info'}">
+          <span class="position-absolute top-0 start-0 m-3 text-white fw-semibold" style="text-shadow: 0 1px 3px rgba(0,0,0,0.75); pointer-events: none;">
             ${listingMap[property.listing_type]}
           </span>
-          <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-3 rounded-circle shadow-sm btn-remove-fav" 
-                  data-fav-id="${fav.id}" title="Премахни от любими">
-            <i class="bi bi-x-lg"></i>
+          <button class="btn btn-link p-0 position-absolute top-0 end-0 m-3 text-danger text-decoration-none fw-semibold btn-remove-fav btn-remove-fav-fx"
+                  data-fav-id="${fav.id}" title="Премахни от любими" aria-label="Премахни от любими">
+            <i class="bi bi-heartbreak-fill"></i>
+            <span>Премахни</span>
           </button>
         </div>
         <div class="card-body">

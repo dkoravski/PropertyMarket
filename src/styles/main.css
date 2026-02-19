@@ -42,3 +42,40 @@ main {
 .property-carousel-image:hover {
   transform: scale(1.04);
 }
+
+.btn-remove-fav-fx {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 0;
+  background: transparent;
+  font-size: 0.85rem;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.fav-image-wrap:hover .btn-remove-fav-fx,
+.fav-image-wrap:focus-within .btn-remove-fav-fx {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.btn-remove-fav-fx:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.btn-remove-fav-fx:active {
+  transform: scale(0.98);
+}
+
+@media (hover: none) {
+  .btn-remove-fav-fx {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}

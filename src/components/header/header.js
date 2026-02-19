@@ -41,6 +41,7 @@ export function createHeader(currentPath = '/') {
       <li class="nav-item me-2">
         <a class="nav-link position-relative ${currentPath === '/favorites' ? 'text-danger' : ''}" href="#/favorites" title="Любими">
           <i class="bi bi-heart${currentPath === '/favorites' ? '-fill' : ''} fs-5"></i>
+          <span class="ms-1 d-lg-inline">Любими</span>
         </a>
       </li>
       <li class="nav-item dropdown me-2">
@@ -50,6 +51,7 @@ export function createHeader(currentPath = '/') {
         </a>
         <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
           <li><a class="dropdown-item" href="#/profile">Моят Профил</a></li>
+          <li><a class="dropdown-item" href="#/favorites">Любими</a></li>
           ${isAdmin ? '<li><a class="dropdown-item text-danger" href="#/admin">Админ панел</a></li>' : ''}
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="#" onclick="localStorage.clear(); window.location.reload();">Изход</a></li>

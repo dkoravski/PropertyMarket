@@ -51,7 +51,7 @@ export function createHeader(currentPath = '/') {
         </a>
         <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
           <li><a class="dropdown-item" href="#/profile">Моят Профил</a></li>
-          <li><a class="dropdown-item" href="#/favorites">Любими</a></li>
+          <li><a class="dropdown-item" href="#/my-listings">Моите Обяви</a></li>
           ${isAdmin ? '<li><a class="dropdown-item text-danger" href="#/admin">Админ панел</a></li>' : ''}
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="#" onclick="localStorage.clear(); window.location.reload();">Изход</a></li>

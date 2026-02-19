@@ -7,6 +7,7 @@ import { createRegisterPage } from '../pages/registerPage/registerPage.js';
 import { createPropertyPage } from '../pages/createPropertyPage/createPropertyPage.js';
 import { createEditPropertyPage } from '../pages/editPropertyPage/editPropertyPage.js';
 import { createProfilePage } from '../pages/profilePage/profilePage.js';
+import { createMyListingsPage } from '../pages/myListingsPage/myListingsPage.js';
 import { createFavoritesPage } from '../pages/favoritesPage/favoritesPage.js';
 import { createAdminPage } from '../pages/adminPage/adminPage.js';
 
@@ -22,6 +23,7 @@ const routes = {
   '/create-property': { pageFactory: createPropertyPage, requiresAuth: true },
   '/edit-property': { pageFactory: createEditPropertyPage, requiresAuth: true },
   '/profile': { pageFactory: createProfilePage, requiresAuth: true },
+  '/my-listings': { pageFactory: createMyListingsPage, requiresAuth: true },
   '/favorites': { pageFactory: createFavoritesPage, requiresAuth: true },
   '/admin': { pageFactory: createAdminPage, requiresAdmin: true },
 };
@@ -31,17 +33,23 @@ export function initRouter(onRouteChange, options = {}) {
 
   const renderCurrentRoute = () => {
     const path = getCurrentPath();
-    let route = routes[path];
+    // Normalize path for route matching (remove query params or hash fragments)
+    // E.g. /profile#my-properties -> /profile
+    const pathWithoutHash = path.split('#')[0];
+    const basePath = pathWithoutHash.split('?')[0];
+    
+    let route = routes[basePath];
     let routeParams = {};
 
     // Basic dynamic route matching
     if (!route) {
-      if (path.startsWith('/property/')) {
+      if (basePath.startsWith('/property/')) {
         route = routes['/property'];
-        routeParams.id = path.split('/')[2];
-      } else if (path.startsWith('/edit-property/')) {
+        // Extract ID properly (ID is everything after /property/)
+        routeParams.id = basePath.split('/')[2];
+      } else if (basePath.startsWith('/edit-property/')) {
         route = routes['/edit-property'];
-        routeParams.id = path.split('/')[2];
+        routeParams.id = basePath.split('/')[2];
       }
     }
     

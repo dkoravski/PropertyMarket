@@ -1,4 +1,4 @@
-import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+﻿import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
 export function createPropertyPage() {
@@ -48,7 +48,7 @@ export function createPropertyPage() {
 
         <!-- Details -->
         <div class="col-md-4">
-          <label for="prop-price" class="form-label">Цена (BGN/EUR) *</label>
+          <label for="prop-price" class="form-label">Цена (€) *</label>
           <input type="number" class="form-control" id="prop-price" min="1" step="0.01" required>
         </div>
 

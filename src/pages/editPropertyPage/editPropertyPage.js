@@ -1,4 +1,4 @@
-import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+﻿import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
 export function createEditPropertyPage(id) {
@@ -18,11 +18,9 @@ export function createEditPropertyPage(id) {
 async function initEditPage(id) {
   const container = document.getElementById('edit-property-container');
   if (!container) return;
-  
   loadPropertyForEdit(id, container);
 }
 
-// Keep loadPropertyForEdit as is, but remove 'if (!id)' check or handle it inside
 async function loadPropertyForEdit(id, container) {
   if (!id) {
     container.innerHTML = `<div class="alert alert-danger">Невалиден ID.</div>`;
@@ -32,25 +30,23 @@ async function loadPropertyForEdit(id, container) {
   try {
     const { data: property, error } = await supabase
       .from('properties')
-      .select('*')
+      .select('*, property_images(*)')
       .eq('id', id)
       .single();
 
     if (error) throw error;
     if (!property) throw new Error('Имотът не е намерен.');
 
-    // Check permissions (redundant with RLS but good for UX)
     const { data: { user } } = await supabase.auth.getUser();
-    
-    // Check if admin
+
     let isAdmin = false;
     if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-        isAdmin = profile?.role === 'admin';
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+      isAdmin = profile?.role === 'admin';
     }
 
     if (user.id !== property.owner_id && !isAdmin) {
@@ -58,7 +54,8 @@ async function loadPropertyForEdit(id, container) {
       return;
     }
 
-    renderEditForm(container, property);
+    const images = property.property_images || [];
+    renderEditForm(container, property, images);
 
   } catch (err) {
     console.error('Error loading property:', err);
@@ -66,7 +63,7 @@ async function loadPropertyForEdit(id, container) {
   }
 }
 
-function renderEditForm(container, property) {
+function renderEditForm(container, property, images) {
   container.innerHTML = `
     <div class="mb-3">
       <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
@@ -75,10 +72,10 @@ function renderEditForm(container, property) {
     </div>
     <section class="max-w-3xl mx-auto rounded-4 p-4 p-md-5 bg-white shadow-sm border">
       <h1 class="h3 fw-bold mb-4">Редакция на обява</h1>
-      
+
       <form id="edit-property-form" class="needs-validation" novalidate>
         <div class="row g-3">
-          
+
           <div class="col-12">
             <label for="prop-title" class="form-label fw-semibold">Заглавие на обявата</label>
             <input type="text" class="form-control" id="prop-title" value="${property.title}" required minlength="5" maxlength="100">
@@ -134,12 +131,26 @@ function renderEditForm(container, property) {
             <input type="text" class="form-control" id="prop-address" value="${property.address}" required>
           </div>
 
-          <!-- Future improvement: Allow adding more images -->
-          <div class="col-12 mt-4">
-            <div class="p-3 bg-light rounded text-center">
-              <span class="text-secondary small">Промяна на корица (по избор)</span>
-              <input type="file" class="form-control mt-2" id="prop-image" accept="image/*">
+          <div class="col-12 mt-2">
+            <label class="form-label fw-semibold">Снимки на обявата</label>
+            <div id="all-images-grid" class="d-flex flex-wrap gap-2 mb-2">
+              ${images.map(img => `
+                <div class="position-relative" id="img-card-${img.id}" style="width:110px;">
+                  <img src="${img.image_url}" class="rounded border object-fit-cover w-100" style="height:80px;" alt="снимка">
+                  ${img.is_cover ? '<span class="badge bg-primary position-absolute top-0 start-0 m-1" style="font-size:0.6rem;">корица</span>' : ''}
+                  <button type="button"
+                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center delete-img-btn"
+                    data-img-id="${img.id}"
+                    data-img-url="${img.image_url}"
+                    data-is-cover="${img.is_cover}"
+                    style="width:22px;height:22px;font-size:0.7rem;"
+                    title="Премахни снимката">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              `).join('')}
             </div>
+            <input type="file" class="form-control" id="prop-image" accept="image/*" multiple>
           </div>
 
           <div class="col-12 mt-4 d-flex justify-content-end gap-2">
@@ -157,19 +168,133 @@ function renderEditForm(container, property) {
 
   const form = container.querySelector('#edit-property-form');
   form.addEventListener('submit', (e) => handleEditSubmit(e, property.id));
+
+  container.querySelectorAll('.delete-img-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleDeleteImage(btn, property.id));
+  });
+
+  // Live preview for newly selected images
+  const imageInput = container.querySelector('#prop-image');
+  const allGrid = container.querySelector('#all-images-grid');
+  let selectedFiles = [];
+
+  imageInput.addEventListener('change', () => {
+    const newFiles = Array.from(imageInput.files);
+    newFiles.forEach(file => {
+      if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
+        selectedFiles.push(file);
+        appendPreview(file);
+      }
+    });
+    imageInput.value = '';
+    syncInputFiles();
+  });
+
+  function appendPreview(file) {
+    const url = URL.createObjectURL(file);
+    const card = document.createElement('div');
+    card.className = 'position-relative new-preview-card';
+    card.style.cssText = 'width:110px;';
+    card.innerHTML = `
+      <img src="${url}" class="rounded border object-fit-cover w-100" style="height:80px;" alt="${file.name}">
+      <span class="badge bg-success position-absolute top-0 start-0 m-1" style="font-size:0.6rem;">нова</span>
+      <button type="button"
+        class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
+        style="width:22px;height:22px;font-size:0.7rem;"
+        title="Премахни">
+        <i class="bi bi-x-lg"></i>
+      </button>
+      <span class="d-block text-truncate text-secondary mt-1" style="font-size:0.6rem;max-width:110px;">${file.name}</span>
+    `;
+    card.querySelector('button').addEventListener('click', () => {
+      URL.revokeObjectURL(url);
+      selectedFiles = selectedFiles.filter(f => f !== file);
+      card.remove();
+      syncInputFiles();
+    });
+    allGrid.appendChild(card);
+  }
+
+  function syncInputFiles() {
+    const dt = new DataTransfer();
+    selectedFiles.forEach(f => dt.items.add(f));
+    imageInput.files = dt.files;
+  }
+}
+
+async function handleDeleteImage(btn, propertyId) {
+  const imgId = btn.dataset.imgId;
+  const imgUrl = btn.dataset.imgUrl;
+  const isCover = btn.dataset.isCover === 'true';
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+  try {
+    const { error } = await supabase
+      .from('property_images')
+      .delete()
+      .eq('id', imgId);
+
+    if (error) throw error;
+
+    // Try to delete from storage
+    try {
+      const url = new URL(imgUrl);
+      const pathParts = url.pathname.split('/object/public/properties/');
+      if (pathParts.length > 1) {
+        await supabase.storage.from('properties').remove([pathParts[1]]);
+      }
+    } catch (_) { /* ignore storage errors */ }
+
+    // If deleted image was the cover, promote another one
+    if (isCover) {
+      const { data: remaining } = await supabase
+        .from('property_images')
+        .select('id')
+        .eq('property_id', propertyId)
+        .limit(1)
+        .maybeSingle();
+
+      if (remaining) {
+        await supabase
+          .from('property_images')
+          .update({ is_cover: true })
+          .eq('id', remaining.id);
+
+        // Update badge in DOM
+        const card = document.getElementById(`img-card-${remaining.id}`);
+        if (card && !card.querySelector('.badge')) {
+          const badge = document.createElement('span');
+          badge.className = 'badge bg-primary position-absolute top-0 start-0 m-1';
+          badge.style.fontSize = '0.6rem';
+          badge.textContent = 'корица';
+          card.appendChild(badge);
+        }
+      }
+    }
+
+    const card = document.getElementById(`img-card-${imgId}`);
+    if (card) card.remove();
+
+    showPageFeedback('success', 'Снимката е премахната.');
+  } catch (err) {
+    console.error('Delete image error:', err);
+    showPageFeedback('danger', 'Грешка при премахване: ' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-x-lg"></i>';
+  }
 }
 
 async function handleEditSubmit(e, propertyId) {
   e.preventDefault();
   const form = e.target;
-  
-  // Input validation
+
   const titleInput = document.getElementById('prop-title');
   const descInput = document.getElementById('prop-desc');
   const cityInput = document.getElementById('prop-city');
   const addressInput = document.getElementById('prop-address');
-  
-  // Create update object
+
   const updates = {
     title: titleInput.value.trim(),
     description: descInput.value.trim(),
@@ -182,31 +307,30 @@ async function handleEditSubmit(e, propertyId) {
     address: addressInput.value.trim()
   };
 
-  // Manual Validation for trimmed values
-  if (!form.checkValidity() || 
-      updates.title.length < 5 || 
+  if (!form.checkValidity() ||
+      updates.title.length < 5 ||
       updates.description.length < 20 ||
       updates.city.length < 2 ||
       updates.address.length < 5 ||
       updates.price <= 0 ||
       updates.area_sq_m <= 0 ||
       updates.rooms <= 0) {
-    
+
     e.stopPropagation();
     form.classList.add('was-validated');
-    
+
     if (updates.description.length < 20) {
-        showPageFeedback('danger', 'Описанието трябва да е поне 20 символа.');
+      showPageFeedback('danger', 'Описанието трябва да е поне 20 символа.');
     } else if (updates.title.length < 5) {
-        showPageFeedback('danger', 'Заглавието трябва да е поне 5 символа.');
+      showPageFeedback('danger', 'Заглавието трябва да е поне 5 символа.');
     } else if (updates.city.length < 2) {
-        showPageFeedback('danger', 'Градът трябва да е поне 2 символа.');
+      showPageFeedback('danger', 'Градът трябва да е поне 2 символа.');
     } else if (updates.address.length < 5) {
-        showPageFeedback('danger', 'Адресът трябва да е поне 5 символа.');
+      showPageFeedback('danger', 'Адресът трябва да е поне 5 символа.');
     } else if (updates.price <= 0 || updates.area_sq_m <= 0 || updates.rooms <= 0) {
-        showPageFeedback('danger', 'Моля, въведете валидни стойности за цена, площ и стаи.');
+      showPageFeedback('danger', 'Моля, въведете валидни стойности за цена, площ и стаи.');
     } else {
-        showPageFeedback('danger', 'Моля, попълнете коректно всички полета.');
+      showPageFeedback('danger', 'Моля, попълнете коректно всички полета.');
     }
     return;
   }
@@ -215,15 +339,14 @@ async function handleEditSubmit(e, propertyId) {
   const spinner = submitBtn.querySelector('.spinner-border');
   const submitText = submitBtn.querySelector('.submit-text');
   const imageInput = document.getElementById('prop-image');
-  const imageFile = imageInput && imageInput.files ? imageInput.files[0] : null;
-
+  const imageFiles = imageInput && imageInput.files ? Array.from(imageInput.files) : [];
 
   try {
     submitBtn.disabled = true;
     spinner.classList.remove('d-none');
     submitText.textContent = 'Запазване...';
 
-    // 1. Update Property Data
+    // 1. Update property data
     const { error: updateError } = await supabase
       .from('properties')
       .update(updates)
@@ -231,44 +354,40 @@ async function handleEditSubmit(e, propertyId) {
 
     if (updateError) throw updateError;
 
-    // 2. Handle Image if new one selected
-    if (imageFile) {
-      const fileExt = imageFile.name.split('.').pop();
-      const fileName = `${propertyId}/${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('properties')
-        .upload(fileName, imageFile);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('properties')
-        .getPublicUrl(fileName);
-        
-      const publicUrl = data.publicUrl;
-
-      // Update old covers to false
-      await supabase
+    // 2. Upload new images if any
+    if (imageFiles.length > 0) {
+      const { data: existingImgs } = await supabase
         .from('property_images')
-        .update({ is_cover: false })
+        .select('id')
         .eq('property_id', propertyId);
 
-      // Insert new cover
-      const { error: imgError } = await supabase
-        .from('property_images')
-        .insert({
-           property_id: propertyId,
-           image_url: publicUrl,
-           is_cover: true
-        });
+      const hasExisting = existingImgs && existingImgs.length > 0;
 
-      if (imgError) throw imgError;
+      const uploadPromises = imageFiles.map(async (file, index) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${propertyId}/${Date.now()}_${index}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('properties')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data } = supabase.storage.from('properties').getPublicUrl(fileName);
+
+        return supabase.from('property_images').insert({
+          property_id: propertyId,
+          image_url: data.publicUrl,
+          is_cover: !hasExisting && index === 0
+        });
+      });
+
+      await Promise.all(uploadPromises);
     }
 
     showPageFeedback('success', 'Промените са запазени успешно!');
     setTimeout(() => {
-        window.location.hash = `#/property/${propertyId}`;
+      window.location.hash = `#/property/${propertyId}`;
     }, 1500);
 
   } catch (err) {
@@ -279,4 +398,3 @@ async function handleEditSubmit(e, propertyId) {
     submitText.textContent = 'Запази промените';
   }
 }
-

@@ -52,11 +52,16 @@ export function createHeader(currentPath = '/') {
         <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
           <li><a class="dropdown-item" href="#/profile">Моят Профил</a></li>
           <li><a class="dropdown-item" href="#/my-listings">Моите Обяви</a></li>
-          ${isAdmin ? '<li><a class="dropdown-item text-danger" href="#/admin">Админ панел</a></li>' : ''}
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="#" onclick="localStorage.clear(); window.location.reload();">Изход</a></li>
         </ul>
       </li>
+      ${isAdmin ? `
+      <li class="nav-item me-2">
+        <a class="nav-link fw-semibold text-danger ${currentPath === '/admin' ? 'active' : ''}" href="#/admin">
+          <i class="bi bi-shield-lock-fill me-1"></i>Админ панел
+        </a>
+      </li>` : ''}
       <li class="nav-item ms-2">
         <a class="btn btn-success fw-semibold shadow-sm" href="#/create-property">
           <i class="bi bi-plus-lg me-1"></i>Добави обява

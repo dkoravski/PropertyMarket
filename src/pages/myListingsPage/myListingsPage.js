@@ -14,9 +14,6 @@ export function createMyListingsPage() {
       <section class="rounded-4 p-4 p-md-5 bg-white border shadow-sm">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h1 class="h3 fw-bold mb-0">Моите Обяви</h1>
-          <a href="#/create-property" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg me-1"></i>Добави нова
-          </a>
         </div>
         <div id="my-properties-list" class="row g-4">
            <!-- Properties will be loaded here -->

@@ -50,12 +50,19 @@ async function handleLogin(e) {
 
     if (error) throw error;
 
-    // Check profile for role
+    // Check profile for role and active status
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role')
+      .select('role, is_active')
       .eq('id', data.user.id)
       .single();
+
+    // Block deactivated users
+    if (profile?.is_active === false) {
+      await supabase.auth.signOut();
+      showPageFeedback('danger', 'Акаунтът ви е деактивиран. Свържете се с администратор.');
+      return;
+    }
 
     // Save auth state for router
     localStorage.setItem('pm_is_authenticated', 'true');

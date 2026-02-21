@@ -108,7 +108,7 @@ function renderEditForm(container, property, images) {
           </div>
 
           <div class="col-md-4">
-            <label for="prop-price" class="form-label fw-semibold">Цена (€)</label>
+            <label for="prop-price" class="form-label fw-semibold">${property.listing_type === 'rent' ? 'Месечна цена (€)' : 'Цена (€)'}</label>
             <input type="number" class="form-control" id="prop-price" value="${property.price}" required min="1">
           </div>
 
@@ -245,6 +245,19 @@ function renderEditForm(container, property, images) {
       }
     });
   });
+
+  // Handle listing type change for price label
+  const listingTypeSelect = document.getElementById('listing-type');
+  const priceLabel = document.querySelector('label[for="prop-price"]');
+  if (listingTypeSelect && priceLabel) {
+    listingTypeSelect.addEventListener('change', (e) => {
+      if (e.target.value === 'rent') {
+        priceLabel.textContent = 'Месечна цена (€)';
+      } else {
+        priceLabel.textContent = 'Цена (€)';
+      }
+    });
+  }
 
   form.addEventListener('submit', (e) => handleEditSubmit(e, property.id, deletedImages));
 }

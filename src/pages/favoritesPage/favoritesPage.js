@@ -188,7 +188,10 @@ function createFavoriteCard(fav) {
   const coverUrl = images.length > 0 ? images[0].image_url : 'https://via.placeholder.com/400x300?text=No+Image';
 
   // Formatting
-  const price = new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price);
+  let price = new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price);
+  if (property.listing_type === 'rent') {
+    price += ' / месец';
+  }
   const typeMap = { 'apartment': 'Апартамент', 'studio': 'Студио', 'house': 'Къща', 'villa': 'Вила', 'guest_house': 'Къща за гости' };
   const listingMap = { 'sale': 'Продажба', 'rent': 'Наем' };
 

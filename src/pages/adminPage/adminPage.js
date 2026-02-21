@@ -110,28 +110,30 @@ async function loadUsers() {
     }
 
     tbody.innerHTML = users.map(user => `
-      <tr>
+      <tr class="${user.is_active === false ? 'table-secondary text-muted' : ''}">
         <td>${escapeHtml(user.email)}</td>
         <td>${escapeHtml(user.full_name || '-')}</td>
         <td>
           <span class="badge ${user.role === 'admin' ? 'text-bg-danger' : 'text-bg-secondary'}">
             ${user.role === 'admin' ? 'Admin' : 'User'}
           </span>
+          ${user.is_active === false ? '<span class="badge text-bg-warning ms-1">Деактивиран</span>' : ''}
         </td>
         <td>${new Date(user.created_at).toLocaleDateString()}</td>
         <td>
           ${user.role !== 'admin' ? `
-            <button class="btn btn-sm btn-outline-danger delete-user-btn" data-id="${user.id}">
-              Изтрий
+            <button class="btn btn-sm ${user.is_active === false ? 'btn-outline-success' : 'btn-outline-warning'} toggle-user-btn"
+              data-id="${user.id}" data-active="${user.is_active !== false}">
+              ${user.is_active === false ? '<i class="bi bi-person-check me-1"></i>Активирай' : '<i class="bi bi-person-dash me-1"></i>Деактивирай'}
             </button>
-          ` : '<span class="text-muted small">Не може да се изтрие</span>'}
+          ` : '<span class="text-muted small">—</span>'}
         </td>
       </tr>
     `).join('');
 
     // Attach event listeners
-    document.querySelectorAll('.delete-user-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => handleDeleteUser(e.target.dataset.id));
+    document.querySelectorAll('.toggle-user-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleToggleUserActive(btn.dataset.id, btn.dataset.active === 'true'));
     });
 
   } catch (err) {
@@ -243,43 +245,26 @@ async function handleDeleteProperty(id) {
   }
 }
 
-async function handleDeleteUser(id) {
-  const confirmed = await showConfirmModal('ВНИМАНИЕ: Изтриването на потребител ще изтрие и всички негови обяви! Сигурни ли сте?');
+async function handleToggleUserActive(id, isCurrentlyActive) {
+  const action = isCurrentlyActive ? 'деактивирате' : 'активирате';
+  const confirmed = await showConfirmModal(`Сигурни ли сте, че искате да ${action} този потребител?`);
   if (!confirmed) return;
-  
-  // Note: Client-side deletion of auth users is restricted. 
-  // We can only delete from public.profiles if our RLS allows it (which it does for admin).
-  // However, since profiles.id references auth.users.id, we cannot delete profile without deleting auth user 
-  // unless we remove the foreign key constraint or fetch delete from server side.
-  // BUT, usually for these projects, we just delete the PROFILE data or use a server function.
-  // Since we don't have a backend function for auth deletion exposed, we will try to delete the profile row.
-  // If the DB is set up with 'ON DELETE CASCADE' from auth to profile, deleting profile won't delete auth user.
-  
-  // Actually, usually in Supabase, you delete the user from the Management Dashboard.
-  // But let's try to delete the profile row as per the requirements "manage users".
-  
+
   try {
-     // NOTE: This will likely FAIL if we try to delete a user that is linked to auth.users 1:1 
-     // and we don't have Cascade set up backwards (Profile -> User is not possible).
-     // BUT, we defined Admin RLS to delete profiles. 
-     
-     // Let's try deleting listing ownership first or just delete profile.
-     const { error } = await supabase
+    const { error } = await supabase
       .from('profiles')
-      .delete()
+      .update({ is_active: !isCurrentlyActive })
       .eq('id', id);
 
-    if (error) {
-       if (error.code === '23503') { // FK violation
-           throw new Error('Не може да изтриете профила, защото е свързан с Auth потребител. Използвайте Supabase Dashboard за пълно изтриване.');
-       }
-       throw error;
-    }
+    if (error) throw error;
 
     loadUsers();
-    await showMessageModal('Профилът беше изтрит (Забележка: Auth акаунтът може да е все още активен).', 'success');
+    await showMessageModal(
+      isCurrentlyActive ? 'Потребителят е деактивиран успешно.' : 'Потребителят е активиран успешно.',
+      'success'
+    );
   } catch (err) {
-    console.error('Error deleting user:', err);
+    console.error('Error toggling user:', err);
     await showMessageModal('Грешка: ' + err.message, 'error');
   }
 }

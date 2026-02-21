@@ -86,7 +86,10 @@ function createMyPropertyCard(property) {
   const cover = images.find(i => i.is_cover) || images[0];
   const coverUrl = cover ? cover.image_url : 'https://via.placeholder.com/300x200?text=No+Image';
   
-  const price = new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price);
+  let price = new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price);
+  if (property.listing_type === 'rent') {
+    price += ' / месец';
+  }
   const typeMap = { 'sale': 'Продажба', 'rent': 'Наем' };
   const propertyTypeMap = { 
     'apartment': 'Апартамент', 

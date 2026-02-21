@@ -105,6 +105,19 @@ function initCreatePropertyPage() {
       return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 
+    const listingTypeSelect = document.getElementById('listing-type');
+    const priceLabel = document.querySelector('label[for="prop-price"]');
+
+    if (listingTypeSelect && priceLabel) {
+      listingTypeSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'rent') {
+          priceLabel.textContent = 'Месечна цена (€) *';
+        } else {
+          priceLabel.textContent = 'Цена (€) *';
+        }
+      });
+    }
+
     form.addEventListener('submit', handleCreateProperty);
   }
 }

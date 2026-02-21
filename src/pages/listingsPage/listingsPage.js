@@ -253,11 +253,15 @@ function createListingCard(property) {
   }
 
   // Format price
-  const priceFormatted = new Intl.NumberFormat('bg-BG', {
+  let priceFormatted = new Intl.NumberFormat('bg-BG', {
     style: 'currency',
     currency: 'EUR',
     maximumFractionDigits: 0
   }).format(property.price);
+
+  if (property.listing_type === 'rent') {
+    priceFormatted += ' / месец';
+  }
 
   // Translate types
   const typeMap = {

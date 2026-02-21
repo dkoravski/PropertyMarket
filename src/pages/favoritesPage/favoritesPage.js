@@ -189,7 +189,7 @@ function createFavoriteCard(fav) {
 
   // Formatting
   const price = new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price);
-  const typeMap = { 'apartment': 'Апартамент', 'house': 'Къща', 'villa': 'Вила', 'guest_house': 'Къща за гости' };
+  const typeMap = { 'apartment': 'Апартамент', 'studio': 'Студио', 'house': 'Къща', 'villa': 'Вила', 'guest_house': 'Къща за гости' };
   const listingMap = { 'sale': 'Продажба', 'rent': 'Наем' };
 
   return `

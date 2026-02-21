@@ -90,6 +90,7 @@ function createMyPropertyCard(property) {
   const typeMap = { 'sale': 'Продажба', 'rent': 'Наем' };
   const propertyTypeMap = { 
     'apartment': 'Апартамент', 
+    'studio': 'Студио',
     'house': 'Къща', 
     'villa': 'Вила', 
     'guest_house': 'Къща за гости' 

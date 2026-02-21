@@ -31,6 +31,7 @@ export function createPropertyPage() {
           <select id="prop-type" class="form-select" required>
             <option value="" selected disabled>Изберете...</option>
             <option value="apartment">Апартамент</option>
+            <option value="studio">Студио</option>
             <option value="house">Къща</option>
             <option value="villa">Вила</option>
             <option value="guest_house">Къща за гости</option>

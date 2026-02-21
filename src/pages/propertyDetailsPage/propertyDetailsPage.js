@@ -102,7 +102,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
   const carouselId = `property-carousel-${property.id}`;
 
   const price = new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(property.price);
-  const typeMap = { 'apartment': 'Апартамент', 'house': 'Къща', 'villa': 'Вила', 'guest_house': 'Къща за гости' };
+  const typeMap = { 'apartment': 'Апартамент', 'studio': 'Студио', 'house': 'Къща', 'villa': 'Вила', 'guest_house': 'Къща за гости' };
   const listingMap = { 'sale': 'Продажба', 'rent': 'Наем' };
 
   const ownerName = property.profiles?.full_name || 'Неизвестен';
@@ -322,6 +322,17 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
         btnFav.disabled = false;
       }
     });
+  }
+
+  // Initialize Carousel manually to ensure it autoplays immediately
+  const carouselEl = document.getElementById(carouselId);
+  if (carouselEl) {
+    const carousel = new bootstrap.Carousel(carouselEl, {
+      interval: 4000,
+      ride: 'carousel'
+    });
+    // Force start cycling
+    carousel.cycle();
   }
 }
 

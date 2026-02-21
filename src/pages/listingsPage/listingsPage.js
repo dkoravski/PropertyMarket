@@ -1,34 +1,165 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 
 export function createListingsPage(category = 'Всички обяви') {
-  loadListings(category);
+  // Determine initial filter state based on category
+  let initialListingType = 'all';
+  if (category === 'Продажби') initialListingType = 'sale';
+  if (category === 'Наеми') initialListingType = 'rent';
+
+  // We defer the loading so the DOM is ready
+  setTimeout(() => {
+    // Set initial state of the filter UI if specific category is selected
+    if (initialListingType !== 'all') {
+      const radio = document.querySelector(`input[name="listingType"][value="${initialListingType}"]`);
+      if (radio) radio.checked = true;
+    }
+    
+    // Initial load
+    filterListings();
+
+    // Attach event listeners
+    document.getElementById('search-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      filterListings();
+    });
+
+    document.getElementById('clear-filters').addEventListener('click', () => {
+      document.getElementById('search-form').reset();
+      // Reset radio to 'all' or keep category? Let's reset to 'all' for true clear
+      document.querySelector('input[name="listingType"][value="all"]').checked = true;
+      filterListings();
+    });
+  }, 0);
 
   return `
-    <section class="rounded-4 p-4 p-md-5 bg-light border">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h1 class="h3 fw-bold mb-1">Обяви за имоти</h1>
-          <p class="mb-0 text-secondary">Категория: <strong>${category}</strong></p>
-        </div>
-      </div>
-      
-      <div id="listings-wrapper" class="row g-4 mt-2">
-        <div class="col-12 text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Зареждане...</span>
+    <section class="container py-4">
+      <div class="row g-4">
+        <!-- Sidebar Filters (Desktop) / Collapse (Mobile) -->
+        <div class="col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 sticky-lg-top" style="top: 20px; z-index: 100;">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+              <h5 class="fw-bold mb-0"><i class="bi bi-sliders me-2"></i>Филтри</h5>
+            </div>
+            <div class="card-body">
+              <form id="search-form">
+                
+                <!-- Listing Type -->
+                <div class="mb-3">
+                  <label class="form-label fw-semibold small text-uppercase text-secondary">Тип обява</label>
+                  <div class="d-flex flex-column gap-2">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="listingType" id="type-all" value="all" checked>
+                      <label class="form-check-label" for="type-all">Всички</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="listingType" id="type-sale" value="sale">
+                      <label class="form-check-label" for="type-sale">Продажба</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="listingType" id="type-rent" value="rent">
+                      <label class="form-check-label" for="type-rent">Наем</label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Property Type -->
+                <div class="mb-3">
+                  <label for="filter-prop-type" class="form-label fw-semibold small text-uppercase text-secondary">Вид имот</label>
+                  <select class="form-select" id="filter-prop-type">
+                    <option value="all">Всички видове</option>
+                    <option value="apartment">Апартаменти</option>
+                    <option value="studio">Студиа</option>
+                    <option value="house">Къщи</option>
+                    <option value="villa">Вили</option>
+                    <option value="guest_house">Къщи за гости</option>
+                  </select>
+                </div>
+
+                <!-- Price Range -->
+                <div class="mb-3">
+                  <label class="form-label fw-semibold small text-uppercase text-secondary">Цена (€)</label>
+                  <div class="d-flex gap-2">
+                    <input type="number" class="form-control" id="filter-price-min" placeholder="От" min="0">
+                    <input type="number" class="form-control" id="filter-price-max" placeholder="До" min="0">
+                  </div>
+                </div>
+
+                <!-- Area Range -->
+                <div class="mb-3">
+                  <label class="form-label fw-semibold small text-uppercase text-secondary">Площ (кв.м)</label>
+                  <div class="d-flex gap-2">
+                    <input type="number" class="form-control" id="filter-area-min" placeholder="От" min="0">
+                    <input type="number" class="form-control" id="filter-area-max" placeholder="До" min="0">
+                  </div>
+                </div>
+
+                <!-- Rooms -->
+                <div class="mb-3">
+                  <label for="filter-rooms" class="form-label fw-semibold small text-uppercase text-secondary">Минимум стаи</label>
+                  <input type="number" class="form-control" id="filter-rooms" placeholder="Брой стаи" min="1">
+                </div>
+
+                <!-- Location -->
+                <div class="mb-4">
+                  <label for="filter-location" class="form-label fw-semibold small text-uppercase text-secondary">Населено място</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-secondary"></i></span>
+                    <input type="text" class="form-control border-start-0" id="filter-location" placeholder="Град, село...">
+                  </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary fw-bold">Търси</button>
+                  <button type="button" id="clear-filters" class="btn btn-outline-secondary btn-sm">Изчисти филтрите</button>
+                </div>
+
+              </form>
+            </div>
           </div>
+        </div>
+
+        <!-- Listings Column -->
+        <div class="col-lg-9">
+           <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm border">
+              <h1 class="h4 fw-bold mb-0 text-primary">Резултати</h1>
+              <span class="badge bg-secondary rounded-pill" id="results-count">0 намерени</span>
+           </div>
+
+           <div id="listings-wrapper" class="row g-4">
+             <div class="col-12 text-center py-5">
+               <div class="spinner-border text-primary" role="status">
+                 <span class="visually-hidden">Зареждане...</span>
+               </div>
+             </div>
+           </div>
         </div>
       </div>
     </section>
   `;
 }
 
-async function loadListings(category) {
-  // Wait for the render to complete
-  await new Promise(resolve => setTimeout(resolve, 0));
-
+async function filterListings() {
   const wrapper = document.getElementById('listings-wrapper');
+  const countBadge = document.getElementById('results-count');
+  
   if (!wrapper) return;
+
+  // Gather filter values
+  const listingType = document.querySelector('input[name="listingType"]:checked').value;
+  const propertyType = document.getElementById('filter-prop-type').value;
+  const priceMin = document.getElementById('filter-price-min').value;
+  const priceMax = document.getElementById('filter-price-max').value;
+  const areaMin = document.getElementById('filter-area-min').value;
+  const areaMax = document.getElementById('filter-area-max').value;
+  const rooms = document.getElementById('filter-rooms').value;
+  const location = document.getElementById('filter-location').value.trim();
+
+  wrapper.innerHTML = `
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  `;
 
   try {
     let query = supabase
@@ -42,21 +173,42 @@ async function loadListings(category) {
       `)
       .order('created_at', { ascending: false });
 
-    // Apply filtering based on category
-    if (category === 'Продажби') {
-      query = query.eq('listing_type', 'sale');
-    } else if (category === 'Наеми') {
-      query = query.eq('listing_type', 'rent');
+    // Apply Filters
+    if (listingType !== 'all') {
+      query = query.eq('listing_type', listingType);
+    }
+
+    if (propertyType !== 'all') {
+      query = query.eq('property_type', propertyType);
+    }
+
+    if (priceMin) query = query.gte('price', priceMin);
+    if (priceMax) query = query.lte('price', priceMax);
+
+    if (areaMin) query = query.gte('area_sq_m', areaMin);
+    if (areaMax) query = query.lte('area_sq_m', areaMax);
+
+    if (rooms) query = query.gte('rooms', rooms);
+
+    if (location) {
+      // Create a case-insensitive logical OR search for city OR address
+      // Syntax: column.ilike.pattern, column.ilike.pattern
+      // Or filter syntax: or=(city.ilike.%val%,address.ilike.%val%)
+      query = query.or(`city.ilike.%${location}%,address.ilike.%${location}%`);
     }
 
     const { data: properties, error } = await query;
 
     if (error) throw error;
 
+    countBadge.textContent = `${properties?.length || 0} намерени`;
+
     if (!properties || properties.length === 0) {
       wrapper.innerHTML = `
         <div class="col-12 text-center py-5">
-          <p class="text-secondary mb-0">Няма намерени обяви в тази категория.</p>
+          <div class="mb-3"><i class="bi bi-search fs-1 text-muted"></i></div>
+          <p class="text-secondary fs-5">Няма намерени обяви по тези критерии.</p>
+          <button class="btn btn-outline-primary mt-2" onclick="document.getElementById('clear-filters').click()">Изчисти филтрите</button>
         </div>
       `;
       return;
@@ -69,10 +221,19 @@ async function loadListings(category) {
     wrapper.innerHTML = `
       <div class="col-12 text-center py-5">
         <div class="alert alert-danger d-inline-block">
-          Възникна грешка при зареждането на обявите. Моля, опитайте отново по-късно.
+          Възникна грешка при зареждането на обявите.
         </div>
       </div>
     `;
+  }
+}
+
+// Helper to keep old function signature working if called directly (though UI drives it now)
+async function loadListings(category) {
+  // Check if UI is rendered
+  const form = document.getElementById('search-form');
+  if(form) {
+      filterListings();
   }
 }
 
@@ -101,6 +262,7 @@ function createListingCard(property) {
   // Translate types
   const typeMap = {
     'apartment': 'Апартамент',
+    'studio': 'Студио',
     'house': 'Къща',
     'villa': 'Вила',
     'guest_house': 'Къща за гости'
@@ -110,42 +272,54 @@ function createListingCard(property) {
     'sale': 'Продажба',
     'rent': 'Наем'
   };
+  
+  const listingTypeBadgeMap = {
+    'sale': 'bg-success',
+    'rent': 'bg-info'
+  };
 
   const propertyType = typeMap[property.property_type] || property.property_type;
   const listingType = listingTypeMap[property.listing_type] || property.listing_type;
-  
-  const badgeClass = property.listing_type === 'sale' ? 'bg-success' : 'bg-info';
+  const badgeClass = listingTypeBadgeMap[property.listing_type] || 'bg-secondary';
 
   return `
-    <div class="col-12 col-md-6 col-lg-4">
-      <div class="card h-100 shadow-sm border-0 listing-card">
+    <div class="col-md-6 col-xl-4">
+      <div class="card h-100 shadow-sm border-0 transition-hover rounded-4 overflow-hidden">
         <div class="position-relative">
-          <img src="${coverImage}" class="card-img-top" alt="${property.title}" style="height: 240px; object-fit: cover;">
-          <span class="position-absolute top-0 end-0 m-3 badge ${badgeClass} fs-6 shadow-sm">
+          <img src="${coverImage}" class="card-img-top object-fit-cover" alt="${property.title}" style="height: 220px;">
+          <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-0 hover-opacity-10 transition-all"></div>
+          <span class="position-absolute top-0 end-0 m-3 badge ${badgeClass} text-white shadow-sm px-3 py-2 rounded-pill">
             ${listingType}
           </span>
+          <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 rounded">
+             <i class="bi bi-camera me-1"></i> ${property.property_images?.length || 0}
+          </span>
         </div>
-        <div class="card-body">
+        <div class="card-body d-flex flex-column p-4">
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <small class="text-secondary"><i class="bi bi-geo-alt-fill me-1"></i>${property.city}</small>
-            <small class="text-secondary">${propertyType}</small>
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 rounded-pill px-2 py-1 small">
+                ${propertyType}
+            </span>
+            <small class="text-muted"><i class="bi bi-clock me-1"></i>${new Date(property.created_at).toLocaleDateString()}</small>
           </div>
-          <h5 class="card-title text-truncate" title="${property.title}">${property.title}</h5>
-          <h6 class="card-subtitle mb-3 text-primary fw-bold fs-4">${priceFormatted}</h6>
           
-          <div class="d-flex justify-content-between border-top pt-3 mt-3">
-            <span class="text-secondary" title="Площ">
-              <i class="bi bi-arrows-fullscreen me-1"></i>${property.area_sq_m} м²
-            </span>
-            <span class="text-secondary" title="Стаи">
-              <i class="bi bi-door-closed me-1"></i>${property.rooms} стаи
-            </span>
+          <h5 class="card-title fw-bold text-truncate mb-1" title="${property.title}">
+            <a href="#/property/${property.id}" class="text-decoration-none text-dark stretched-link">${property.title}</a>
+          </h5>
+          
+          <p class="text-secondary small mb-3 text-truncate">
+            <i class="bi bi-geo-alt-fill text-danger me-1"></i>${property.city}, ${property.address}
+          </p>
+          
+          <div class="mt-auto">
+             <h4 class="text-primary fw-bold mb-3">${priceFormatted}</h4>
+             
+             <div class="d-flex justify-content-between border-top pt-3 text-secondary small">
+               <span title="Площ"><i class="bi bi-arrows-fullscreen me-1"></i>${property.area_sq_m} м²</span>
+               <span title="Стаи"><i class="bi bi-door-closed me-1"></i>${property.rooms} стаи</span>
+               <span title="Цена на кв.м."><i class="bi bi-calculator me-1"></i>${(property.price / property.area_sq_m).toFixed(0)} €/м²</span>
+             </div>
           </div>
-        </div>
-        <div class="card-footer bg-white border-top-0 pt-0 pb-3">
-          <a href="#/property/${property.id}" class="btn btn-outline-primary w-100 stretched-link">
-            Детайли
-          </a>
         </div>
       </div>
     </div>

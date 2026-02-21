@@ -92,6 +92,7 @@ function renderEditForm(container, property, images) {
             <label for="prop-type" class="form-label fw-semibold">Тип имот</label>
             <select class="form-select" id="prop-type" required>
               <option value="apartment" ${property.property_type === 'apartment' ? 'selected' : ''}>Апартамент</option>
+              <option value="studio" ${property.property_type === 'studio' ? 'selected' : ''}>Студио</option>
               <option value="house" ${property.property_type === 'house' ? 'selected' : ''}>Къща</option>
               <option value="villa" ${property.property_type === 'villa' ? 'selected' : ''}>Вила</option>
               <option value="guest_house" ${property.property_type === 'guest_house' ? 'selected' : ''}>Къща за гости</option>

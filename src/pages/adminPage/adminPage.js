@@ -159,6 +159,7 @@ async function loadProperties() {
 
     const typeLabels = {
       apartment: 'Апартамент',
+      studio: 'Студио',
       house: 'Къща',
       villa: 'Вила',
       guest_house: 'Къща за гости'

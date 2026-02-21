@@ -64,7 +64,10 @@ export function createPropertyPage() {
 
         <!-- Location -->
         <div class="col-md-6">
-          <label for="prop-city" class="form-label">Град *</label>
+          <label for="prop-city" class="form-label">
+            гр./с. [Име], общ. [Име], обл. [Име] *
+            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Пример: с. Марково, общ. Родопи, обл. Пловдив"></i>
+          </label>
           <input type="text" class="form-control" id="prop-city" required minlength="2">
         </div>
 
@@ -95,6 +98,12 @@ export function createPropertyPage() {
 function initCreatePropertyPage() {
   const form = document.getElementById('create-property-form');
   if (form) {
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
     form.addEventListener('submit', handleCreateProperty);
   }
 }

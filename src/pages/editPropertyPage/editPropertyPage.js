@@ -122,7 +122,10 @@ function renderEditForm(container, property, images) {
           </div>
 
           <div class="col-md-6">
-            <label for="prop-city" class="form-label fw-semibold">Град / Населено място</label>
+            <label for="prop-city" class="form-label fw-semibold">
+              гр./с. [Име], общ. [Име], обл. [Име]
+              <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Пример: с. Марково, общ. Родопи, обл. Пловдив"></i>
+            </label>
             <input type="text" class="form-control" id="prop-city" value="${property.city}" required>
           </div>
 
@@ -166,13 +169,15 @@ function renderEditForm(container, property, images) {
     </section>
   `;
 
-  const form = container.querySelector('#edit-property-form');
-  form.addEventListener('submit', (e) => handleEditSubmit(e, property.id));
-
-  container.querySelectorAll('.delete-img-btn').forEach(btn => {
-    btn.addEventListener('click', () => handleDeleteImage(btn, property.id));
+  // Initialize tooltips
+  const tooltipTriggerList = [].slice.call(container.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
   });
 
+  const deletedImages = []; // Track images to delete
+  const form = container.querySelector('#edit-property-form');
+  
   // Live preview for newly selected images
   const imageInput = container.querySelector('#prop-image');
   const allGrid = container.querySelector('#all-images-grid');
@@ -220,73 +225,33 @@ function renderEditForm(container, property, images) {
     selectedFiles.forEach(f => dt.items.add(f));
     imageInput.files = dt.files;
   }
+
+  // Handle deletion of existing images (mark for deletion)
+  container.querySelectorAll('.delete-img-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const imgId = btn.dataset.imgId;
+      const imgUrl = btn.dataset.imgUrl;
+      const isCover = btn.dataset.isCover === 'true';
+      
+      // Add to deletion list
+      deletedImages.push({ id: imgId, url: imgUrl, isCover });
+      
+      // Visual removal
+      const card = document.getElementById(`img-card-${imgId}`);
+      if (card) {
+        card.style.display = 'none'; // Hide instead of remove to keep DOM for now if needed, or remove
+        card.remove(); 
+      }
+    });
+  });
+
+  form.addEventListener('submit', (e) => handleEditSubmit(e, property.id, deletedImages));
 }
 
-async function handleDeleteImage(btn, propertyId) {
-  const imgId = btn.dataset.imgId;
-  const imgUrl = btn.dataset.imgUrl;
-  const isCover = btn.dataset.isCover === 'true';
+// Old direct delete function removed/replaced by inline logic above
+// async function handleDeleteImage... (not used anymore)
 
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-
-  try {
-    const { error } = await supabase
-      .from('property_images')
-      .delete()
-      .eq('id', imgId);
-
-    if (error) throw error;
-
-    // Try to delete from storage
-    try {
-      const url = new URL(imgUrl);
-      const pathParts = url.pathname.split('/object/public/properties/');
-      if (pathParts.length > 1) {
-        await supabase.storage.from('properties').remove([pathParts[1]]);
-      }
-    } catch (_) { /* ignore storage errors */ }
-
-    // If deleted image was the cover, promote another one
-    if (isCover) {
-      const { data: remaining } = await supabase
-        .from('property_images')
-        .select('id')
-        .eq('property_id', propertyId)
-        .limit(1)
-        .maybeSingle();
-
-      if (remaining) {
-        await supabase
-          .from('property_images')
-          .update({ is_cover: true })
-          .eq('id', remaining.id);
-
-        // Update badge in DOM
-        const card = document.getElementById(`img-card-${remaining.id}`);
-        if (card && !card.querySelector('.badge')) {
-          const badge = document.createElement('span');
-          badge.className = 'badge bg-primary position-absolute top-0 start-0 m-1';
-          badge.style.fontSize = '0.6rem';
-          badge.textContent = 'корица';
-          card.appendChild(badge);
-        }
-      }
-    }
-
-    const card = document.getElementById(`img-card-${imgId}`);
-    if (card) card.remove();
-
-    showPageFeedback('success', 'Снимката е премахната.');
-  } catch (err) {
-    console.error('Delete image error:', err);
-    showPageFeedback('danger', 'Грешка при премахване: ' + err.message);
-    btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-x-lg"></i>';
-  }
-}
-
-async function handleEditSubmit(e, propertyId) {
+async function handleEditSubmit(e, propertyId, deletedImages = []) {
   e.preventDefault();
   const form = e.target;
 
@@ -354,15 +319,46 @@ async function handleEditSubmit(e, propertyId) {
 
     if (updateError) throw updateError;
 
-    // 2. Upload new images if any
-    if (imageFiles.length > 0) {
-      const { data: existingImgs } = await supabase
+    // 2. Process image deletions
+    if (deletedImages.length > 0) {
+      const idsToDelete = deletedImages.map(img => img.id);
+      
+      // Delete from DB
+      const { error: delErr } = await supabase
         .from('property_images')
-        .select('id')
-        .eq('property_id', propertyId);
+        .delete()
+        .in('id', idsToDelete);
+        
+      if (delErr) throw delErr;
 
-      const hasExisting = existingImgs && existingImgs.length > 0;
+      // Delete from Storage (fire and forget / robust effort)
+      const pathsToDelete = deletedImages.map(img => {
+        try {
+          const url = new URL(img.url);
+          // Assuming url structure .../properties/FOLDER/FILE
+          const token = '/properties/';
+          const idx = url.pathname.indexOf(token);
+          if (idx !== -1) {
+            return url.pathname.substring(idx + token.length);
+          }
+        } catch (e) { console.error('Error parsing url', e); }
+        return null;
+      }).filter(p => p !== null);
 
+      if (pathsToDelete.length > 0) {
+        await supabase.storage.from('properties').remove(pathsToDelete);
+      }
+    }
+
+    // 3. Upload new images if any
+    const { data: existingImgs } = await supabase
+      .from('property_images')
+      .select('id, is_cover')
+      .eq('property_id', propertyId);
+      
+    const hasCover = existingImgs && existingImgs.some(img => img.is_cover);
+
+    if (imageFiles.length > 0) {
       const uploadPromises = imageFiles.map(async (file, index) => {
         const fileExt = file.name.split('.').pop();
         const fileName = `${propertyId}/${Date.now()}_${index}.${fileExt}`;
@@ -375,14 +371,23 @@ async function handleEditSubmit(e, propertyId) {
 
         const { data } = supabase.storage.from('properties').getPublicUrl(fileName);
 
+        // If no cover currently exists, make the first new image the cover
+        const isCover = !hasCover && index === 0;
+
         return supabase.from('property_images').insert({
           property_id: propertyId,
           image_url: data.publicUrl,
-          is_cover: !hasExisting && index === 0
+          is_cover: isCover
         });
       });
 
       await Promise.all(uploadPromises);
+    } else if (!hasCover && existingImgs && existingImgs.length > 0) {
+      // If we deleted the cover and didn't add new images, promote one of the remaining
+      await supabase
+        .from('property_images')
+        .update({ is_cover: true })
+        .eq('id', existingImgs[0].id);
     }
 
     showPageFeedback('success', 'Промените са запазени успешно!');

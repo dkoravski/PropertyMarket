@@ -1,4 +1,5 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showConfirmModal } from '../../utils/ui.js';
 
 export function createPropertyDetailsPage(id) {
   setTimeout(() => loadPropertyDetails(id), 0);
@@ -254,8 +255,36 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
       if (!isConfirmed) return;
 
       try {
+        // 1. Delete images from storage first
+        if (property.property_images && property.property_images.length > 0) {
+          const paths = property.property_images.map(img => {
+             const url = img.image_url;
+             // Extract path relative to bucket 'properties'
+             // Assuming URL format: .../storage/v1/object/public/properties/PATH
+             const token = '/properties/';
+             const idx = url.indexOf(token);
+             if (idx !== -1) {
+               return url.substring(idx + token.length);
+             }
+             return null;
+          }).filter(p => p !== null);
+
+          if (paths.length > 0) {
+            const { error: storageError } = await supabase.storage
+              .from('properties')
+              .remove(paths);
+            
+            if (storageError) {
+              console.warn('Could not delete images from storage:', storageError);
+              // We continue to delete the record anyway
+            }
+          }
+        }
+
+        // 2. Delete property record
         const { error } = await supabase.from('properties').delete().eq('id', property.id);
         if (error) throw error;
+        
         showPageFeedback(container, 'Обявата е изтрита успешно!', 'success');
         setTimeout(() => {
           window.location.hash = '#/listings';
@@ -308,48 +337,6 @@ function showPageFeedback(container, message, type = 'success') {
   `);
 }
 
-function showConfirmModal(message) {
-  return new Promise((resolve) => {
-    const modalId = `confirm-modal-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-    const modalMarkup = `
-      <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content border-0 shadow">
-            <div class="modal-header">
-              <h5 class="modal-title">Потвърждение</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
-            </div>
-            <div class="modal-body">
-              <p class="mb-0">${message}</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отказ</button>
-              <button type="button" class="btn btn-danger" id="${modalId}-confirm">Потвърди</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+// Modal function deleted to use shared utils/ui.js
 
-    document.body.insertAdjacentHTML('beforeend', modalMarkup);
-    const modalEl = document.getElementById(modalId);
-    const confirmBtn = document.getElementById(`${modalId}-confirm`);
-    const modalInstance = new bootstrap.Modal(modalEl);
-
-    let resolved = false;
-
-    confirmBtn.addEventListener('click', () => {
-      resolved = true;
-      resolve(true);
-      modalInstance.hide();
-    });
-
-    modalEl.addEventListener('hidden.bs.modal', () => {
-      if (!resolved) resolve(false);
-      modalEl.remove();
-    }, { once: true });
-
-    modalInstance.show();
-  });
-}
 

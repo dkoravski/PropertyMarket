@@ -57,3 +57,55 @@ export function showConfirmModal(question) {
     modal.show();
   });
 }
+
+export function showMessageModal(message, type = 'info') {
+  return new Promise((resolve) => {
+    // Unique ID
+    const modalId = 'message-modal-' + Date.now();
+    
+    let title = 'Съобщение';
+    let btnClass = 'btn-primary';
+    
+    if (type === 'error' || type === 'danger') {
+      title = 'Грешка';
+      btnClass = 'btn-danger';
+    } else if (type === 'success') {
+      title = 'Успех';
+      btnClass = 'btn-success';
+    } else if (type === 'warning') {
+      title = 'Внимание';
+      btnClass = 'btn-warning';
+    }
+
+    const modalHtml = `
+      <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header border-0">
+              <h5 class="modal-title fs-5">${title}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+              <p class="mb-0 fs-5">${message}</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4">
+              <button type="button" class="btn ${btnClass} px-4" data-bs-dismiss="modal">Добре</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modalElement = document.getElementById(modalId);
+    // @ts-ignore
+    const modal = new bootstrap.Modal(modalElement);
+
+    modalElement.addEventListener('hidden.bs.modal', () => {
+      modalElement.remove();
+      resolve();
+    });
+
+    modal.show();
+  });
+}

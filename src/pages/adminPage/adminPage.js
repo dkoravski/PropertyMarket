@@ -1,4 +1,5 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showConfirmModal, showMessageModal } from '../../utils/ui.js';
 
 export function createAdminPage() {
   setTimeout(initAdminPage, 0);
@@ -176,7 +177,7 @@ async function loadProperties() {
           </a>
         </td>
         <td>${typeLabels[prop.property_type] || prop.property_type} <span class="text-muted small">(${listingTypeLabels[prop.listing_type]})</span></td>
-        <td class="fw-bold text-primary">${prop.price.toLocaleString()} лв.</td>
+        <td class="fw-bold text-primary">${prop.price.toLocaleString()} €</td>
         <td>${escapeHtml(prop.profiles?.email || 'Неизвестен')}</td>
         <td>${new Date(prop.created_at).toLocaleDateString()}</td>
         <td>
@@ -199,9 +200,33 @@ async function loadProperties() {
 }
 
 async function handleDeleteProperty(id) {
-  if (!confirm('Сигурни ли сте, че искате да изтриете тази обява?')) return;
+  const confirmed = await showConfirmModal('Сигурни ли сте, че искате да изтриете тази обява?');
+  if (!confirmed) return;
 
   try {
+    // 1. Delete images from storage first
+    const { data: images } = await supabase
+      .from('property_images')
+      .select('image_url')
+      .eq('property_id', id);
+
+    if (images && images.length > 0) {
+      const paths = images
+        .map(img => {
+           const url = img.image_url;
+           const token = '/properties/';
+           const idx = url.indexOf(token);
+           return idx !== -1 ? url.substring(idx + token.length) : null;
+        })
+        .filter(p => p !== null);
+
+      if (paths.length > 0) {
+        // Best effort cleanup
+        await supabase.storage.from('properties').remove(paths);
+      }
+    }
+
+    // 2. Delete property record
     const { error } = await supabase
       .from('properties')
       .delete()
@@ -210,15 +235,16 @@ async function handleDeleteProperty(id) {
     if (error) throw error;
 
     loadProperties(); // Reload list
-    alert('Обявата беше изтрита успешно.');
+    await showMessageModal('Обявата беше изтрита успешно.', 'success');
   } catch (err) {
     console.error('Error deleting property:', err);
-    alert('Грешка при изтриване: ' + err.message);
+    await showMessageModal('Грешка при изтриване: ' + err.message, 'error');
   }
 }
 
 async function handleDeleteUser(id) {
-  if (!confirm('ВНИМАНИЕ: Изтриването на потребител ще изтрие и всички негови обяви! Сигурни ли сте?')) return;
+  const confirmed = await showConfirmModal('ВНИМАНИЕ: Изтриването на потребител ще изтрие и всички негови обяви! Сигурни ли сте?');
+  if (!confirmed) return;
   
   // Note: Client-side deletion of auth users is restricted. 
   // We can only delete from public.profiles if our RLS allows it (which it does for admin).
@@ -250,10 +276,10 @@ async function handleDeleteUser(id) {
     }
 
     loadUsers();
-    alert('Профилът беше изтрит (Забележка: Auth акаунтът може да е все още активен).');
+    await showMessageModal('Профилът беше изтрит (Забележка: Auth акаунтът може да е все още активен).', 'success');
   } catch (err) {
     console.error('Error deleting user:', err);
-    alert('Грешка: ' + err.message);
+    await showMessageModal('Грешка: ' + err.message, 'error');
   }
 }
 

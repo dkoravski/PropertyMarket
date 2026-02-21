@@ -20,6 +20,9 @@ export function createLoginPage() {
         <div class="col-12">
           <label for="password" class="form-label">Парола</label>
           <input id="password" type="password" class="form-control" placeholder="Въведете парола" required />
+          <div class="text-end mt-1">
+            <a href="#/forgot-password" class="small text-decoration-none">Забравихте паролата?</a>
+          </div>
         </div>
         <div class="col-12">
           <button type="submit" class="btn btn-primary w-100">Влез</button>
@@ -76,9 +79,27 @@ async function handleLogin(e) {
     
   } catch (err) {
     console.error('Login error:', err);
-    showPageFeedback('danger', 'Грешка при вход: ' + err.message);
+    showPageFeedback('danger', translateLoginError(err.message));
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'Влез';
   }
+}
+
+function translateLoginError(message) {
+  const msg = (message || '').toLowerCase();
+
+  if (msg.includes('invalid login credentials')) {
+    return 'Грешка при вход: Невалиден имейл или парола.';
+  }
+
+  if (msg.includes('email not confirmed')) {
+    return 'Грешка при вход: Моля, потвърдете имейла си преди вход.';
+  }
+
+  if (msg.includes('too many requests')) {
+    return 'Грешка при вход: Твърде много опити. Опитайте отново след малко.';
+  }
+
+  return 'Грешка при вход: ' + (message || 'Възникна неочаквана грешка.');
 }

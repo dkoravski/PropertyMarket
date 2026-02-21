@@ -50,14 +50,40 @@ async function handleRegister(e) {
 
     if (error) throw error;
 
-    showPageFeedback('success', 'Регистрацията е успешна! Моля, потвърдете имейла си, след което влезте в системата.');
+    showPageFeedback('success', 'Регистрацията е успешна!');
     setTimeout(() => { window.location.hash = '#/login'; }, 2000);
 
   } catch (err) {
     console.error('Registration error:', err);
-    showPageFeedback('danger', 'Грешка при регистрация: ' + err.message);
+    showPageFeedback('danger', translateRegisterError(err.message));
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'Създай профил';
   }
+}
+
+function translateRegisterError(message) {
+  const msg = (message || '').toLowerCase();
+
+  if (msg.includes('user already registered') || msg.includes('already registered')) {
+    return 'Грешка при регистрация: Потребител с този имейл вече съществува.';
+  }
+
+  if (msg.includes('password should be at least')) {
+    return 'Грешка при регистрация: Паролата трябва да е поне 6 символа.';
+  }
+
+  if (msg.includes('unable to validate email address') || msg.includes('invalid email')) {
+    return 'Грешка при регистрация: Невалиден имейл адрес.';
+  }
+
+  if (msg.includes('signup is disabled')) {
+    return 'Грешка при регистрация: Регистрацията е временно изключена.';
+  }
+
+  if (msg.includes('too many requests')) {
+    return 'Грешка при регистрация: Твърде много опити. Опитайте отново след малко.';
+  }
+
+  return 'Грешка при регистрация: ' + (message || 'Възникна неочаквана грешка.');
 }

@@ -10,6 +10,8 @@ import { createProfilePage } from '../pages/profilePage/profilePage.js';
 import { createMyListingsPage } from '../pages/myListingsPage/myListingsPage.js';
 import { createFavoritesPage } from '../pages/favoritesPage/favoritesPage.js';
 import { createAdminPage } from '../pages/adminPage/adminPage.js';
+import { createForgotPasswordPage } from '../pages/forgotPasswordPage/forgotPasswordPage.js';
+import { createResetPasswordPage } from '../pages/resetPasswordPage/resetPasswordPage.js';
 
 const routes = {
   '/': { pageFactory: createHomePage },
@@ -20,6 +22,8 @@ const routes = {
   '/property': { pageFactory: createPropertyDetailsPage },
   '/login': { pageFactory: createLoginPage },
   '/register': { pageFactory: createRegisterPage },
+  '/forgot-password': { pageFactory: createForgotPasswordPage },
+  '/reset-password': { pageFactory: createResetPasswordPage },
   '/create-property': { pageFactory: createPropertyPage, requiresAuth: true },
   '/edit-property': { pageFactory: createEditPropertyPage, requiresAuth: true },
   '/profile': { pageFactory: createProfilePage, requiresAuth: true },
@@ -56,6 +60,16 @@ export function initRouter(onRouteChange, options = {}) {
     const authState = normalizeAuthState(getAuthState());
 
     if (!route) {
+      // If the URL still contains Supabase auth tokens (e.g. recovery email redirect),
+      // show a loading spinner while onAuthStateChange rewrites the hash.
+      const fullHash = window.location.hash;
+      if (fullHash.includes('access_token') || fullHash.includes('type=recovery')) {
+        onRouteChange({
+          path,
+          pageContent: createAuthRedirectLoadingPage(),
+        });
+        return;
+      }
       onRouteChange({
         path,
         pageContent: createNotFoundPage(),
@@ -112,6 +126,19 @@ function normalizeAuthState(authState) {
   const role = (authState.role || (isAuthenticated ? 'user' : 'guest')).toLowerCase();
 
   return { isAuthenticated, role };
+}
+
+function createAuthRedirectLoadingPage() {
+  return `
+    <div class="d-flex justify-content-center align-items-center py-5">
+      <div class="text-center">
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden">Зареждане...</span>
+        </div>
+        <p class="text-secondary">Зареждане...</p>
+      </div>
+    </div>
+  `;
 }
 
 function createNotFoundPage() {

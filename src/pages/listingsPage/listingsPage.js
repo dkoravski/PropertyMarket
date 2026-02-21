@@ -233,6 +233,7 @@ async function filterListings() {
     }
 
     wrapper.innerHTML = properties.map(property => createListingCard(property)).join('');
+    await initFavButtons(wrapper);
     
   } catch (err) {
     console.error('Error loading listings:', err);
@@ -244,6 +245,71 @@ async function filterListings() {
       </div>
     `;
   }
+}
+
+async function initFavButtons(wrapper) {
+  const isAuthenticated = localStorage.getItem('pm_is_authenticated') === 'true';
+  if (!isAuthenticated) return; // hide buttons for guests - they stay invisible
+
+  // Show buttons now that user is logged in
+  wrapper.querySelectorAll('.fav-toggle-btn').forEach(btn => btn.classList.remove('d-none'));
+
+  // Fetch user's favorites
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: favs } = await supabase
+    .from('favorites')
+    .select('id, property_id')
+    .eq('user_id', user.id);
+
+  const favMap = {}; // property_id -> favorite id
+  (favs || []).forEach(f => { favMap[f.property_id] = f.id; });
+
+  // Update button states
+  wrapper.querySelectorAll('.fav-toggle-btn').forEach(btn => {
+    const propId = btn.dataset.propertyId;
+    const isFav = !!favMap[propId];
+    updateFavBtn(btn, isFav);
+  });
+
+  // Handle clicks
+  wrapper.querySelectorAll('.fav-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const propId = btn.dataset.propertyId;
+      const currentFavId = favMap[propId];
+      btn.disabled = true;
+      try {
+        if (currentFavId) {
+          await supabase.from('favorites').delete().eq('id', currentFavId);
+          delete favMap[propId];
+          updateFavBtn(btn, false);
+        } else {
+          const { data, error } = await supabase
+            .from('favorites')
+            .insert({ user_id: user.id, property_id: propId })
+            .select()
+            .single();
+          if (error) throw error;
+          favMap[propId] = data.id;
+          updateFavBtn(btn, true);
+        }
+      } catch (err) {
+        console.error('Fav toggle error:', err);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+}
+
+function updateFavBtn(btn, isFav) {
+  btn.classList.toggle('btn-danger', isFav);
+  btn.classList.toggle('btn-light', !isFav);
+  btn.title = isFav ? 'Премахни от любими' : 'Добави в любими';
+  btn.innerHTML = `<i class="bi bi-heart${isFav ? '-fill' : ''}"></i>`;
 }
 
 // Helper to keep old function signature working if called directly (though UI drives it now)
@@ -320,6 +386,9 @@ function createListingCard(property) {
           <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 rounded">
              <i class="bi bi-camera me-1"></i> ${property.property_images?.length || 0}
           </span>
+          <button class="fav-toggle-btn d-none btn btn-light btn-sm position-absolute bottom-0 end-0 m-3 rounded-circle shadow-sm" style="z-index: 2; width: 36px; height: 36px; padding: 0;" data-property-id="${property.id}" title="Добави в любими">
+            <i class="bi bi-heart"></i>
+          </button>
         </div>
         <div class="card-body d-flex flex-column p-4">
           <div class="d-flex justify-content-between align-items-center mb-2">

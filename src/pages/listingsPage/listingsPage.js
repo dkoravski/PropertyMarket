@@ -1,10 +1,20 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 
+const PAGE_SIZE = 9;
+let currentPage = 1;
+let currentSort = 'newest';
+const ALLOWED_SORTS = new Set(['newest', 'oldest', 'price_asc', 'price_desc']);
+let restoredFilterState = null;
+
 export function createListingsPage(category = 'Всички обяви') {
   // Determine initial filter state based on category
   let initialListingType = 'all';
   if (category === 'Продажби') initialListingType = 'sale';
   if (category === 'Наеми') initialListingType = 'rent';
+
+  currentPage = 1;
+  currentSort = 'newest';
+  restoredFilterState = restoreListingsStateFromUrl();
 
   // We defer the loading so the DOM is ready
   setTimeout(() => {
@@ -27,24 +37,60 @@ export function createListingsPage(category = 'Всички обяви') {
           if (loc) loc.value = hl;
         }
       } catch (_) {}
+    } else if (restoredFilterState) {
+      applyFilterStateToForm(restoredFilterState);
     } else if (initialListingType !== 'all') {
       const radio = document.querySelector(`input[name="listingType"][value="${initialListingType}"]`);
       if (radio) radio.checked = true;
     }
     
     // Initial load
+    const initialSortSelect = document.getElementById('sort-select');
+    if (initialSortSelect) {
+      initialSortSelect.value = currentSort;
+    }
+
     filterListings();
 
     // Attach event listeners
     document.getElementById('search-form').addEventListener('submit', (e) => {
       e.preventDefault();
+      currentPage = 1;
       filterListings();
     });
+
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', () => {
+        currentSort = sortSelect.value;
+        currentPage = 1;
+        filterListings();
+      });
+    }
+
+    const paginationWrapper = document.getElementById('pagination-wrapper');
+    if (paginationWrapper) {
+      paginationWrapper.addEventListener('click', (e) => {
+        const target = e.target.closest('button[data-page]');
+        if (!target) return;
+
+        const requestedPage = Number(target.dataset.page);
+        if (!Number.isFinite(requestedPage) || requestedPage < 1 || requestedPage === currentPage) return;
+
+        currentPage = requestedPage;
+        filterListings();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
 
     document.getElementById('clear-filters').addEventListener('click', () => {
       document.getElementById('search-form').reset();
       // Reset radio to 'all' or keep category? Let's reset to 'all' for true clear
       document.querySelector('input[name="listingType"][value="all"]').checked = true;
+      currentPage = 1;
+      currentSort = 'newest';
+      const s = document.getElementById('sort-select');
+      if (s) s.value = 'newest';
       filterListings();
     });
   }, 0);
@@ -139,9 +185,18 @@ export function createListingsPage(category = 'Всички обяви') {
 
         <!-- Listings Column -->
         <div class="col-lg-9">
-           <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm border">
+           <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm border gap-3 flex-wrap">
               <h1 class="h4 fw-bold mb-0 text-primary">Резултати</h1>
-              <span class="badge bg-secondary rounded-pill" id="results-count">0 намерени</span>
+              <div class="d-flex align-items-center gap-2 ms-auto">
+                <label for="sort-select" class="small text-secondary mb-0">Сортиране:</label>
+                <select id="sort-select" class="form-select form-select-sm" style="min-width: 190px;">
+                  <option value="newest" selected>Най-нови</option>
+                  <option value="oldest">Най-стари</option>
+                  <option value="price_asc">Цена: ниска към висока</option>
+                  <option value="price_desc">Цена: висока към ниска</option>
+                </select>
+                <span class="badge bg-secondary rounded-pill" id="results-count">0 намерени</span>
+              </div>
            </div>
 
            <div id="listings-wrapper" class="row g-4">
@@ -151,15 +206,122 @@ export function createListingsPage(category = 'Всички обяви') {
                </div>
              </div>
            </div>
+
+           <div id="pagination-wrapper" class="mt-4"></div>
         </div>
       </div>
     </section>
   `;
 }
 
+function getSortConfig(sortKey) {
+  switch (sortKey) {
+    case 'oldest':
+      return { column: 'created_at', ascending: true };
+    case 'price_asc':
+      return { column: 'price', ascending: true };
+    case 'price_desc':
+      return { column: 'price', ascending: false };
+    case 'newest':
+    default:
+      return { column: 'created_at', ascending: false };
+  }
+}
+
+function restoreListingsStateFromUrl() {
+  const hash = window.location.hash || '#/listings';
+  const queryIndex = hash.indexOf('?');
+  if (queryIndex === -1) return null;
+
+  const query = hash.slice(queryIndex + 1);
+  const params = new URLSearchParams(query);
+
+  const pageParam = Number(params.get('page'));
+  if (Number.isFinite(pageParam) && pageParam > 0) {
+    currentPage = Math.floor(pageParam);
+  }
+
+  const sortParam = params.get('sort');
+  if (sortParam && ALLOWED_SORTS.has(sortParam)) {
+    currentSort = sortParam;
+  }
+
+  return {
+    listingType: params.get('listingType') || 'all',
+    propertyType: params.get('propertyType') || 'all',
+    priceMin: params.get('priceMin') || '',
+    priceMax: params.get('priceMax') || '',
+    areaMin: params.get('areaMin') || '',
+    areaMax: params.get('areaMax') || '',
+    rooms: params.get('rooms') || '',
+    location: params.get('location') || '',
+  };
+}
+
+function applyFilterStateToForm(filterState) {
+  if (!filterState) return;
+
+  const listingType = ['all', 'sale', 'rent'].includes(filterState.listingType)
+    ? filterState.listingType
+    : 'all';
+
+  const listingRadio = document.querySelector(`input[name="listingType"][value="${listingType}"]`);
+  if (listingRadio) listingRadio.checked = true;
+
+  const propertyTypeSelect = document.getElementById('filter-prop-type');
+  if (propertyTypeSelect) {
+    const allowedPropertyTypes = ['all', 'apartment', 'studio', 'house', 'villa', 'guest_house'];
+    propertyTypeSelect.value = allowedPropertyTypes.includes(filterState.propertyType)
+      ? filterState.propertyType
+      : 'all';
+  }
+
+  const priceMinInput = document.getElementById('filter-price-min');
+  const priceMaxInput = document.getElementById('filter-price-max');
+  const areaMinInput = document.getElementById('filter-area-min');
+  const areaMaxInput = document.getElementById('filter-area-max');
+  const roomsInput = document.getElementById('filter-rooms');
+  const locationInput = document.getElementById('filter-location');
+
+  if (priceMinInput) priceMinInput.value = filterState.priceMin;
+  if (priceMaxInput) priceMaxInput.value = filterState.priceMax;
+  if (areaMinInput) areaMinInput.value = filterState.areaMin;
+  if (areaMaxInput) areaMaxInput.value = filterState.areaMax;
+  if (roomsInput) roomsInput.value = filterState.rooms;
+  if (locationInput) locationInput.value = filterState.location;
+}
+
+function syncListingsStateToUrl(filters) {
+  const hash = window.location.hash || '#/listings';
+  const queryIndex = hash.indexOf('?');
+  const baseHash = queryIndex === -1 ? hash : hash.slice(0, queryIndex);
+
+  const params = new URLSearchParams();
+  params.set('page', String(currentPage));
+  params.set('sort', currentSort);
+
+  if (filters.listingType && filters.listingType !== 'all') params.set('listingType', filters.listingType);
+  if (filters.propertyType && filters.propertyType !== 'all') params.set('propertyType', filters.propertyType);
+  if (filters.priceMin) params.set('priceMin', filters.priceMin);
+  if (filters.priceMax) params.set('priceMax', filters.priceMax);
+  if (filters.areaMin) params.set('areaMin', filters.areaMin);
+  if (filters.areaMax) params.set('areaMax', filters.areaMax);
+  if (filters.rooms) params.set('rooms', filters.rooms);
+  if (filters.location) params.set('location', filters.location);
+
+  const newHash = `${baseHash}?${params.toString()}`;
+  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  const nextUrl = `${window.location.pathname}${window.location.search}${newHash}`;
+
+  if (currentUrl !== nextUrl) {
+    window.history.replaceState({}, '', nextUrl);
+  }
+}
+
 async function filterListings() {
   const wrapper = document.getElementById('listings-wrapper');
   const countBadge = document.getElementById('results-count');
+  const paginationWrapper = document.getElementById('pagination-wrapper');
   
   if (!wrapper) return;
 
@@ -172,12 +334,32 @@ async function filterListings() {
   const areaMax = document.getElementById('filter-area-max').value;
   const rooms = document.getElementById('filter-rooms').value;
   const location = document.getElementById('filter-location').value.trim();
+  const sortSelect = document.getElementById('sort-select');
+
+  if (sortSelect) {
+    currentSort = sortSelect.value;
+  }
+
+  const { column: sortColumn, ascending: sortAscending } = getSortConfig(currentSort);
+  const from = (currentPage - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+  syncListingsStateToUrl({
+    listingType,
+    propertyType,
+    priceMin,
+    priceMax,
+    areaMin,
+    areaMax,
+    rooms,
+    location,
+  });
 
   wrapper.innerHTML = `
     <div class="col-12 text-center py-5">
       <div class="spinner-border text-primary" role="status"></div>
     </div>
   `;
+  if (paginationWrapper) paginationWrapper.innerHTML = '';
 
   try {
     let query = supabase
@@ -188,8 +370,9 @@ async function filterListings() {
           image_url,
           is_cover
         )
-      `)
-      .order('created_at', { ascending: false });
+      `, { count: 'exact' })
+      .order(sortColumn, { ascending: sortAscending })
+      .range(from, to);
 
     // Apply Filters
     if (listingType !== 'all') {
@@ -215,11 +398,18 @@ async function filterListings() {
       query = query.or(`city.ilike.%${location}%,address.ilike.%${location}%`);
     }
 
-    const { data: properties, error } = await query;
+    const { data: properties, error, count } = await query;
 
     if (error) throw error;
 
-    countBadge.textContent = `${properties?.length || 0} намерени`;
+    countBadge.textContent = `${count || 0} намерени`;
+
+    if ((!properties || properties.length === 0) && (count || 0) > 0 && currentPage > 1) {
+      currentPage = Math.max(1, Math.ceil((count || 0) / PAGE_SIZE));
+      syncListingsStateToUrl();
+      filterListings();
+      return;
+    }
 
     if (!properties || properties.length === 0) {
       wrapper.innerHTML = `
@@ -229,11 +419,13 @@ async function filterListings() {
           <button class="btn btn-outline-primary mt-2" onclick="document.getElementById('clear-filters').click()">Изчисти филтрите</button>
         </div>
       `;
+      renderPagination(count || 0);
       return;
     }
 
     wrapper.innerHTML = properties.map(property => createListingCard(property)).join('');
     await initFavButtons(wrapper);
+    renderPagination(count || 0);
     
   } catch (err) {
     console.error('Error loading listings:', err);
@@ -244,7 +436,53 @@ async function filterListings() {
         </div>
       </div>
     `;
+    if (paginationWrapper) paginationWrapper.innerHTML = '';
   }
+}
+
+function renderPagination(totalCount) {
+  const paginationWrapper = document.getElementById('pagination-wrapper');
+  if (!paginationWrapper) return;
+
+  const totalPages = Math.ceil((totalCount || 0) / PAGE_SIZE);
+  if (totalPages <= 1) {
+    paginationWrapper.innerHTML = '';
+    return;
+  }
+
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, currentPage + 2);
+
+  if (endPage - startPage < 4) {
+    if (startPage === 1) {
+      endPage = Math.min(totalPages, startPage + 4);
+    } else if (endPage === totalPages) {
+      startPage = Math.max(1, endPage - 4);
+    }
+  }
+
+  let pagesHtml = '';
+  for (let page = startPage; page <= endPage; page++) {
+    pagesHtml += `
+      <li class="page-item ${page === currentPage ? 'active' : ''}">
+        <button class="page-link" data-page="${page}">${page}</button>
+      </li>
+    `;
+  }
+
+  paginationWrapper.innerHTML = `
+    <nav aria-label="Пагинация на обявите">
+      <ul class="pagination justify-content-center mb-0">
+        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+          <button class="page-link" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Предишна</button>
+        </li>
+        ${pagesHtml}
+        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+          <button class="page-link" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Следваща</button>
+        </li>
+      </ul>
+    </nav>
+  `;
 }
 
 async function initFavButtons(wrapper) {

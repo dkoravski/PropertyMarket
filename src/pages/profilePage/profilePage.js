@@ -198,6 +198,8 @@ async function handleProfileSave(e, userId) {
 
     if (error) throw error;
 
+    localStorage.setItem('pm_user_name', updates.full_name || '');
+
     showPageFeedback('success', 'Профилът е обновен успешно!');
   } catch (err) {
     console.error('Update error:', err);

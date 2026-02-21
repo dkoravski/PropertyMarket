@@ -56,7 +56,7 @@ async function handleLogin(e) {
     // Check profile for role and active status
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role, is_active')
+      .select('role, is_active, full_name')
       .eq('id', data.user.id)
       .single();
 
@@ -72,6 +72,8 @@ async function handleLogin(e) {
     if (profile?.role) {
       localStorage.setItem('pm_user_role', profile.role);
     }
+    localStorage.setItem('pm_user_email', data.user.email || '');
+    localStorage.setItem('pm_user_name', (profile?.full_name || '').trim());
 
     // Redirect
     window.location.hash = '#/';

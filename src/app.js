@@ -19,6 +19,8 @@ export function initApp() {
     } finally {
       localStorage.removeItem('pm_is_authenticated');
       localStorage.removeItem('pm_user_role');
+      localStorage.removeItem('pm_user_name');
+      localStorage.removeItem('pm_user_email');
       sessionStorage.removeItem('pm_back_dest');
       sessionStorage.removeItem('pm_admin_tab');
       sessionStorage.removeItem('pm_hero_search');

@@ -10,6 +10,9 @@ export function createHeader(currentPath = '/') {
   const isAuthenticated = localStorage.getItem('pm_is_authenticated') === 'true';
   const role = localStorage.getItem('pm_user_role');
   const isAdmin = role === 'admin';
+  const userName = localStorage.getItem('pm_user_name') || '';
+  const userEmail = localStorage.getItem('pm_user_email') || '';
+  const profileTooltip = userName || userEmail || 'Вписан потребител';
 
   // Navigation Links (Left side)
   let navLinks = `
@@ -37,7 +40,7 @@ export function createHeader(currentPath = '/') {
         </a>
       </li>
       <li class="nav-item dropdown me-2">
-        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="${profileTooltip}">
           <i class="bi bi-person-circle fs-5"></i>
           <span class="d-none d-lg-inline">Профил</span>
         </a>
@@ -45,7 +48,7 @@ export function createHeader(currentPath = '/') {
           <li><a class="dropdown-item" href="#/profile">Моят Профил</a></li>
           <li><a class="dropdown-item" href="#/my-listings">Моите Обяви</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#" onclick="localStorage.clear(); window.location.reload();">Изход</a></li>
+          <li><a class="dropdown-item" href="#" onclick="window.pmLogout && window.pmLogout(); return false;">Изход</a></li>
         </ul>
       </li>
       ${isAdmin ? `

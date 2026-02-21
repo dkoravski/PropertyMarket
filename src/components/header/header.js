@@ -1,10 +1,14 @@
 
 export function createHeader(currentPath = '/') {
+  const normalizedPath = currentPath.split('#')[0].split('?')[0];
+
   const isListingsActive = [
     '/listings',
     '/listings-sales',
     '/listings-rent',
-  ].includes(currentPath);
+  ].includes(normalizedPath);
+
+  const isCreatePropertyActive = normalizedPath === '/create-property';
 
   // Check auth state from localStorage (sync logic for immediate render)
   const isAuthenticated = localStorage.getItem('pm_is_authenticated') === 'true';
@@ -17,13 +21,13 @@ export function createHeader(currentPath = '/') {
   // Navigation Links (Left side)
   let navLinks = `
     <li class="nav-item">
-      <a class="nav-link header-menu-link ${currentPath === '/' ? 'active' : ''}" href="#/">Начало</a>
+      <a class="nav-link header-menu-link ${normalizedPath === '/' ? 'active' : ''}" href="#/">Начало</a>
     </li>
     <li class="nav-item">
       <a class="nav-link header-menu-link ${isListingsActive ? 'active' : ''}" href="#/listings">Обяви</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link header-menu-link ${currentPath === '/about' ? 'active' : ''}" href="#/about">За нас</a>
+      <a class="nav-link header-menu-link ${normalizedPath === '/about' ? 'active' : ''}" href="#/about">За нас</a>
     </li>
   `;
 
@@ -34,8 +38,8 @@ export function createHeader(currentPath = '/') {
     // User is logged in
     authButtons = `
       <li class="nav-item me-2">
-        <a class="nav-link header-menu-link position-relative ${currentPath === '/favorites' ? 'active' : ''}" href="#/favorites" title="Любими">
-          <i class="bi bi-heart${currentPath === '/favorites' ? '-fill' : ''} fs-5"></i>
+        <a class="nav-link header-menu-link position-relative ${normalizedPath === '/favorites' ? 'active' : ''}" href="#/favorites" title="Любими">
+          <i class="bi bi-heart${normalizedPath === '/favorites' ? '-fill' : ''} fs-5"></i>
           <span class="ms-1 d-lg-inline">Любими</span>
         </a>
       </li>
@@ -53,12 +57,12 @@ export function createHeader(currentPath = '/') {
       </li>
       ${isAdmin ? `
       <li class="nav-item me-2">
-        <a class="nav-link header-menu-link fw-semibold ${currentPath === '/admin' ? 'active' : ''}" href="#/admin">
+        <a class="nav-link header-menu-link fw-semibold ${normalizedPath === '/admin' ? 'active' : ''}" href="#/admin">
           <i class="bi bi-shield-lock-fill me-1"></i>Админ панел
         </a>
       </li>` : ''}
       <li class="nav-item ms-2">
-        <a class="nav-link header-menu-link d-flex align-items-center gap-1" href="#/create-property">
+        <a class="nav-link header-menu-link d-flex align-items-center gap-1 ${isCreatePropertyActive ? 'active' : ''}" href="#/create-property">
           <i class="bi bi-plus-lg me-1"></i>Добави обява
         </a>
       </li>
@@ -67,13 +71,13 @@ export function createHeader(currentPath = '/') {
     // Guest User
     authButtons = `
       <li class="nav-item ms-lg-2">
-        <a class="nav-link header-menu-link" href="#/login">Вход</a>
+        <a class="nav-link header-menu-link ${normalizedPath === '/login' ? 'active' : ''}" href="#/login">Вход</a>
       </li>
       <li class="nav-item ms-lg-2">
-        <a class="nav-link header-menu-link ${currentPath === '/register' ? 'active' : ''}" href="#/register">Регистрация</a>
+        <a class="nav-link header-menu-link ${normalizedPath === '/register' ? 'active' : ''}" href="#/register">Регистрация</a>
       </li>
       <li class="nav-item ms-lg-3">
-         <a class="nav-link header-menu-link d-flex align-items-center gap-1" href="#/create-property">
+         <a class="nav-link header-menu-link d-flex align-items-center gap-1 ${isCreatePropertyActive ? 'active' : ''}" href="#/create-property">
           <i class="bi bi-plus-lg me-1"></i>Добави обява
         </a>
       </li>

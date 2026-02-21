@@ -295,6 +295,10 @@ function createListingCard(property) {
           <span class="position-absolute top-0 end-0 m-3 badge ${badgeClass} text-white shadow-sm px-3 py-2 rounded-pill">
             ${listingType}
           </span>
+          ${property.is_active === false ? `
+          <span class="position-absolute top-0 start-0 m-3 badge text-bg-warning shadow-sm px-3 py-2 rounded-pill">
+            <i class="bi bi-eye-slash me-1"></i>Деактивирана
+          </span>` : ''}
           <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 rounded">
              <i class="bi bi-camera me-1"></i> ${property.property_images?.length || 0}
           </span>

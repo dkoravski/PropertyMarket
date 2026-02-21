@@ -1,5 +1,5 @@
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
-import { showPageFeedback } from '../../utils/ui.js';
+import { showPageFeedback, showConfirmModal, showMessageModal } from '../../utils/ui.js';
 
 export function createMyListingsPage() {
   setTimeout(initMyListingsPage, 0);
@@ -74,6 +74,11 @@ async function loadUserProperties(userId, container) {
 
     list.innerHTML = properties.map(p => createMyPropertyCard(p)).join('');
 
+    // Attach toggle listeners
+    list.querySelectorAll('.toggle-my-prop-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleToggleMyProperty(btn.dataset.id, btn.dataset.active === 'true', btn.dataset.userId));
+    });
+
   } catch (err) {
     console.error('My properties error:', err);
     showPageFeedback('danger', 'Неуспешно зареждане на обявите: ' + err.message);
@@ -101,11 +106,14 @@ function createMyPropertyCard(property) {
 
   return `
     <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow-sm border-0 transition-hover">
+      <div class="card h-100 shadow-sm border-0 transition-hover ${property.is_active === false ? 'opacity-75' : ''}">
         <div class="position-relative">
             <img src="${coverUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="${property.title}">
             <span class="position-absolute top-0 end-0 m-2 badge bg-white text-dark shadow-sm opacity-75">
                 ${typeMap[property.listing_type]}
+            </span>
+            <span class="position-absolute top-0 start-0 m-2 badge ${property.is_active === false ? 'text-bg-warning' : 'text-bg-success'}">
+              ${property.is_active === false ? '<i class="bi bi-eye-slash me-1"></i>Деактивирана' : '<i class="bi bi-eye me-1"></i>Активна'}
             </span>
         </div>
         <div class="card-body d-flex flex-column">
@@ -115,12 +123,18 @@ function createMyPropertyCard(property) {
            <p class="card-text text-secondary small mb-2">
              <i class="bi bi-geo-alt me-1"></i>${property.city}
            </p>
-           <div class="mt-auto d-flex justify-content-between align-items-center">
+           <div class="mt-auto d-flex justify-content-between align-items-center gap-1">
              <span class="text-primary fw-bold fs-5">${price}</span>
-             <!-- Z-index relative required to click button above stretched link -->
-             <a href="#/edit-property/${property.id}" class="btn btn-outline-warning btn-sm position-relative z-2" title="Редактирай">
-               <i class="bi bi-pencil me-1"></i> Редактирай
-             </a>
+             <div class="d-flex gap-1 position-relative z-2">
+               <button class="btn btn-sm ${property.is_active === false ? 'btn-outline-success' : 'btn-outline-secondary'} toggle-my-prop-btn"
+                 data-id="${property.id}" data-active="${property.is_active !== false}" data-user-id="${property.owner_id}"
+                 title="${property.is_active === false ? 'Активирай' : 'Деактивирай'}">
+                 <i class="bi bi-${property.is_active === false ? 'eye' : 'eye-slash'}"></i>
+               </button>
+               <a href="#/edit-property/${property.id}" class="btn btn-outline-warning btn-sm" title="Редактирай">
+                 <i class="bi bi-pencil"></i>
+               </a>
+             </div>
            </div>
         </div>
         <div class="card-footer bg-white border-top-0 text-muted small">
@@ -129,4 +143,34 @@ function createMyPropertyCard(property) {
       </div>
     </div>
   `;
+}
+
+async function handleToggleMyProperty(id, isCurrentlyActive, userId) {
+  const action = isCurrentlyActive ? 'деактивирате' : 'активирате';
+  const confirmed = await showConfirmModal(
+    isCurrentlyActive
+      ? 'Сигурни ли сте? Обявата ще стане невидима за останалите потребители.'
+      : 'Сигурни ли сте? Обявата ще стане видима за всички.'
+  );
+  if (!confirmed) return;
+
+  try {
+    const { error } = await supabase
+      .from('properties')
+      .update({ is_active: !isCurrentlyActive })
+      .eq('id', id);
+
+    if (error) throw error;
+
+    // Reload listings
+    const container = document.getElementById('my-listings-page-container');
+    if (container) loadUserProperties(userId, container);
+    await showMessageModal(
+      isCurrentlyActive ? 'Обявата е деактивирана.' : 'Обявата е активирана.',
+      'success'
+    );
+  } catch (err) {
+    console.error('Toggle property error:', err);
+    await showMessageModal('Грешка: ' + err.message, 'error');
+  }
 }

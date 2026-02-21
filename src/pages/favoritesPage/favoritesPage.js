@@ -194,7 +194,6 @@ function createFavoriteCard(fav) {
   }
   const typeMap = { 'apartment': 'Апартамент', 'studio': 'Студио', 'house': 'Къща', 'villa': 'Вила', 'guest_house': 'Къща за гости' };
   const listingMap = { 'sale': 'Продажба', 'rent': 'Наем' };
-
   return `
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card h-100 shadow-sm border-0">
@@ -203,6 +202,10 @@ function createFavoriteCard(fav) {
           <span class="position-absolute top-0 start-0 m-3 text-white fw-semibold" style="text-shadow: 0 1px 3px rgba(0,0,0,0.75); pointer-events: none;">
             ${listingMap[property.listing_type]}
           </span>
+          ${property.is_active === false ? `
+          <span class="position-absolute bottom-0 start-0 m-3 badge text-bg-warning">
+            <i class="bi bi-eye-slash me-1"></i>Деактивирана
+          </span>` : ''}
           <button class="btn btn-link p-0 position-absolute top-0 end-0 m-3 text-danger text-decoration-none fw-semibold btn-remove-fav btn-remove-fav-fx"
                   data-fav-id="${fav.id}" title="Премахни от любими" aria-label="Премахни от любими">
             <i class="bi bi-heartbreak-fill"></i>

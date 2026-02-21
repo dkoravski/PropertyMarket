@@ -114,7 +114,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
 
   container.innerHTML = `
     <div class="mb-3">
-      <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
+      <button id="btn-back-nav" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-arrow-left me-1"></i>Назад
       </button>
     </div>
@@ -153,6 +153,10 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
           <span class="position-absolute top-0 end-0 m-3 z-3 text-white fw-semibold" style="pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,0.75);">
             ${listingMap[property.listing_type]}
           </span>
+          ${property.is_active === false ? `
+          <span class="position-absolute top-0 start-0 m-3 z-3 badge text-bg-warning shadow-sm px-3 py-2">
+            <i class="bi bi-eye-slash me-1"></i>Деактивирана
+          </span>` : ''}
         </div>
 
         <div class="d-flex justify-content-between align-items-start mb-3">
@@ -249,6 +253,21 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
       </div>
     </div>
   `;
+
+  // Back button
+  const btnBackNav = container.querySelector('#btn-back-nav');
+  if (btnBackNav) {
+    btnBackNav.addEventListener('click', () => {
+      const dest = sessionStorage.getItem('pm_back_dest');
+      if (dest === 'admin-properties') {
+        sessionStorage.removeItem('pm_back_dest');
+        sessionStorage.setItem('pm_admin_tab', 'properties');
+        window.location.hash = '#/admin';
+      } else {
+        history.back();
+      }
+    });
+  }
 
   // Events
   const btnDelete = container.querySelector('#btn-delete');

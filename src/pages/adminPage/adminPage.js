@@ -70,11 +70,12 @@ export function createAdminPage() {
                   <th>Цена</th>
                   <th>Собственик</th>
                   <th>Създадена на</th>
+                  <th>Статус</th>
                   <th>Действия</th>
                 </tr>
               </thead>
               <tbody id="properties-table-body">
-                <tr><td colspan="6" class="text-center py-4">Зареждане...</td></tr>
+                <tr><td colspan="7" class="text-center py-4">Зареждане...</td></tr>
               </tbody>
             </table>
           </div>
@@ -85,6 +86,16 @@ export function createAdminPage() {
 }
 
 async function initAdminPage() {
+  // Restore properties tab if returning from view/edit navigation
+  const savedTab = sessionStorage.getItem('pm_admin_tab');
+  if (savedTab === 'properties') {
+    sessionStorage.removeItem('pm_admin_tab');
+    setTimeout(() => {
+      const propertiesTab = document.getElementById('properties-tab');
+      if (propertiesTab) propertiesTab.click();
+    }, 0);
+  }
+
   document.getElementById('refresh-users').addEventListener('click', loadUsers);
   document.getElementById('refresh-properties').addEventListener('click', loadProperties);
 
@@ -155,7 +166,7 @@ async function loadProperties() {
     if (error) throw error;
 
     if (properties.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Няма намерени обяви.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Няма намерени обяви.</td></tr>';
       return;
     }
 
@@ -173,32 +184,48 @@ async function loadProperties() {
     };
 
     tbody.innerHTML = properties.map(prop => `
-      <tr>
-        <td>
-          <a href="#/property?id=${prop.id}" class="text-decoration-none fw-semibold text-dark">
-            ${escapeHtml(prop.title)}
-          </a>
-        </td>
+      <tr class="${prop.is_active === false ? 'table-secondary text-muted' : ''}">
+        <td class="fw-semibold">${escapeHtml(prop.title)}</td>
         <td>${typeLabels[prop.property_type] || prop.property_type} <span class="text-muted small">(${listingTypeLabels[prop.listing_type]})</span></td>
         <td class="fw-bold text-primary">${prop.price.toLocaleString()} €</td>
         <td>${escapeHtml(prop.profiles?.email || 'Неизвестен')}</td>
         <td>${new Date(prop.created_at).toLocaleDateString()}</td>
         <td>
-          <button class="btn btn-sm btn-outline-danger delete-prop-btn" data-id="${prop.id}">
-            Изтрий
-          </button>
+          ${prop.is_active === false
+            ? '<span class="badge text-bg-warning">Деактивирана</span>'
+            : '<span class="badge text-bg-success">Активна</span>'}
+        </td>
+        <td>
+          <div class="d-flex gap-1 flex-wrap">
+            <a href="#/property/${prop.id}" class="btn btn-sm btn-outline-secondary" title="Преглед" onclick="sessionStorage.setItem('pm_back_dest','admin-properties')">
+              <i class="bi bi-eye"></i>
+            </a>
+            <a href="#/edit-property/${prop.id}" class="btn btn-sm btn-outline-warning" title="Редактирай" onclick="sessionStorage.setItem('pm_back_dest','admin-properties')">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <button class="btn btn-sm ${prop.is_active === false ? 'btn-outline-success' : 'btn-outline-secondary'} toggle-prop-btn"
+              data-id="${prop.id}" data-active="${prop.is_active !== false}" title="${prop.is_active === false ? 'Активирай' : 'Деактивирай'}">
+              <i class="bi bi-${prop.is_active === false ? 'eye' : 'eye-slash'}"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger delete-prop-btn" data-id="${prop.id}" title="Изтрий">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
         </td>
       </tr>
     `).join('');
 
     // Attach event listeners
     document.querySelectorAll('.delete-prop-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => handleDeleteProperty(e.target.dataset.id));
+      btn.addEventListener('click', () => handleDeleteProperty(btn.dataset.id));
+    });
+    document.querySelectorAll('.toggle-prop-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleTogglePropertyActive(btn.dataset.id, btn.dataset.active === 'true'));
     });
 
   } catch (err) {
     console.error('Error loading properties:', err);
-    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-4">Грешка при зареждане: ${err.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Грешка при зареждане: ${err.message}</td></tr>`;
   }
 }
 
@@ -242,6 +269,30 @@ async function handleDeleteProperty(id) {
   } catch (err) {
     console.error('Error deleting property:', err);
     await showMessageModal('Грешка при изтриване: ' + err.message, 'error');
+  }
+}
+
+async function handleTogglePropertyActive(id, isCurrentlyActive) {
+  const action = isCurrentlyActive ? 'деактивирате' : 'активирате';
+  const confirmed = await showConfirmModal(`Сигурни ли сте, че искате да ${action} тази обява?`);
+  if (!confirmed) return;
+
+  try {
+    const { error } = await supabase
+      .from('properties')
+      .update({ is_active: !isCurrentlyActive })
+      .eq('id', id);
+
+    if (error) throw error;
+
+    loadProperties();
+    await showMessageModal(
+      isCurrentlyActive ? 'Обявата е деактивирана успешно.' : 'Обявата е активирана успешно.',
+      'success'
+    );
+  } catch (err) {
+    console.error('Error toggling property:', err);
+    await showMessageModal('Грешка: ' + err.message, 'error');
   }
 }
 

@@ -94,7 +94,6 @@ function createHomePropertyCard(property) {
   const price = formatter.format(property.price);
   const typeMap = { 'sale': 'Продажба', 'rent': 'Наем' };
   const badgeClass = property.listing_type === 'sale' ? 'bg-success' : 'bg-info';
-
   return `
     <div class="col-12 col-md-4">
       <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
@@ -103,6 +102,10 @@ function createHomePropertyCard(property) {
           <span class="position-absolute top-0 start-0 m-3 badge ${badgeClass}">
             ${typeMap[property.listing_type] || property.listing_type}
           </span>
+          ${property.is_active === false ? `
+          <span class="position-absolute top-0 end-0 m-3 badge text-bg-warning">
+            <i class="bi bi-eye-slash me-1"></i>Деактивирана
+          </span>` : ''}
         </div>
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start mb-2">

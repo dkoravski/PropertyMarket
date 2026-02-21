@@ -66,7 +66,7 @@ async function loadPropertyForEdit(id, container) {
 function renderEditForm(container, property, images) {
   container.innerHTML = `
     <div class="mb-3">
-      <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
+      <button id="btn-back-nav" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-arrow-left me-1"></i>Назад
       </button>
     </div>
@@ -169,6 +169,21 @@ function renderEditForm(container, property, images) {
       </form>
     </section>
   `;
+
+  // Back button
+  const btnBackNav = container.querySelector('#btn-back-nav');
+  if (btnBackNav) {
+    btnBackNav.addEventListener('click', () => {
+      const dest = sessionStorage.getItem('pm_back_dest');
+      if (dest === 'admin-properties') {
+        sessionStorage.removeItem('pm_back_dest');
+        sessionStorage.setItem('pm_admin_tab', 'properties');
+        window.location.hash = '#/admin';
+      } else {
+        history.back();
+      }
+    });
+  }
 
   // Initialize tooltips
   const tooltipTriggerList = [].slice.call(container.querySelectorAll('[data-bs-toggle="tooltip"]'));

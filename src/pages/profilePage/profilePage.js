@@ -12,7 +12,7 @@ export function createProfilePage() {
         </button>
         <button onclick="window.pmLogout && window.pmLogout()" class="btn btn-outline-danger btn-sm">Изход</button>
       </div>
-      <section class="max-w-3xl mx-auto rounded-4 p-4 p-md-5 bg-white border shadow-sm">
+      <section class="profile-surface max-w-3xl mx-auto rounded-4 p-4 p-md-5 bg-white border shadow-sm">
         <div class="mb-4 border-bottom pb-3">
           <h1 class="h3 fw-bold mb-0">Моят Профил</h1>
         </div>

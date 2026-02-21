@@ -5,7 +5,7 @@
         <i class="bi bi-arrow-left me-1"></i>Назад
       </button>
     </div>
-    <section class="rounded-4 p-4 p-md-5 bg-light border">
+    <section class="about-surface rounded-4 p-4 p-md-5 bg-white border">
       <h1 class="h3 fw-bold mb-3">За нас</h1>
       <p class="mb-3 text-secondary">
         PropertyMarket е модерна платформа за покупка, продажба и отдаване под наем на жилищни имоти.

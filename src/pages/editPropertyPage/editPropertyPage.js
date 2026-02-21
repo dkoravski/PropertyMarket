@@ -70,7 +70,7 @@ function renderEditForm(container, property, images) {
         <i class="bi bi-arrow-left me-1"></i>Назад
       </button>
     </div>
-    <section class="max-w-3xl mx-auto rounded-4 p-4 p-md-5 bg-white shadow-sm border">
+    <section class="form-surface max-w-3xl mx-auto rounded-4 p-4 p-md-5 bg-white shadow-sm border">
       <h1 class="h3 fw-bold mb-4">Редакция на обява</h1>
 
       <form id="edit-property-form" class="needs-validation" novalidate>

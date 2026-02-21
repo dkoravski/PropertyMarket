@@ -11,11 +11,11 @@ export function createMyListingsPage() {
           <i class="bi bi-arrow-left me-1"></i>Назад
         </button>
       </div>
-      <section class="rounded-4 p-4 p-md-5 bg-white border shadow-sm">
+      <section class="my-listings-surface rounded-4 p-4 p-md-5 bg-white border shadow-sm">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h1 class="h3 fw-bold mb-0">Моите Обяви</h1>
         </div>
-        <div id="my-properties-list" class="row g-4">
+        <div id="my-properties-list" class="my-listings-grid row g-4">
            <!-- Properties will be loaded here -->
            <div class="col-12 text-center py-5">
               <div class="spinner-border text-primary" role="status"></div>
@@ -106,7 +106,7 @@ function createMyPropertyCard(property) {
 
   return `
     <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow-sm border-0 transition-hover ${property.is_active === false ? 'opacity-75' : ''}">
+      <div class="card h-100 shadow-sm border-0 transition-hover rounded-4 overflow-hidden ${property.is_active === false ? 'opacity-75' : ''}">
         <div class="position-relative">
             <img src="${coverUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="${property.title}">
             <span class="position-absolute top-0 end-0 m-2 badge bg-white text-dark shadow-sm opacity-75">

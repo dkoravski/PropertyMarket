@@ -120,7 +120,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
     </div>
     <div class="row g-4">
       <div class="col-lg-8">
-        <div class="position-relative mb-4">
+        <div class="position-relative mb-4 details-main-card rounded-4 p-2 bg-white shadow-sm">
           <div id="${carouselId}" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" data-bs-touch="true">
             ${images.length > 1 ? `
               <div class="carousel-indicators">
@@ -159,7 +159,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
           </span>` : ''}
         </div>
 
-        <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="details-title-block d-flex justify-content-between align-items-start mb-3 rounded-4 bg-white shadow-sm p-4">
           <div>
             <h1 class="fw-bold mb-1">${property.title}</h1>
             <p class="text-secondary fs-5"><i class="bi bi-geo-alt-fill text-danger me-1"></i>${property.city}, ${property.address}</p>
@@ -170,7 +170,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
           </div>
         </div>
 
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="details-info-card card border-0 shadow-sm rounded-4 mb-4">
           <div class="card-body p-4">
             <div class="row text-center">
               <div class="col-4 border-end">
@@ -189,7 +189,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
           </div>
         </div>
 
-        <div class="card border-0 shadow-sm rounded-4 mb-5">
+        <div class="details-description-card card border-0 shadow-sm rounded-4 mb-5">
           <div class="card-body p-4">
             <h4 class="fw-bold mb-3">Описание</h4>
             <p class="text-secondary mb-0" style="white-space: pre-wrap; line-height: 1.6;">${property.description}</p>
@@ -199,7 +199,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
 
       <div class="col-lg-4">
         ${canEdit ? `
-          <div class="card border-0 shadow-sm rounded-4 mb-4 bg-light">
+          <div class="details-manage-card card border-0 shadow-sm rounded-4 mb-4 bg-light">
             <div class="card-body p-4">
               <h5 class="fw-bold mb-3">Управление</h5>
               <div class="d-grid gap-2">
@@ -214,7 +214,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
           </div>
         ` : ''}
 
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="details-contact-card card border-0 shadow-sm rounded-4 mb-4">
           <div class="card-body p-4">
             <h5 class="fw-bold mb-3">Контакт със собственика</h5>
             <div class="d-flex align-items-center mb-4">

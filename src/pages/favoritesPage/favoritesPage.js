@@ -10,11 +10,11 @@ export function createFavoritesPage() {
           <i class="bi bi-arrow-left me-1"></i>Назад
         </button>
       </div>
-      <section class="rounded-4 p-4 p-md-5 bg-light border mb-4">
+      <section class="favorites-surface rounded-4 p-4 p-md-5 bg-white border mb-4">
       <h1 class="h3 fw-bold mb-3">Любими имоти</h1>
       <p class="mb-4 text-secondary">Списък с вашите запазени обяви.</p>
       
-      <div id="favorites-list" class="row g-4">
+      <div id="favorites-list" class="favorites-grid row g-4">
         <div class="col-12 text-center py-5">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Зареждане...</span>
@@ -196,7 +196,7 @@ function createFavoriteCard(fav) {
   const listingMap = { 'sale': 'Продажба', 'rent': 'Наем' };
   return `
     <div class="col-12 col-md-6 col-lg-4">
-      <div class="card h-100 shadow-sm border-0">
+      <div class="card h-100 shadow-sm border-0 transition-hover">
         <div class="position-relative overflow-hidden rounded-top fav-image-wrap">
           <img src="${coverUrl}" class="card-img-top object-fit-cover" style="height: 200px;" alt="${property.title}">
           <span class="position-absolute top-0 start-0 m-3 text-white fw-semibold" style="text-shadow: 0 1px 3px rgba(0,0,0,0.75); pointer-events: none;">

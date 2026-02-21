@@ -10,7 +10,7 @@ export function createRegisterPage() {
   }, 0);
 
   return `
-    <section class="rounded-4 p-4 p-md-5 bg-light border">
+    <section class="auth-surface rounded-4 p-4 p-md-5 bg-white border">
       <h1 class="h3 fw-bold mb-4">Регистрация</h1>
       <form class="row g-3" novalidate>
         <div class="col-12">

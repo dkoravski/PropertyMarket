@@ -5,14 +5,13 @@ export function createHomePage() {
   setTimeout(initHeroSearch, 0);
 
   return `
-    <section class="hero-section rounded-4 p-4 p-md-5 mb-4 border text-center"
-             style="background-image: linear-gradient(rgba(0,30,80,0.62), rgba(0,30,80,0.62)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1973&q=80'); background-size: cover; background-position: center; min-height: 420px; display: flex; align-items: center; justify-content: center;">
+    <section class="hero-section home-hero section-surface rounded-4 p-4 p-md-5 mb-4 text-center">
       <div class="col-lg-9">
         <h1 class="display-4 fw-bold mb-2 text-white">Открийте мечтания дом</h1>
         <p class="lead text-white text-opacity-75 mb-4">
           Най-добрата платформа за покупка, продажба и наем на жилищни имоти.
         </p>
-        <form id="hero-search-form" class="bg-white rounded-4 shadow-lg p-3">
+        <form id="hero-search-form" class="home-hero-search bg-white rounded-4 shadow-lg p-3">
           <div class="row g-2 align-items-end">
             <div class="col-12 col-sm-6 col-md-3">
               <label class="form-label small fw-semibold text-secondary mb-1">Тип обява</label>
@@ -140,7 +139,7 @@ function createHomePropertyCard(property) {
   const badgeClass = property.listing_type === 'sale' ? 'bg-success' : 'bg-info';
   return `
     <div class="col-12 col-md-4">
-      <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
+      <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
         <div class="position-relative overflow-hidden rounded-top">
           <img src="${image}" class="card-img-top" alt="${property.title}" style="height: 220px; object-fit: cover;">
           <span class="position-absolute top-0 start-0 m-3 badge ${badgeClass}">

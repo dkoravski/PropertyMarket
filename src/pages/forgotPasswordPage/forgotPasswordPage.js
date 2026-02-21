@@ -10,7 +10,7 @@ export function createForgotPasswordPage() {
   return `
     <div class="row justify-content-center">
       <div class="col-12 col-md-6 col-lg-5">
-        <section class="rounded-4 p-4 p-md-5 bg-white border shadow-sm">
+        <section class="auth-surface rounded-4 p-4 p-md-5 bg-white border shadow-sm">
           <div class="mb-4">
             <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">
               <i class="bi bi-arrow-left me-1"></i>Назад

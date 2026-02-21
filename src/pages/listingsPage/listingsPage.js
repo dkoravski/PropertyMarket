@@ -100,7 +100,7 @@ export function createListingsPage(category = 'Всички обяви') {
       <div class="row g-4">
         <!-- Sidebar Filters (Desktop) / Collapse (Mobile) -->
         <div class="col-lg-3">
-          <div class="card border-0 shadow-sm rounded-4 sticky-lg-top" style="top: 20px; z-index: 100;">
+          <div class="card listings-filter-card border-0 shadow-sm rounded-4 sticky-lg-top" style="top: 20px; z-index: 100;">
             <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
               <h5 class="fw-bold mb-0"><i class="bi bi-sliders me-2"></i>Филтри</h5>
             </div>
@@ -185,7 +185,7 @@ export function createListingsPage(category = 'Всички обяви') {
 
         <!-- Listings Column -->
         <div class="col-lg-9">
-           <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm border gap-3 flex-wrap">
+           <div class="listings-results-bar d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm border gap-3 flex-wrap">
               <h1 class="h4 fw-bold mb-0 text-primary">Резултати</h1>
               <div class="d-flex align-items-center gap-2 ms-auto">
                 <label for="sort-select" class="small text-secondary mb-0">Сортиране:</label>
@@ -199,7 +199,7 @@ export function createListingsPage(category = 'Всички обяви') {
               </div>
            </div>
 
-           <div id="listings-wrapper" class="row g-4">
+           <div id="listings-wrapper" class="listings-grid row g-4">
              <div class="col-12 text-center py-5">
                <div class="spinner-border text-primary" role="status">
                  <span class="visually-hidden">Зареждане...</span>
@@ -207,7 +207,7 @@ export function createListingsPage(category = 'Всички обяви') {
              </div>
            </div>
 
-           <div id="pagination-wrapper" class="mt-4"></div>
+           <div id="pagination-wrapper" class="pagination-wrap mt-4"></div>
         </div>
       </div>
     </section>

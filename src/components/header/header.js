@@ -81,8 +81,8 @@ export function createHeader(currentPath = '/') {
   }
 
   return `
-    <header class="bg-white border-bottom shadow-sm sticky-top" style="z-index: 1030;">
-      <nav class="navbar navbar-expand-lg navbar-light container py-2">
+    <header class="site-header bg-white border-bottom shadow-sm sticky-top" style="z-index: 1030;">
+      <nav class="site-navbar navbar navbar-expand-lg navbar-light container py-2">
         <a class="navbar-brand fw-bold text-primary fs-3 d-flex align-items-center gap-2" href="#/">
           <i class="bi bi-house-door-fill"></i>
           PropertyMarket
@@ -92,7 +92,7 @@ export function createHeader(currentPath = '/') {
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarContent">
+        <div class="site-navbar-collapse collapse navbar-collapse" id="navbarContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             ${navLinks}
           </ul>

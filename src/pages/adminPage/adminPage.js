@@ -10,7 +10,7 @@ export function createAdminPage() {
         <i class="bi bi-arrow-left me-1"></i>Назад
       </button>
     </div>
-    <section class="rounded-4 p-4 p-md-5 bg-light border">
+    <section class="admin-surface rounded-4 p-4 p-md-5 bg-light border shadow-sm">
       <h1 class="h3 fw-bold mb-4">Административен панел</h1>
       
       <ul class="nav nav-tabs mb-4" id="adminTab" role="tablist">
@@ -35,8 +35,8 @@ export function createAdminPage() {
               <i class="bi bi-arrow-clockwise"></i> Обнови
             </button>
           </div>
-          <div class="table-responsive">
-            <table class="table table-hover align-middle bg-white rounded shadow-sm">
+          <div class="admin-table-wrap table-responsive shadow-sm">
+            <table class="table table-hover align-middle bg-white">
               <thead class="table-light">
                 <tr>
                   <th>Email</th>
@@ -61,8 +61,8 @@ export function createAdminPage() {
               <i class="bi bi-arrow-clockwise"></i> Обнови
             </button>
           </div>
-          <div class="table-responsive">
-            <table class="table table-hover align-middle bg-white rounded shadow-sm">
+          <div class="admin-table-wrap table-responsive shadow-sm">
+            <table class="table table-hover align-middle bg-white">
               <thead class="table-light">
                 <tr>
                   <th>Заглавие</th>

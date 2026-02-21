@@ -10,7 +10,7 @@ export function createPropertyPage() {
         <i class="bi bi-arrow-left me-1"></i>Назад
       </button>
     </div>
-    <section class="rounded-4 p-4 p-md-5 bg-light border">
+    <section class="form-surface rounded-4 p-4 p-md-5 bg-white border">
       <h1 class="h3 fw-bold mb-4">Добави нова обява</h1>
       
       <form id="create-property-form" class="row g-3" novalidate>

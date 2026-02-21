@@ -17,13 +17,13 @@ export function createHeader(currentPath = '/') {
   // Navigation Links (Left side)
   let navLinks = `
     <li class="nav-item">
-      <a class="nav-link ${currentPath === '/' ? 'active' : ''}" href="#/">Начало</a>
+      <a class="nav-link header-menu-link ${currentPath === '/' ? 'active' : ''}" href="#/">Начало</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link ${isListingsActive ? 'active' : ''}" href="#/listings">Обяви</a>
+      <a class="nav-link header-menu-link ${isListingsActive ? 'active' : ''}" href="#/listings">Обяви</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link ${currentPath === '/about' ? 'active' : ''}" href="#/about">За нас</a>
+      <a class="nav-link header-menu-link ${currentPath === '/about' ? 'active' : ''}" href="#/about">За нас</a>
     </li>
   `;
 
@@ -34,31 +34,31 @@ export function createHeader(currentPath = '/') {
     // User is logged in
     authButtons = `
       <li class="nav-item me-2">
-        <a class="nav-link position-relative ${currentPath === '/favorites' ? 'text-danger' : ''}" href="#/favorites" title="Любими">
+        <a class="nav-link header-menu-link position-relative ${currentPath === '/favorites' ? 'active' : ''}" href="#/favorites" title="Любими">
           <i class="bi bi-heart${currentPath === '/favorites' ? '-fill' : ''} fs-5"></i>
           <span class="ms-1 d-lg-inline">Любими</span>
         </a>
       </li>
       <li class="nav-item dropdown me-2">
-        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="${profileTooltip}">
+        <a class="nav-link header-menu-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="${profileTooltip}">
           <i class="bi bi-person-circle fs-5"></i>
           <span class="d-none d-lg-inline">Профил</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
-          <li><a class="dropdown-item" href="#/profile">Моят Профил</a></li>
-          <li><a class="dropdown-item" href="#/my-listings">Моите Обяви</a></li>
+          <li><a class="dropdown-item header-dropdown-item" href="#/profile">Моят Профил</a></li>
+          <li><a class="dropdown-item header-dropdown-item" href="#/my-listings">Моите Обяви</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#" onclick="window.pmLogout && window.pmLogout(); return false;">Изход</a></li>
+          <li><a class="dropdown-item header-dropdown-item" href="#" onclick="window.pmLogout && window.pmLogout(); return false;">Изход</a></li>
         </ul>
       </li>
       ${isAdmin ? `
       <li class="nav-item me-2">
-        <a class="nav-link fw-semibold text-danger ${currentPath === '/admin' ? 'active' : ''}" href="#/admin">
+        <a class="nav-link header-menu-link fw-semibold ${currentPath === '/admin' ? 'active' : ''}" href="#/admin">
           <i class="bi bi-shield-lock-fill me-1"></i>Админ панел
         </a>
       </li>` : ''}
       <li class="nav-item ms-2">
-        <a class="btn btn-success fw-semibold shadow-sm" href="#/create-property">
+        <a class="nav-link header-menu-link d-flex align-items-center gap-1" href="#/create-property">
           <i class="bi bi-plus-lg me-1"></i>Добави обява
         </a>
       </li>
@@ -67,13 +67,13 @@ export function createHeader(currentPath = '/') {
     // Guest User
     authButtons = `
       <li class="nav-item ms-lg-2">
-        <a class="btn btn-link text-decoration-none text-dark" href="#/login">Вход</a>
+        <a class="nav-link header-menu-link" href="#/login">Вход</a>
       </li>
       <li class="nav-item ms-lg-2">
-        <a class="btn btn-primary px-3 shadow-sm" href="#/register">Регистрация</a>
+        <a class="nav-link header-menu-link ${currentPath === '/register' ? 'active' : ''}" href="#/register">Регистрация</a>
       </li>
-      <li class="nav-item ms-lg-3 border-start ps-lg-3">
-         <a class="btn btn-outline-success fw-semibold" href="#/create-property">
+      <li class="nav-item ms-lg-3">
+         <a class="nav-link header-menu-link d-flex align-items-center gap-1" href="#/create-property">
           <i class="bi bi-plus-lg me-1"></i>Добави обява
         </a>
       </li>

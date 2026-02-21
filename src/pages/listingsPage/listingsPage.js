@@ -8,8 +8,26 @@ export function createListingsPage(category = 'Всички обяви') {
 
   // We defer the loading so the DOM is ready
   setTimeout(() => {
-    // Set initial state of the filter UI if specific category is selected
-    if (initialListingType !== 'all') {
+    // Apply pre-fill from hero search if present
+    const heroSearch = sessionStorage.getItem('pm_hero_search');
+    if (heroSearch) {
+      try {
+        const { listingType: ht, propType: hp, location: hl } = JSON.parse(heroSearch);
+        sessionStorage.removeItem('pm_hero_search');
+        if (ht && ht !== 'all') {
+          const radio = document.querySelector(`input[name="listingType"][value="${ht}"]`);
+          if (radio) radio.checked = true;
+        }
+        if (hp && hp !== 'all') {
+          const sel = document.getElementById('filter-prop-type');
+          if (sel) sel.value = hp;
+        }
+        if (hl) {
+          const loc = document.getElementById('filter-location');
+          if (loc) loc.value = hl;
+        }
+      } catch (_) {}
+    } else if (initialListingType !== 'all') {
       const radio = document.querySelector(`input[name="listingType"][value="${initialListingType}"]`);
       if (radio) radio.checked = true;
     }

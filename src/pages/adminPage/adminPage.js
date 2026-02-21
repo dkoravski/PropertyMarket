@@ -207,7 +207,7 @@ async function loadProperties() {
               data-id="${prop.id}" data-active="${prop.is_active !== false}" title="${prop.is_active === false ? 'Активирай' : 'Деактивирай'}">
               <i class="bi bi-${prop.is_active === false ? 'eye' : 'eye-slash'}"></i>
             </button>
-            <button class="btn btn-sm btn-outline-danger delete-prop-btn" data-id="${prop.id}" title="Изтрий">
+            <button class="btn btn-sm btn-danger delete-prop-btn" data-id="${prop.id}" title="Изтрий">
               <i class="bi bi-trash"></i>
             </button>
           </div>

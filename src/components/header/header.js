@@ -16,16 +16,8 @@ export function createHeader(currentPath = '/') {
     <li class="nav-item">
       <a class="nav-link ${currentPath === '/' ? 'active' : ''}" href="#/">Начало</a>
     </li>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle ${isListingsActive ? 'active' : ''}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Обяви
-      </a>
-      <ul class="dropdown-menu border-0 shadow-sm">
-        <li><a class="dropdown-item" href="#/listings">Всички</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#/listings-sales">Продажби</a></li>
-        <li><a class="dropdown-item" href="#/listings-rent">Наеми</a></li>
-      </ul>
+    <li class="nav-item">
+      <a class="nav-link ${isListingsActive ? 'active' : ''}" href="#/listings">Обяви</a>
     </li>
     <li class="nav-item">
       <a class="nav-link ${currentPath === '/about' ? 'active' : ''}" href="#/about">За нас</a>

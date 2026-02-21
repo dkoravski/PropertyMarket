@@ -121,7 +121,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
     <div class="row g-4">
       <div class="col-lg-8">
         <div class="position-relative mb-4">
-          <div id="${carouselId}" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000" data-bs-touch="true">
+          <div id="${carouselId}" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" data-bs-touch="true">
             ${images.length > 1 ? `
               <div class="carousel-indicators">
                 ${images.map((_, index) => `
@@ -206,7 +206,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
                 <a href="#/edit-property/${property.id}" class="btn btn-warning">
                   <i class="bi bi-pencil-square me-2"></i>Редактирай
                 </a>
-                <button id="btn-delete" class="btn btn-outline-danger bg-white">
+                <button id="btn-delete" class="btn btn-danger">
                   <i class="bi bi-trash me-2"></i>Изтрий
                 </button>
               </div>

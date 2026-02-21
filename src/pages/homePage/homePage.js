@@ -2,20 +2,51 @@ import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 
 export function createHomePage() {
   loadFeaturedProperties();
+  setTimeout(initHeroSearch, 0);
 
   return `
-    <section class="hero-section rounded-4 p-4 p-md-5 mb-4 bg-light border text-center text-lg-start d-flex align-items-center" 
-             style="background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1973&q=80'); background-size: cover; background-position: center; min-height: 400px;">
-      <div class="col-lg-8">
-        <h1 class="display-4 fw-bold mb-3 text-primary">Открийте мечтания дом</h1>
-        <p class="lead text-secondary mb-4 fs-4">
-          Най-добрата платформа за покупка, продажба и наем на недвижими имоти.
-          Вашите мечти, нашият ангажимент.
+    <section class="hero-section rounded-4 p-4 p-md-5 mb-4 border text-center"
+             style="background-image: linear-gradient(rgba(0,30,80,0.62), rgba(0,30,80,0.62)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1973&q=80'); background-size: cover; background-position: center; min-height: 420px; display: flex; align-items: center; justify-content: center;">
+      <div class="col-lg-9">
+        <h1 class="display-4 fw-bold mb-2 text-white">Открийте мечтания дом</h1>
+        <p class="lead text-white text-opacity-75 mb-4">
+          Най-добрата платформа за покупка, продажба и наем на жилищни имоти.
         </p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center justify-content-lg-start">
-          <a href="#/listings-sales" class="btn btn-primary btn-lg px-4 gap-3">Купи имот</a>
-          <a href="#/listings-rent" class="btn btn-outline-dark btn-lg px-4">Наеми имот</a>
-        </div>
+        <form id="hero-search-form" class="bg-white rounded-4 shadow-lg p-3">
+          <div class="row g-2 align-items-end">
+            <div class="col-12 col-sm-6 col-md-3">
+              <label class="form-label small fw-semibold text-secondary mb-1">Тип обява</label>
+              <select class="form-select" id="hero-listing-type">
+                <option value="all">Всички</option>
+                <option value="sale">Продажба</option>
+                <option value="rent">Наем</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+              <label class="form-label small fw-semibold text-secondary mb-1">Вид имот</label>
+              <select class="form-select" id="hero-prop-type">
+                <option value="all">Всички видове</option>
+                <option value="apartment">Апартамент</option>
+                <option value="studio">Студио</option>
+                <option value="house">Къща</option>
+                <option value="villa">Вила</option>
+                <option value="guest_house">Къща за гости</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label small fw-semibold text-secondary mb-1">Местоположение</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-geo-alt text-secondary"></i></span>
+                <input type="text" class="form-control border-start-0" id="hero-location" placeholder="Град, село...">
+              </div>
+            </div>
+            <div class="col-12 col-md-2">
+              <button type="submit" class="btn btn-primary w-100 fw-bold">
+                <i class="bi bi-search me-1"></i>Търси
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </section>
 
@@ -37,6 +68,19 @@ export function createHomePage() {
       </div>
     </section>
   `;
+}
+
+function initHeroSearch() {
+  const form = document.getElementById('hero-search-form');
+  if (!form) return;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const listingType = document.getElementById('hero-listing-type').value;
+    const propType = document.getElementById('hero-prop-type').value;
+    const location = document.getElementById('hero-location').value.trim();
+    sessionStorage.setItem('pm_hero_search', JSON.stringify({ listingType, propType, location }));
+    window.location.hash = '#/listings';
+  });
 }
 
 async function loadFeaturedProperties() {

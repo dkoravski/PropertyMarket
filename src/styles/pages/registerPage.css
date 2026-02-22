@@ -1,0 +1,14 @@
+/* Стилове за Register page */
+
+#register-email,
+#register-password {
+	min-height: 44px;
+}
+
+.auth-surface h1.h3 {
+	letter-spacing: 0.2px;
+}
+
+.auth-surface form .btn[type='submit'] {
+	font-weight: 700;
+}

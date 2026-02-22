@@ -1,0 +1,31 @@
+/* Стилове за Admin page */
+
+.admin-surface,
+.admin-table-wrap {
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.08);
+}
+
+.admin-surface .nav-tabs .nav-link {
+	border-top-left-radius: 0.75rem;
+	border-top-right-radius: 0.75rem;
+	font-weight: 600;
+}
+
+.admin-surface .nav-tabs .nav-link.active {
+	border-color: rgba(var(--bs-primary-rgb), 0.2);
+	color: var(--bs-primary);
+}
+
+.admin-table-wrap {
+	border-radius: 1rem;
+	overflow: hidden;
+	background: var(--bs-white);
+}
+
+.admin-table-wrap .table {
+	margin-bottom: 0;
+}
+
+.admin-table-wrap .table thead th {
+	white-space: nowrap;
+}

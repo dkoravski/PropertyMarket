@@ -1,0 +1,37 @@
+/* Стилове за Listings page */
+
+.listings-filter-card {
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.08);
+}
+
+.listings-results-bar {
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.listings-grid .card-img-top {
+	transition: transform 0.32s ease;
+}
+
+.listings-grid .card:hover .card-img-top,
+.listings-grid .card:focus-within .card-img-top {
+	transform: scale(1.03);
+}
+
+.listings-grid .card {
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.08) !important;
+}
+
+.pagination .page-link {
+	border-radius: 0.6rem;
+	margin: 0 0.15rem;
+}
+
+.pagination .page-item.active .page-link {
+	box-shadow: 0 0.35rem 0.8rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+@media (max-width: 991.98px) {
+	.listings-filter-card {
+		position: static !important;
+	}
+}

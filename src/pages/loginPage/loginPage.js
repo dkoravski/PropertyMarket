@@ -1,4 +1,5 @@
-﻿import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+﻿import '../../styles/pages/loginPage.css';
+import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
 export function createLoginPage() {

@@ -1,0 +1,16 @@
+/* Стилове за Profile page */
+
+.profile-surface {
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.08);
+}
+
+.profile-surface .nav-tabs .nav-link {
+	border-top-left-radius: 0.75rem;
+	border-top-right-radius: 0.75rem;
+	font-weight: 600;
+}
+
+.profile-surface .nav-tabs .nav-link.active {
+	border-color: rgba(var(--bs-primary-rgb), 0.2);
+	color: var(--bs-primary);
+}

@@ -1,4 +1,6 @@
+import '../../styles/pages/favoritesPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showPageFeedback, showConfirmModal } from '../../utils/ui.js';
 
 export function createFavoritesPage() {
   setTimeout(() => loadFavorites(), 0);
@@ -107,74 +109,14 @@ async function removeFavorite(favId, container) {
       .eq('id', favId);
 
     if (error) throw error;
-    showPageFeedback(container, 'Имотът е премахнат от любими.', 'success');
+    showPageFeedback('success', 'Имотът е премахнат от любими.');
     
     // Reload list
     loadFavorites(container);
 
   } catch (err) {
-    showPageFeedback(container, 'Грешка при премахване: ' + err.message, 'danger');
+    showPageFeedback('danger', 'Грешка при премахване: ' + err.message);
   }
-}
-
-function showPageFeedback(container, message, type = 'success') {
-  const oldAlert = container.querySelector('#favorites-feedback');
-  if (oldAlert) oldAlert.remove();
-
-  const section = container.querySelector('section');
-  if (!section) return;
-
-  section.insertAdjacentHTML('afterbegin', `
-    <div id="favorites-feedback" class="alert alert-${type} alert-dismissible fade show mb-4" role="alert">
-      ${message}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
-    </div>
-  `);
-}
-
-function showConfirmModal(message) {
-  return new Promise((resolve) => {
-    const modalId = `confirm-modal-${Date.now()}`;
-    const modalMarkup = `
-      <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content border-0 shadow">
-            <div class="modal-header">
-              <h5 class="modal-title">Потвърждение</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
-            </div>
-            <div class="modal-body">
-              <p class="mb-0">${message}</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отказ</button>
-              <button type="button" class="btn btn-danger" id="${modalId}-confirm">Премахни</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', modalMarkup);
-    const modalEl = document.getElementById(modalId);
-    const confirmBtn = document.getElementById(`${modalId}-confirm`);
-    const modalInstance = new bootstrap.Modal(modalEl);
-
-    let resolved = false;
-
-    confirmBtn.addEventListener('click', () => {
-      resolved = true;
-      resolve(true);
-      modalInstance.hide();
-    });
-
-    modalEl.addEventListener('hidden.bs.modal', () => {
-      if (!resolved) resolve(false);
-      modalEl.remove();
-    }, { once: true });
-
-    modalInstance.show();
-  });
 }
 
 function createFavoriteCard(fav) {

@@ -1,3 +1,4 @@
+import '../../styles/pages/adminPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showConfirmModal, showMessageModal } from '../../utils/ui.js';
 

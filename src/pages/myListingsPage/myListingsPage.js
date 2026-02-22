@@ -1,3 +1,4 @@
+import '../../styles/pages/myListingsPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback, showConfirmModal, showMessageModal } from '../../utils/ui.js';
 
@@ -136,6 +137,7 @@ function createMyPropertyCard(property) {
                </a>
              </div>
            </div>
+           <a href="#/property/${property.id}" class="btn btn-outline-primary btn-sm w-100 mt-2 position-relative z-2">Детайли</a>
         </div>
         <div class="card-footer bg-white border-top-0 text-muted small">
             ${propertyTypeMap[property.property_type]} • ${property.area_sq_m} кв.м.

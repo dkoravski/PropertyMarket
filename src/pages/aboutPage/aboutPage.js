@@ -1,4 +1,6 @@
-﻿export function createAboutPage() {
+﻿import '../../styles/pages/aboutPage.css';
+
+export function createAboutPage() {
   return `
     <div class="mb-3">
       <button onclick="history.back()" class="btn btn-outline-secondary btn-sm">

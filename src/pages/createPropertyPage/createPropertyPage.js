@@ -1,4 +1,5 @@
-﻿import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+﻿import '../../styles/pages/createPropertyPage.css';
+import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
 export function createPropertyPage() {
@@ -86,7 +87,7 @@ export function createPropertyPage() {
 
         <!-- Submit -->
         <div class="col-12 mt-4">
-          <button type="submit" class="btn btn-primary w-100 py-2">
+          <button type="submit" class="btn btn-outline-primary w-100 py-2 create-submit-btn">
             <span class="submit-text">Публикувай обявата</span>
             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
           </button>

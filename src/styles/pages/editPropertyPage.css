@@ -1,0 +1,18 @@
+/* Стилове за Edit Property page */
+
+#edit-property-container .form-label {
+	font-weight: 600;
+}
+
+#edit-property-container .form-control,
+#edit-property-container .form-select {
+	min-height: 42px;
+}
+
+#edit-property-container #all-images-grid .delete-img-btn {
+	border-radius: 50%;
+}
+
+#edit-property-container .new-preview-card .btn {
+	border-radius: 50%;
+}

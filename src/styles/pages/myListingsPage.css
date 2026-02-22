@@ -1,0 +1,27 @@
+/* Стилове за My Listings page */
+
+.my-listings-surface {
+	border: 1px solid var(--pm-border-soft);
+	box-shadow: 0 0.45rem 1.1rem rgba(15, 23, 42, 0.08);
+	background: linear-gradient(180deg, var(--pm-surface-700) 0%, var(--pm-surface-650) 100%) !important;
+	color: var(--pm-text-main);
+}
+
+.my-listings-grid .card {
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.08) !important;
+	border-radius: 1rem;
+	overflow: hidden;
+}
+
+.my-listings-grid .card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 0.8rem 1.3rem rgba(var(--bs-dark-rgb), 0.12) !important;
+}
+
+.my-listings-grid .card-img-top {
+	transition: transform 0.3s ease;
+}
+
+.my-listings-grid .card:hover .card-img-top {
+	transform: scale(1.03);
+}

@@ -1,0 +1,23 @@
+/* Стилове за Create Property page */
+
+#create-property-form .form-label {
+	font-weight: 600;
+}
+
+#create-property-form .form-control,
+#create-property-form .form-select {
+	min-height: 42px;
+}
+
+#create-property-form textarea.form-control {
+	min-height: 130px;
+}
+
+#create-property-form .btn[type='submit'] {
+	font-weight: 700;
+	border-radius: 0.75rem;
+}
+
+#create-property-form .create-submit-btn {
+	border-width: 1px;
+}

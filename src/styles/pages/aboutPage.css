@@ -1,0 +1,8 @@
+/* Стилове за About page */
+
+.about-surface {
+	border: 1px solid var(--pm-border-soft);
+	box-shadow: 0 0.45rem 1.1rem rgba(15, 23, 42, 0.08);
+	background: linear-gradient(180deg, var(--pm-surface-700) 0%, var(--pm-surface-650) 100%) !important;
+	color: var(--pm-text-main);
+}

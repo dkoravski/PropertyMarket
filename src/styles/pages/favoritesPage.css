@@ -1,0 +1,64 @@
+/* Стилове за Favorites page */
+
+.favorites-surface {
+	border: 1px solid var(--pm-border-soft);
+	box-shadow: 0 0.45rem 1.1rem rgba(15, 23, 42, 0.08);
+	background: linear-gradient(180deg, var(--pm-surface-700) 0%, var(--pm-surface-650) 100%) !important;
+	color: var(--pm-text-main);
+}
+
+.favorites-grid .card {
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.08) !important;
+	border-radius: 1rem;
+	overflow: hidden;
+}
+
+.favorites-grid .card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 0.8rem 1.3rem rgba(var(--bs-dark-rgb), 0.12) !important;
+}
+
+.favorites-grid .card-img-top {
+	transition: transform 0.3s ease;
+}
+
+.favorites-grid .card:hover .card-img-top {
+	transform: scale(1.03);
+}
+
+.btn-remove-fav-fx {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	border: 0;
+	background: transparent;
+	font-size: 0.85rem;
+	opacity: 0;
+	transform: translateY(-4px);
+	transition: transform 0.2s ease, opacity 0.2s ease;
+	pointer-events: none;
+}
+
+.fav-image-wrap:hover .btn-remove-fav-fx,
+.fav-image-wrap:focus-within .btn-remove-fav-fx {
+	opacity: 1;
+	transform: translateY(0);
+	pointer-events: auto;
+}
+
+.btn-remove-fav-fx:hover {
+	opacity: 0.8;
+	transform: translateY(-1px);
+}
+
+.btn-remove-fav-fx:active {
+	transform: scale(0.98);
+}
+
+@media (hover: none) {
+	.btn-remove-fav-fx {
+		opacity: 1;
+		transform: translateY(0);
+		pointer-events: auto;
+	}
+}

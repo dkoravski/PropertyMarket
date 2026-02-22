@@ -1,3 +1,4 @@
+import '../../styles/pages/homePage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 
 export function createHomePage() {
@@ -103,7 +104,7 @@ async function loadFeaturedProperties() {
         )
       `)
       .order('created_at', { ascending: false })
-      .limit(3);
+      .limit(4);
 
     if (error) throw error;
 
@@ -142,7 +143,7 @@ function createHomePropertyCard(property) {
   const typeMap = { 'sale': 'Продажба', 'rent': 'Наем' };
   const badgeClass = property.listing_type === 'sale' ? 'bg-success' : 'bg-info';
   return `
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-6 col-xl-3">
       <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4 overflow-hidden">
         <div class="position-relative overflow-hidden rounded-top">
           <img src="${image}" class="card-img-top" alt="${property.title}" style="height: 220px; object-fit: cover;">
@@ -154,7 +155,7 @@ function createHomePropertyCard(property) {
             <i class="bi bi-eye-slash-fill me-1 pm-photo-icon"></i>Деактивирана
           </span>` : ''}
         </div>
-        <div class="card-body">
+        <div class="card-body d-flex flex-column">
           <div class="d-flex justify-content-between align-items-start mb-2">
             <h5 class="card-title h6 mb-0 text-truncate fw-bold" title="${property.title}">
               <a href="#/property/${property.id}" class="text-dark text-decoration-none stretched-link">
@@ -163,9 +164,10 @@ function createHomePropertyCard(property) {
             </h5>
           </div>
           <p class="text-primary fw-bold mb-2">${price}</p>
-          <p class="card-text text-secondary small mb-0">
+          <p class="card-text text-secondary small mb-3">
             <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}
           </p>
+          <a href="#/property/${property.id}" class="btn btn-outline-primary btn-sm mt-auto position-relative z-2">Детайли</a>
         </div>
       </div>
     </div>

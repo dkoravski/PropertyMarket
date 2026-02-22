@@ -1,3 +1,4 @@
+import '../../styles/pages/listingsPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 
 const PAGE_SIZE = 9;
@@ -649,6 +650,7 @@ function createListingCard(property) {
                <span title="Стаи"><i class="bi bi-door-closed me-1"></i>${property.rooms} стаи</span>
                <span title="Цена на кв.м."><i class="bi bi-calculator me-1"></i>${(property.price / property.area_sq_m).toFixed(0)} €/м²</span>
              </div>
+             <a href="#/property/${property.id}" class="btn btn-outline-primary btn-sm w-100 mt-3 position-relative z-2">Детайли</a>
           </div>
         </div>
       </div>

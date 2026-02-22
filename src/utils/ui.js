@@ -1,13 +1,42 @@
 export function showPageFeedback(type, message) {
-  const alertDiv = document.createElement('div');
-  alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show fixed-top m-3 shadow`;
-  alertDiv.style.zIndex = '1050';
-  alertDiv.innerHTML = `
-    <strong>${type === 'success' ? 'Успешно!' : 'Грешка!'}</strong> ${message}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  const containerId = 'pm-toast-container';
+  let container = document.getElementById(containerId);
+
+  if (!container) {
+    container = document.createElement('div');
+    container.id = containerId;
+    container.className = 'toast-container position-fixed end-0 p-3';
+    container.style.zIndex = '1090';
+    container.style.top = 'calc(var(--pm-header-height, 72px) + 0.25rem)';
+    document.body.appendChild(container);
+  }
+
+  container.querySelectorAll('.toast').forEach((el) => {
+    // @ts-ignore
+    const instance = bootstrap.Toast.getInstance(el);
+    if (instance) instance.hide();
+  });
+
+  const toast = document.createElement('div');
+  const isSuccess = type === 'success';
+  const isInfo = type === 'info';
+
+  toast.className = `toast border-0 shadow-lg rounded-4 bg-${isSuccess ? 'success-subtle' : (isInfo ? 'info-subtle' : 'danger-subtle')}`;
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  toast.setAttribute('aria-atomic', 'true');
+
+  toast.innerHTML = `
+    <div class="toast-body px-3 py-2">
+      ${message}
+    </div>
   `;
-  document.body.appendChild(alertDiv);
-  setTimeout(() => alertDiv.remove(), 5000);
+
+  container.appendChild(toast);
+  // @ts-ignore
+  const toastInstance = bootstrap.Toast.getOrCreateInstance(toast, { delay: 2500, autohide: true });
+  toast.addEventListener('hidden.bs.toast', () => toast.remove(), { once: true });
+  toastInstance.show();
 }
 
 export function showConfirmModal(question) {

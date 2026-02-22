@@ -1,0 +1,202 @@
+/* Стилове за Property Details page */
+
+.details-main-card {
+	border: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	margin-bottom: 0.85rem !important;
+}
+
+.details-title-block,
+.details-info-card,
+.details-contact-card,
+.details-manage-card,
+.details-description-card {
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.08) !important;
+}
+
+.details-title-block {
+	padding: 1rem !important;
+	margin-bottom: 0 !important;
+}
+
+.details-info-card {
+	margin-bottom: 0 !important;
+}
+
+.details-info-card .card-body {
+	padding: 1rem !important;
+}
+
+.details-facts-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+	height: 100%;
+}
+
+.details-fact-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid rgba(var(--bs-primary-rgb), 0.1);
+	gap: 0.6rem;
+}
+
+.details-fact-item:last-child {
+	border-bottom: 0;
+	padding-bottom: 0;
+}
+
+.details-fact-label {
+	font-size: 0.72rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+	color: var(--bs-secondary-color);
+}
+
+.details-fact-value {
+	font-size: 0.98rem;
+	font-weight: 700;
+	text-align: right;
+}
+
+.details-description-card {
+	margin-bottom: 1rem !important;
+}
+
+.details-description-card .card-body,
+.details-contact-card .card-body,
+.details-manage-card .card-body {
+	padding: 1rem !important;
+}
+
+.details-contact-card .btn,
+.details-manage-card .btn {
+	border-radius: 0.75rem;
+}
+
+.details-side-card {
+	background-color: var(--bs-body-bg);
+	border: 1px solid rgba(var(--bs-primary-rgb), 0.1) !important;
+	box-shadow: none;
+}
+
+.details-side-title {
+	font-size: 1.05rem;
+	line-height: 1.2;
+}
+
+.details-side-btn {
+	padding: 0.5rem 0.75rem;
+	font-weight: 500;
+}
+
+.details-owner-avatar {
+	width: 56px;
+	height: 56px;
+	font-size: 1.35rem;
+}
+
+.details-owner-name {
+	font-size: 1.06rem;
+	line-height: 1.2;
+}
+
+.details-fav-btn {
+	padding: 0.62rem 0.9rem;
+	border-width: 1px;
+}
+
+.property-carousel-image {
+	height: 420px;
+	transition: transform 0.35s ease;
+}
+
+.property-carousel-image:hover {
+	transform: scale(1.04);
+}
+
+.details-title-block h1 {
+	font-size: clamp(1.2rem, 1.2vw, 1.2rem);
+	line-height: 1.2;
+	margin-bottom: 0.3rem !important;
+}
+
+.details-title-block .h2 {
+	font-size: clamp(1rem, 1.25vw, 1.2rem);
+	line-height: 1.2;
+}
+
+.details-title-block p.fs-5 {
+	font-size: 0.92rem !important;
+	margin-bottom: 0 !important;
+}
+
+.details-info-card .fs-4 {
+	font-size: 1.05rem !important;
+}
+
+.details-info-card .small.text-secondary {
+	font-size: 0.72rem !important;
+}
+
+.details-description-card h4 {
+	font-size: 1.05rem;
+	margin-bottom: 0.55rem !important;
+}
+
+.details-description-card p {
+	font-size: 0.92rem;
+	line-height: 1.45 !important;
+}
+
+.details-contact-card .fs-5 {
+	font-size: 1rem !important;
+}
+
+@media (max-width: 767.98px) {
+	.details-header-row {
+		margin-bottom: 0.75rem !important;
+	}
+
+	.details-fact-value {
+		font-size: 0.95rem;
+	}
+}
+
+@media (min-width: 992px) {
+	.property-carousel-image {
+		height: 460px;
+	}
+
+	.details-description-card p {
+		max-height: 120px;
+		overflow: auto;
+	}
+}
+
+@media (max-width: 575.98px) {
+	.property-carousel-image {
+		height: 300px;
+	}
+
+	.details-title-block h1 {
+		font-size: 0.92rem;
+	}
+
+	.details-title-block .h2 {
+		font-size: 0.95rem;
+	}
+
+	.details-title-block p.fs-5 {
+		font-size: 0.86rem !important;
+	}
+
+	.details-info-card .fs-4 {
+		font-size: 0.98rem !important;
+	}
+}

@@ -1,3 +1,4 @@
+import '../../styles/pages/resetPasswordPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 

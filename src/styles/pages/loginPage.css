@@ -1,0 +1,19 @@
+/* Стилове за Login page */
+
+#email,
+#password {
+	min-height: 44px;
+}
+
+a[href="#/forgot-password"] {
+	font-weight: 600;
+}
+
+#email + .invalid-feedback,
+#password + .invalid-feedback {
+	font-size: 0.85rem;
+}
+
+.auth-surface form button[type='submit'] {
+	font-weight: 700;
+}

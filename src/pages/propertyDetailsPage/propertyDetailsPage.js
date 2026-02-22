@@ -1,5 +1,6 @@
+import '../../styles/pages/propertyDetailsPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
-import { showConfirmModal } from '../../utils/ui.js';
+import { showConfirmModal, showPageFeedback } from '../../utils/ui.js';
 
 export function createPropertyDetailsPage(id) {
   setTimeout(() => loadPropertyDetails(id), 0);
@@ -115,12 +116,12 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
   container.innerHTML = `
     <div class="mb-3">
       <button id="btn-back-nav" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-arrow-left me-1"></i>Назад
+        <i class="bi bi-arrow-left me-1 pm-accent-icon"></i>Назад
       </button>
     </div>
     <div class="row g-4">
       <div class="col-lg-8">
-        <div class="position-relative mb-4 details-main-card rounded-4 p-2 bg-white shadow-sm">
+        <div class="position-relative mb-4 details-main-card rounded-4">
           <div id="${carouselId}" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" data-bs-touch="true">
             ${images.length > 1 ? `
               <div class="carousel-indicators">
@@ -130,10 +131,10 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
               </div>
             ` : ''}
 
-            <div class="carousel-inner rounded-4 overflow-hidden shadow-sm bg-white">
+            <div class="carousel-inner rounded-4 overflow-hidden">
               ${(images.length > 0 ? images : [{ image_url: coverUrl }]).map((img, index) => `
                 <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                  <img src="${img.image_url}" class="d-block w-100 object-fit-cover property-carousel-image" style="height: 400px;" alt="${property.title} - снимка ${index + 1}">
+                  <img src="${img.image_url}" class="d-block w-100 object-fit-cover property-carousel-image" alt="${property.title} - снимка ${index + 1}">
                 </div>
               `).join('')}
             </div>
@@ -158,32 +159,94 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
             <i class="bi bi-eye-slash-fill me-1 pm-photo-icon"></i>Деактивирана
           </span>` : ''}
         </div>
+      </div>
 
-        <div class="details-title-block d-flex justify-content-between align-items-start mb-3 rounded-4 bg-white shadow-sm p-4">
-          <div>
-            <h1 class="fw-bold mb-1">${property.title}</h1>
-            <p class="text-secondary fs-5"><i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}, ${property.address}</p>
-          </div>
-          <div class="text-end">
-            <div class="h2 fw-bold text-primary mb-0">${price}</div>
-            <span class="badge bg-light text-dark border">${typeMap[property.property_type]}</span>
+      <div class="col-lg-4">
+        <div class="details-contact-card details-side-card card border-0 rounded-4 mb-3">
+          <div class="card-body p-3">
+            <h5 class="details-side-title fw-bold mb-2">Контакт със собственика</h5>
+            <div class="d-flex align-items-center mb-3">
+              <div class="details-owner-avatar rounded-circle bg-primary bg-opacity-10 me-3 text-primary d-flex align-items-center justify-content-center">
+                <i class="bi bi-person-fill pm-accent-icon"></i>
+              </div>
+              <div>
+                <div class="details-owner-name fw-bold">${ownerName}</div>
+                <div class="small text-secondary">Собственик</div>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <a href="mailto:${ownerEmail}" class="btn btn-outline-primary details-side-btn d-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-envelope pm-accent-icon"></i> ${ownerEmail}
+              </a>
+              ${ownerPhone ? `
+                <a href="tel:${ownerPhone}" class="btn btn-outline-primary details-side-btn d-flex align-items-center justify-content-center gap-2">
+                  <i class="bi bi-telephone pm-accent-icon"></i> ${ownerPhone}
+                </a>
+              ` : ''}
+            </div>
           </div>
         </div>
 
-        <div class="details-info-card card border-0 shadow-sm rounded-4 mb-4">
-          <div class="card-body p-4">
-            <div class="row text-center">
-              <div class="col-4 border-end">
-                <div class="small text-secondary fw-bold text-uppercase">Площ</div>
-                <div class="fs-4 fw-bold">${property.area_sq_m} м²</div>
+        ${user ? `
+          <button id="btn-fav" class="btn btn-outline-primary details-fav-btn w-100 rounded-4 fw-semibold transition-all mb-3">
+            <i class="bi bi-heart${isFavorited ? '-fill' : ''} me-2 pm-accent-icon"></i>
+            ${isFavorited ? 'Премахни от любими' : 'Добави в любими'}
+          </button>
+        ` : `
+          <div class="alert alert-light border text-center rounded-4 mb-3">
+            <a href="#/login" class="fw-bold">Влезте в системата</a>, за да запазите тази обява в любими.
+          </div>
+        `}
+
+        ${canEdit ? `
+          <div class="details-manage-card details-side-card card border-0 rounded-4 mb-0">
+            <div class="card-body p-3">
+              <h5 class="details-side-title fw-bold mb-2">Управление</h5>
+              <div class="d-grid gap-2">
+                <a href="#/edit-property/${property.id}" class="btn btn-outline-primary details-side-btn">
+                  <i class="bi bi-pencil-square me-2 pm-accent-icon"></i>Редактирай
+                </a>
+                <button id="btn-delete" class="btn btn-outline-danger details-side-btn">
+                  <i class="bi bi-trash me-2 pm-accent-icon"></i>Изтрий
+                </button>
               </div>
-              <div class="col-4 border-end">
-                <div class="small text-secondary fw-bold text-uppercase">Стаи</div>
-                <div class="fs-4 fw-bold">${property.rooms}</div>
+            </div>
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="col-12">
+
+        <div class="row g-3 align-items-stretch details-header-row mb-3">
+          <div class="col-md-8">
+            <div class="details-title-block d-flex justify-content-between align-items-start rounded-4 bg-white shadow-sm h-100 mb-0">
+              <div>
+                <h1 class="fw-bold mb-1">${property.title}</h1>
+                <p class="text-secondary fs-5"><i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}, ${property.address}</p>
               </div>
-              <div class="col-4">
-                <div class="small text-secondary fw-bold text-uppercase">Тип</div>
-                <div class="fs-4 fw-bold">${typeMap[property.property_type]}</div>
+              <div class="text-end ms-3 flex-shrink-0">
+                <div class="h2 fw-bold text-primary mb-0">${price}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="details-info-card card border-0 shadow-sm rounded-4 h-100 mb-0">
+              <div class="card-body">
+                <div class="details-facts-stack">
+                  <div class="details-fact-item">
+                    <span class="details-fact-label">Площ</span>
+                    <span class="details-fact-value">${property.area_sq_m} м²</span>
+                  </div>
+                  <div class="details-fact-item">
+                    <span class="details-fact-label">Стаи</span>
+                    <span class="details-fact-value">${property.rooms}</span>
+                  </div>
+                  <div class="details-fact-item">
+                    <span class="details-fact-label">Тип</span>
+                    <span class="details-fact-value">${typeMap[property.property_type]}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -197,60 +260,6 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
         </div>
       </div>
 
-      <div class="col-lg-4">
-        ${canEdit ? `
-          <div class="details-manage-card card border-0 shadow-sm rounded-4 mb-4 bg-light">
-            <div class="card-body p-4">
-              <h5 class="fw-bold mb-3">Управление</h5>
-              <div class="d-grid gap-2">
-                <a href="#/edit-property/${property.id}" class="btn btn-warning">
-                  <i class="bi bi-pencil-square me-2"></i>Редактирай
-                </a>
-                <button id="btn-delete" class="btn btn-danger">
-                  <i class="bi bi-trash me-2"></i>Изтрий
-                </button>
-              </div>
-            </div>
-          </div>
-        ` : ''}
-
-        <div class="details-contact-card card border-0 shadow-sm rounded-4 mb-4">
-          <div class="card-body p-4">
-            <h5 class="fw-bold mb-3">Контакт със собственика</h5>
-            <div class="d-flex align-items-center mb-4">
-              <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 text-primary">
-                <i class="bi bi-person-fill fs-3"></i>
-              </div>
-              <div>
-                <div class="fw-bold fs-5">${ownerName}</div>
-                <div class="small text-secondary">Собственик</div>
-              </div>
-            </div>
-            
-            <div class="d-grid gap-2">
-              <a href="mailto:${ownerEmail}" class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2">
-                <i class="bi bi-envelope"></i> ${ownerEmail}
-              </a>
-              ${ownerPhone ? `
-                <a href="tel:${ownerPhone}" class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2">
-                  <i class="bi bi-telephone"></i> ${ownerPhone}
-                </a>
-              ` : ''}
-            </div>
-          </div>
-        </div>
-
-        ${user ? `
-          <button id="btn-fav" class="btn ${isFavorited ? 'btn-danger' : 'btn-outline-danger'} w-100 py-3 rounded-4 shadow-sm fw-bold transition-all">
-            <i class="bi bi-heart${isFavorited ? '-fill' : ''} me-2"></i>
-            ${isFavorited ? 'Премахни от любими' : 'Добави в любими'}
-          </button>
-        ` : `
-          <div class="alert alert-light border text-center rounded-4">
-             <a href="#/login" class="fw-bold">Влезте в системата</a>, за да запазите тази обява в любими.
-          </div>
-        `}
-      </div>
     </div>
   `;
 
@@ -307,12 +316,12 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
         const { error } = await supabase.from('properties').delete().eq('id', property.id);
         if (error) throw error;
         
-        showPageFeedback(container, 'Обявата е изтрита успешно!', 'success');
+        showPageFeedback('success', 'Обявата е изтрита успешно!');
         setTimeout(() => {
           window.location.hash = '#/listings';
         }, 500);
       } catch (err) {
-        showPageFeedback(container, 'Грешка: ' + err.message, 'danger');
+        showPageFeedback('danger', 'Грешка: ' + err.message);
       }
     });
   }
@@ -326,20 +335,20 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
           await supabase.from('favorites').delete().eq('id', favoriteId);
           isFavorited = false;
           favoriteId = null;
-          showPageFeedback(container, 'Премахнато от любими', 'info');
+          showPageFeedback('info', 'Премахнато от любими');
         } else {
           const { data, error } = await supabase.from('favorites').insert({ user_id: user.id, property_id: property.id }).select().single();
           if (error) throw error;
           isFavorited = true;
           favoriteId = data.id;
-          showPageFeedback(container, 'Добавено в любими', 'success');
+          showPageFeedback('success', 'Добавено в любими');
         }
         // Update UI
-        btnFav.className = `btn ${isFavorited ? 'btn-danger' : 'btn-outline-danger'} w-100 py-3 rounded-4 shadow-sm fw-bold`;
-        btnFav.innerHTML = `<i class="bi bi-heart${isFavorited ? '-fill' : ''} me-2"></i>${isFavorited ? 'Премахни от любими' : 'Добави в любими'}`;
+        btnFav.className = `btn btn-outline-primary details-fav-btn w-100 rounded-4 fw-semibold`;
+        btnFav.innerHTML = `<i class="bi bi-heart${isFavorited ? '-fill' : ''} me-2 pm-accent-icon"></i>${isFavorited ? 'Премахни от любими' : 'Добави в любими'}`;
       } catch (err) {
         console.error(err);
-        showPageFeedback(container, 'Възникна грешка.', 'danger');
+        showPageFeedback('danger', 'Възникна грешка.');
       } finally {
         btnFav.disabled = false;
       }
@@ -356,18 +365,6 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
     // Force start cycling
     carousel.cycle();
   }
-}
-
-function showPageFeedback(container, message, type = 'success') {
-  const oldAlert = container.querySelector('#property-details-feedback');
-  if (oldAlert) oldAlert.remove();
-
-  container.insertAdjacentHTML('afterbegin', `
-    <div id="property-details-feedback" class="alert alert-${type} alert-dismissible fade show mb-4" role="alert">
-      ${message}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
-    </div>
-  `);
 }
 
 // Modal function deleted to use shared utils/ui.js

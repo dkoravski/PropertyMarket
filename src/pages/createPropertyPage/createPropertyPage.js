@@ -17,12 +17,12 @@ export function createPropertyPage() {
         <!-- Basic Info -->
         <div class="col-12">
           <label for="prop-title" class="form-label">Заглавие на обявата *</label>
-          <input type="text" class="form-control" id="prop-title" placeholder="Напр. Тристаен апартамен в центъра" required minlength="5" maxlength="160">
+          <input type="text" class="form-control" id="prop-title" placeholder="Напр. Тристаен апартамент в центъра (мин. 5 символа)" required minlength="5" maxlength="160">
         </div>
 
         <div class="col-12">
           <label for="prop-desc" class="form-label">Описание *</label>
-          <textarea class="form-control" id="prop-desc" rows="4" placeholder="Детайлно описание на имота..." required minlength="20"></textarea>
+          <textarea class="form-control" id="prop-desc" rows="4" placeholder="Детайлно описание на имота... (мин. 20 символа)" required minlength="20"></textarea>
         </div>
 
         <!-- Types -->
@@ -67,14 +67,14 @@ export function createPropertyPage() {
         <div class="col-md-6">
           <label for="prop-city" class="form-label">
             гр./с. [Име], общ. [Име], обл. [Име] *
-            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Пример: с. Марково, общ. Родопи, обл. Пловдив"></i>
+            <!--<i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Пример: с. Марково, общ. Родопи, обл. Пловдив"></i>-->
           </label>
-          <input type="text" class="form-control" id="prop-city" required minlength="2">
+          <input type="text" class="form-control" id="prop-city" placeholder="Напр. с. Марково, общ. Родопи, обл. Пловдив (мин. 10 символа)" required minlength="10">
         </div>
 
         <div class="col-md-6">
           <label for="prop-address" class="form-label">Адрес *</label>
-          <input type="text" class="form-control" id="prop-address" required minlength="5">
+          <input type="text" class="form-control" id="prop-address" placeholder="Напр. ул. Иван Вазов 12, ет. 3 (мин. 5 символа)" required minlength="5">
         </div>
 
         <!-- Image Upload -->
@@ -169,8 +169,8 @@ async function handleCreateProperty(e) {
      return;
   }
 
-  if (city.length < 2) {
-     showPageFeedback('danger', 'Градът трябва да е поне 2 символа.');
+  if (city.length < 10) {
+     showPageFeedback('danger', 'Градът трябва да е поне 10 символа.');
      return;
   }
 

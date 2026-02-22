@@ -77,14 +77,14 @@ function renderEditForm(container, property, images) {
         <div class="row g-3">
 
           <div class="col-12">
-            <label for="prop-title" class="form-label fw-semibold">Заглавие на обявата</label>
-            <input type="text" class="form-control" id="prop-title" value="${property.title}" required minlength="5" maxlength="100">
+            <label for="prop-title" class="form-label fw-semibold">Заглавие на обявата (мин. 5 символа)</label>
+            <input type="text" class="form-control" id="prop-title" value="${property.title}" placeholder="Напр. Тристаен апартамент в центъра (мин. 5 символа)" required minlength="5" maxlength="100">
             <div class="invalid-feedback">Моля, въведете заглавие (мин. 5 символа).</div>
           </div>
 
           <div class="col-12">
-            <label for="prop-desc" class="form-label fw-semibold">Описание</label>
-            <textarea class="form-control" id="prop-desc" rows="5" required minlength="20">${property.description}</textarea>
+            <label for="prop-desc" class="form-label fw-semibold">Описание (мин. 20 символа)</label>
+            <textarea class="form-control" id="prop-desc" rows="5" placeholder="Детайлно описание на имота... (мин. 20 символа)" required minlength="20">${property.description}</textarea>
             <div class="invalid-feedback">Описанието трябва да е поне 20 символа.</div>
           </div>
 
@@ -124,15 +124,15 @@ function renderEditForm(container, property, images) {
 
           <div class="col-md-6">
             <label for="prop-city" class="form-label fw-semibold">
-              гр./с. [Име], общ. [Име], обл. [Име]
-              <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Пример: с. Марково, общ. Родопи, обл. Пловдив"></i>
+              гр./с. [Име], общ. [Име], обл. [Име] (мин. 10 символа)
+              <!--<i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Пример: с. Марково, общ. Родопи, обл. Пловдив"></i>--!>
             </label>
-            <input type="text" class="form-control" id="prop-city" value="${property.city}" required>
+            <input type="text" class="form-control" id="prop-city" value="${property.city}" placeholder="Напр. с. Марково, общ. Родопи, обл. Пловдив (мин. 10 символа)" required minlength="10">
           </div>
 
           <div class="col-md-6">
-            <label for="prop-address" class="form-label fw-semibold">Адрес / Район</label>
-            <input type="text" class="form-control" id="prop-address" value="${property.address}" required>
+            <label for="prop-address" class="form-label fw-semibold">Адрес / Район (мин. 5 символа)</label>
+            <input type="text" class="form-control" id="prop-address" value="${property.address}" placeholder="Напр. ул. Иван Вазов 12, ет. 3 (мин. 5 символа)" required minlength="5">
           </div>
 
           <div class="col-12 mt-2">

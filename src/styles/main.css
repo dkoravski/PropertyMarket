@@ -543,6 +543,16 @@ small {
   border-top-color: rgba(var(--bs-primary-rgb), 0.08) !important;
 }
 
+.site-footer-surface {
+  background: linear-gradient(95deg, rgba(138, 175, 233, 0.96), rgba(210, 229, 255, 0.93));
+  border-top: 1px solid rgba(45, 92, 170, 0.24) !important;
+  box-shadow: 0 -0.35rem 0.95rem rgba(21, 41, 80, 0.1);
+}
+
+.site-footer-surface .site-footer-inner {
+  color: #1f2a44;
+}
+
 @media (max-width: 575.98px) {
   .site-navbar .navbar-brand {
     font-size: 1.25rem !important;

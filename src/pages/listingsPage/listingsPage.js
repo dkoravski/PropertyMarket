@@ -109,7 +109,7 @@ export function createListingsPage(category = 'Всички обяви') {
                 
                 <!-- Listing Type -->
                 <div class="mb-3">
-                  <label class="form-label fw-semibold small text-uppercase text-secondary">Тип обява</label>
+                  <label class="form-label fw-semibold small text-uppercase text-secondary"><i class="bi bi-megaphone-fill me-1 pm-accent-icon"></i>Тип обява</label>
                   <div class="d-flex flex-column gap-2">
                     <div class="form-check">
                       <input class="form-check-input" type="radio" name="listingType" id="type-all" value="all" checked>
@@ -128,7 +128,7 @@ export function createListingsPage(category = 'Всички обяви') {
 
                 <!-- Property Type -->
                 <div class="mb-3">
-                  <label for="filter-prop-type" class="form-label fw-semibold small text-uppercase text-secondary">Вид имот</label>
+                  <label for="filter-prop-type" class="form-label fw-semibold small text-uppercase text-secondary"><i class="bi bi-house-door-fill me-1 pm-accent-icon"></i>Вид имот</label>
                   <select class="form-select" id="filter-prop-type">
                     <option value="all">Всички видове</option>
                     <option value="apartment">Апартаменти</option>
@@ -165,11 +165,8 @@ export function createListingsPage(category = 'Всички обяви') {
 
                 <!-- Location -->
                 <div class="mb-4">
-                  <label for="filter-location" class="form-label fw-semibold small text-uppercase text-secondary">Населено място</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-secondary"></i></span>
-                    <input type="text" class="form-control border-start-0" id="filter-location" placeholder="Град, село...">
-                  </div>
+                  <label for="filter-location" class="form-label fw-semibold small text-uppercase text-secondary"><i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>Населено място</label>
+                  <input type="text" class="form-control" id="filter-location" placeholder="Град, село...">
                 </div>
 
                 <!-- Buttons -->
@@ -641,7 +638,7 @@ function createListingCard(property) {
           </h5>
           
           <p class="text-secondary small mb-3 text-truncate">
-            <i class="bi bi-geo-alt-fill text-danger me-1"></i>${property.city}, ${property.address}
+            <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}, ${property.address}
           </p>
           
           <div class="mt-auto">

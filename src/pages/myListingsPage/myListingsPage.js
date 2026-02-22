@@ -121,7 +121,7 @@ function createMyPropertyCard(property) {
              <a href="#/property/${property.id}" class="text-decoration-none text-dark stretched-link">${property.title}</a>
            </h5>
            <p class="card-text text-secondary small mb-2">
-             <i class="bi bi-geo-alt me-1"></i>${property.city}
+             <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}
            </p>
            <div class="mt-auto d-flex justify-content-between align-items-center gap-1">
              <span class="text-primary fw-bold fs-5">${price}</span>

@@ -162,7 +162,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
         <div class="details-title-block d-flex justify-content-between align-items-start mb-3 rounded-4 bg-white shadow-sm p-4">
           <div>
             <h1 class="fw-bold mb-1">${property.title}</h1>
-            <p class="text-secondary fs-5"><i class="bi bi-geo-alt-fill text-danger me-1"></i>${property.city}, ${property.address}</p>
+            <p class="text-secondary fs-5"><i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}, ${property.address}</p>
           </div>
           <div class="text-end">
             <div class="h2 fw-bold text-primary mb-0">${price}</div>

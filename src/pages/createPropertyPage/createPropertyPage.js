@@ -27,7 +27,7 @@ export function createPropertyPage() {
 
         <!-- Types -->
         <div class="col-md-6">
-          <label for="prop-type" class="form-label">Тип имот *</label>
+          <label for="prop-type" class="form-label"><i class="bi bi-house-door-fill me-1 pm-accent-icon"></i>Тип имот *</label>
           <select id="prop-type" class="form-select" required>
             <option value="" selected disabled>Изберете...</option>
             <option value="apartment">Апартамент</option>
@@ -39,7 +39,7 @@ export function createPropertyPage() {
         </div>
 
         <div class="col-md-6">
-          <label for="listing-type" class="form-label">Вид обява *</label>
+          <label for="listing-type" class="form-label"><i class="bi bi-megaphone-fill me-1 pm-accent-icon"></i>Вид обява *</label>
           <select id="listing-type" class="form-select" required>
             <option value="" selected disabled>Изберете...</option>
             <option value="sale">Продажба</option>
@@ -66,14 +66,14 @@ export function createPropertyPage() {
         <!-- Location -->
         <div class="col-md-6">
           <label for="prop-city" class="form-label">
-            гр./с. [Име], общ. [Име], обл. [Име] *
+            <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>гр./с. [Име], общ. [Име], обл. [Име] *
             <!--<i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Пример: с. Марково, общ. Родопи, обл. Пловдив"></i>-->
           </label>
           <input type="text" class="form-control" id="prop-city" placeholder="Напр. с. Марково, общ. Родопи, обл. Пловдив (мин. 10 символа)" required minlength="10">
         </div>
 
         <div class="col-md-6">
-          <label for="prop-address" class="form-label">Адрес *</label>
+          <label for="prop-address" class="form-label"><i class="bi bi-signpost-2-fill me-1 pm-accent-icon"></i>Адрес *</label>
           <input type="text" class="form-control" id="prop-address" placeholder="Напр. ул. Иван Вазов 12, ет. 3 (мин. 5 символа)" required minlength="5">
         </div>
 

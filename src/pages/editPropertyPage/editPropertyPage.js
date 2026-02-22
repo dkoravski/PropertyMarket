@@ -89,7 +89,7 @@ function renderEditForm(container, property, images) {
           </div>
 
           <div class="col-md-6">
-            <label for="prop-type" class="form-label fw-semibold">Тип имот</label>
+            <label for="prop-type" class="form-label fw-semibold"><i class="bi bi-house-door-fill me-1 pm-accent-icon"></i>Тип имот</label>
             <select class="form-select" id="prop-type" required>
               <option value="apartment" ${property.property_type === 'apartment' ? 'selected' : ''}>Апартамент</option>
               <option value="studio" ${property.property_type === 'studio' ? 'selected' : ''}>Студио</option>
@@ -100,7 +100,7 @@ function renderEditForm(container, property, images) {
           </div>
 
           <div class="col-md-6">
-            <label for="listing-type" class="form-label fw-semibold">Вид обява</label>
+            <label for="listing-type" class="form-label fw-semibold"><i class="bi bi-megaphone-fill me-1 pm-accent-icon"></i>Вид обява</label>
             <select class="form-select" id="listing-type" required>
               <option value="sale" ${property.listing_type === 'sale' ? 'selected' : ''}>Продажба</option>
               <option value="rent" ${property.listing_type === 'rent' ? 'selected' : ''}>Наем</option>
@@ -124,14 +124,14 @@ function renderEditForm(container, property, images) {
 
           <div class="col-md-6">
             <label for="prop-city" class="form-label fw-semibold">
-              гр./с. [Име], общ. [Име], обл. [Име] (мин. 10 символа)
+              <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>гр./с. [Име], общ. [Име], обл. [Име] (мин. 10 символа)
               <!--<i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Пример: с. Марково, общ. Родопи, обл. Пловдив"></i>--!>
             </label>
             <input type="text" class="form-control" id="prop-city" value="${property.city}" placeholder="Напр. с. Марково, общ. Родопи, обл. Пловдив (мин. 10 символа)" required minlength="10">
           </div>
 
           <div class="col-md-6">
-            <label for="prop-address" class="form-label fw-semibold">Адрес / Район (мин. 5 символа)</label>
+            <label for="prop-address" class="form-label fw-semibold"><i class="bi bi-signpost-2-fill me-1 pm-accent-icon"></i>Адрес / Район (мин. 5 символа)</label>
             <input type="text" class="form-control" id="prop-address" value="${property.address}" placeholder="Напр. ул. Иван Вазов 12, ет. 3 (мин. 5 символа)" required minlength="5">
           </div>
 

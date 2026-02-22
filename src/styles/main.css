@@ -8,6 +8,9 @@
   --pm-text-main: #1f2a44;
   --pm-text-soft: #5f6f8e;
   --pm-logo-blue: #10408f;
+  --pm-accent-warm: #b7792f;
+  --pm-accent-warm-hover: #a36b29;
+  --pm-accent-warm-active: #8f5c23;
 }
 
 * {
@@ -195,6 +198,35 @@ main {
 .home-hero-search {
   backdrop-filter: none;
   border: 1px solid rgba(var(--bs-primary-rgb), 0.08);
+}
+
+.pm-accent-icon,
+.home-hero-search .hero-filter-icon {
+  color: var(--pm-accent-warm);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.14));
+}
+
+.home-hero-search .form-label {
+  color: #2a3d5d !important;
+  font-weight: 700;
+}
+
+.home-hero-search .hero-search-btn {
+  background-color: var(--pm-accent-warm);
+  border-color: var(--pm-accent-warm);
+  color: #ffffff;
+}
+
+.home-hero-search .hero-search-btn:hover,
+.home-hero-search .hero-search-btn:focus {
+  background-color: var(--pm-accent-warm-hover);
+  border-color: var(--pm-accent-warm-hover);
+  color: #ffffff;
+}
+
+.home-hero-search .hero-search-btn:active {
+  background-color: var(--pm-accent-warm-active) !important;
+  border-color: var(--pm-accent-warm-active) !important;
 }
 
 .section-surface {

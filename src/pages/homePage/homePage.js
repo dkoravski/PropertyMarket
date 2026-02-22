@@ -17,7 +17,7 @@ export function createHomePage() {
           <form id="hero-search-form" class="home-hero-search bg-white rounded-4 shadow-lg p-3">
             <div class="row g-2 align-items-end">
               <div class="col-12 col-sm-6 col-md-3">
-                <label class="form-label small fw-semibold text-secondary mb-1">Тип обява</label>
+                <label class="form-label small fw-semibold text-secondary mb-1"><i class="bi bi-megaphone-fill me-1 hero-filter-icon"></i>Тип обява</label>
                 <select class="form-select" id="hero-listing-type">
                   <option value="all">Всички</option>
                   <option value="sale">Продажба</option>
@@ -25,7 +25,7 @@ export function createHomePage() {
                 </select>
               </div>
               <div class="col-12 col-sm-6 col-md-3">
-                <label class="form-label small fw-semibold text-secondary mb-1">Вид имот</label>
+                <label class="form-label small fw-semibold text-secondary mb-1"><i class="bi bi-house-door-fill me-1 hero-filter-icon"></i>Вид имот</label>
                 <select class="form-select" id="hero-prop-type">
                   <option value="all">Всички видове</option>
                   <option value="apartment">Апартамент</option>
@@ -36,14 +36,12 @@ export function createHomePage() {
                 </select>
               </div>
               <div class="col-12 col-md-4">
-                <label class="form-label small fw-semibold text-secondary mb-1">Местоположение</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-geo-alt text-secondary"></i></span>
-                  <input type="text" class="form-control border-start-0" id="hero-location" placeholder="Град, село...">
-                </div>
+                <label class="form-label small fw-semibold text-secondary mb-1">
+                <i class="bi bi-geo-alt-fill me-1 hero-filter-icon"></i>Местоположение</label>
+                <input type="text" class="form-control" id="hero-location" placeholder="Град, село...">
               </div>
               <div class="col-12 col-md-2">
-                <button type="submit" class="btn btn-primary w-100 fw-bold">
+                <button type="submit" class="btn hero-search-btn w-100 fw-bold">
                   <i class="bi bi-search me-1"></i>Търси
                 </button>
               </div>
@@ -166,7 +164,7 @@ function createHomePropertyCard(property) {
           </div>
           <p class="text-primary fw-bold mb-2">${price}</p>
           <p class="card-text text-secondary small mb-0">
-            <i class="bi bi-geo-alt-fill me-1"></i>${property.city}
+            <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}
           </p>
         </div>
       </div>

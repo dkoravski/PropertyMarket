@@ -29,6 +29,15 @@ export function initApp() {
     }
   };
 
+  const syncHeaderHeightVar = () => {
+    const header = document.querySelector('.site-header');
+    const fallback = 88;
+    const headerHeight = header?.offsetHeight || fallback;
+    document.documentElement.style.setProperty('--pm-header-height', `${headerHeight}px`);
+  };
+
+  window.addEventListener('resize', syncHeaderHeightVar);
+
   // Keep auth redirects reliable across both implicit and PKCE flows.
   // Some links contain hash tokens (#access_token=...), others contain query params (?code=... or token_hash=...).
   // We normalize this before the router renders any page.
@@ -44,12 +53,15 @@ export function initApp() {
     })
     .finally(() => {
       initRouter(({ path, pageContent }) => {
+        const isHomePage = path.split('?')[0] === '/';
         render(
           appRoot,
           `${createHeader(path)}
-      <main class="container py-4">${pageContent}</main>
+      <main class="${isHomePage ? 'p-0' : 'container py-4'}">${pageContent}</main>
       ${createFooter()}`
         );
+
+        syncHeaderHeightVar();
       });
     });
 }

@@ -5,63 +5,69 @@ export function createHomePage() {
   setTimeout(initHeroSearch, 0);
 
   return `
-    <section class="hero-section home-hero section-surface rounded-4 p-4 p-md-5 mb-4 text-center">
-      <div class="col-lg-9">
-        <h1 class="display-4 fw-bold mb-2 text-white">Открийте мечтания дом</h1>
-        <p class="lead text-white text-opacity-75 mb-4">
-          Най-добрата платформа за покупка, продажба и наем на жилищни имоти.
-        </p>
-        <form id="hero-search-form" class="home-hero-search bg-white rounded-4 shadow-lg p-3">
-          <div class="row g-2 align-items-end">
-            <div class="col-12 col-sm-6 col-md-3">
-              <label class="form-label small fw-semibold text-secondary mb-1">Тип обява</label>
-              <select class="form-select" id="hero-listing-type">
-                <option value="all">Всички</option>
-                <option value="sale">Продажба</option>
-                <option value="rent">Наем</option>
-              </select>
-            </div>
-            <div class="col-12 col-sm-6 col-md-3">
-              <label class="form-label small fw-semibold text-secondary mb-1">Вид имот</label>
-              <select class="form-select" id="hero-prop-type">
-                <option value="all">Всички видове</option>
-                <option value="apartment">Апартамент</option>
-                <option value="studio">Студио</option>
-                <option value="house">Къща</option>
-                <option value="villa">Вила</option>
-                <option value="guest_house">Къща за гости</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-4">
-              <label class="form-label small fw-semibold text-secondary mb-1">Местоположение</label>
-              <div class="input-group">
-                <span class="input-group-text bg-white border-end-0"><i class="bi bi-geo-alt text-secondary"></i></span>
-                <input type="text" class="form-control border-start-0" id="hero-location" placeholder="Град, село...">
+    <section class="hero-section home-hero home-hero-3d text-center">
+      <div class="home-hero-overlay" aria-hidden="true"></div>
+      <div class="home-hero-depth-lines" aria-hidden="true"></div>
+      <div class="container home-hero-shell">
+        <div class="home-hero-content col-lg-9 mx-auto">
+          <h1 class="display-4 fw-bold mb-2 text-white">Открийте мечтания дом</h1>
+          <p class="lead text-white text-opacity-75 mb-4">
+            Най-добрата платформа за покупка, продажба и наем на жилищни имоти.
+          </p>
+          <form id="hero-search-form" class="home-hero-search bg-white rounded-4 shadow-lg p-3">
+            <div class="row g-2 align-items-end">
+              <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label small fw-semibold text-secondary mb-1">Тип обява</label>
+                <select class="form-select" id="hero-listing-type">
+                  <option value="all">Всички</option>
+                  <option value="sale">Продажба</option>
+                  <option value="rent">Наем</option>
+                </select>
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label small fw-semibold text-secondary mb-1">Вид имот</label>
+                <select class="form-select" id="hero-prop-type">
+                  <option value="all">Всички видове</option>
+                  <option value="apartment">Апартамент</option>
+                  <option value="studio">Студио</option>
+                  <option value="house">Къща</option>
+                  <option value="villa">Вила</option>
+                  <option value="guest_house">Къща за гости</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label small fw-semibold text-secondary mb-1">Местоположение</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-geo-alt text-secondary"></i></span>
+                  <input type="text" class="form-control border-start-0" id="hero-location" placeholder="Град, село...">
+                </div>
+              </div>
+              <div class="col-12 col-md-2">
+                <button type="submit" class="btn btn-primary w-100 fw-bold">
+                  <i class="bi bi-search me-1"></i>Търси
+                </button>
               </div>
             </div>
-            <div class="col-12 col-md-2">
-              <button type="submit" class="btn btn-primary w-100 fw-bold">
-                <i class="bi bi-search me-1"></i>Търси
-              </button>
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </section>
 
     <section aria-label="Препоръчани обяви" class="py-5">
-      <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
-        <div>
-          <h2 class="h3 fw-bold mb-1">Най-нови предложения</h2>
-          <p class="text-secondary mb-0">Разгледайте последните добавени имоти</p>
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+          <div>
+            <h2 class="h3 fw-bold mb-1">Най-нови предложения</h2>
+            <p class="text-secondary mb-0">Разгледайте последните добавени имоти</p>
+          </div>
+          <a href="#/listings" class="btn btn-link text-decoration-none fw-semibold">Виж всички <i class="bi bi-arrow-right"></i></a>
         </div>
-        <a href="#/listings" class="btn btn-link text-decoration-none fw-semibold">Виж всички <i class="bi bi-arrow-right"></i></a>
-      </div>
-      
-      <div id="featured-properties-container" class="row g-4">
-        <div class="col-12 text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Зареждане...</span>
+
+        <div id="featured-properties-container" class="row g-4">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Зареждане...</span>
+            </div>
           </div>
         </div>
       </div>

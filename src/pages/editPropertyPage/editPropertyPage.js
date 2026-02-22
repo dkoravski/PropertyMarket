@@ -149,7 +149,7 @@ function renderEditForm(container, property, images) {
                     data-is-cover="${img.is_cover}"
                     style="width:22px;height:22px;font-size:0.7rem;"
                     title="Премахни снимката">
-                    <i class="bi bi-x-lg"></i>
+                    <i class="bi bi-x-circle-fill pm-photo-icon"></i>
                   </button>
                 </div>
               `).join('')}
@@ -223,7 +223,7 @@ function renderEditForm(container, property, images) {
         class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center"
         style="width:22px;height:22px;font-size:0.7rem;"
         title="Премахни">
-        <i class="bi bi-x-lg"></i>
+        <i class="bi bi-x-circle-fill pm-photo-icon"></i>
       </button>
       <span class="d-block text-truncate text-secondary mt-1" style="font-size:0.6rem;max-width:110px;">${file.name}</span>
     `;

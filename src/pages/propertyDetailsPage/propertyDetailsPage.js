@@ -155,7 +155,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
           </span>
           ${property.is_active === false ? `
           <span class="position-absolute top-0 start-0 m-3 z-3 badge text-bg-warning shadow-sm px-3 py-2">
-            <i class="bi bi-eye-slash me-1"></i>Деактивирана
+            <i class="bi bi-eye-slash-fill me-1 pm-photo-icon"></i>Деактивирана
           </span>` : ''}
         </div>
 

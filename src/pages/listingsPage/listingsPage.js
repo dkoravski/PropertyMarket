@@ -544,7 +544,7 @@ function updateFavBtn(btn, isFav) {
   btn.classList.toggle('btn-danger', isFav);
   btn.classList.toggle('btn-light', !isFav);
   btn.title = isFav ? 'Премахни от любими' : 'Добави в любими';
-  btn.innerHTML = `<i class="bi bi-heart${isFav ? '-fill' : ''}"></i>`;
+  btn.innerHTML = `<i class="bi bi-heart-fill pm-photo-icon"></i>`;
 }
 
 // Helper to keep old function signature working if called directly (though UI drives it now)
@@ -616,13 +616,13 @@ function createListingCard(property) {
           </span>
           ${property.is_active === false ? `
           <span class="position-absolute top-0 start-0 m-3 badge text-bg-warning shadow-sm px-3 py-2 rounded-pill">
-            <i class="bi bi-eye-slash me-1"></i>Деактивирана
+            <i class="bi bi-eye-slash-fill me-1 pm-photo-icon"></i>Деактивирана
           </span>` : ''}
           <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark bg-opacity-75 text-white shadow-sm px-2 py-1 rounded">
-             <i class="bi bi-camera me-1"></i> ${property.property_images?.length || 0}
+             <i class="bi bi-camera-fill me-1 pm-photo-icon"></i> ${property.property_images?.length || 0}
           </span>
           <button class="fav-toggle-btn d-none btn btn-light btn-sm position-absolute bottom-0 end-0 m-3 rounded-circle shadow-sm" style="z-index: 2; width: 36px; height: 36px; padding: 0;" data-property-id="${property.id}" title="Добави в любими">
-            <i class="bi bi-heart"></i>
+            <i class="bi bi-heart-fill pm-photo-icon"></i>
           </button>
         </div>
         <div class="card-body d-flex flex-column p-4">

@@ -204,11 +204,11 @@ function createFavoriteCard(fav) {
           </span>
           ${property.is_active === false ? `
           <span class="position-absolute bottom-0 start-0 m-3 badge text-bg-warning">
-            <i class="bi bi-eye-slash me-1"></i>Деактивирана
+            <i class="bi bi-eye-slash-fill me-1 pm-photo-icon"></i>Деактивирана
           </span>` : ''}
           <button class="btn btn-link p-0 position-absolute top-0 end-0 m-3 text-danger text-decoration-none fw-semibold btn-remove-fav btn-remove-fav-fx"
                   data-fav-id="${fav.id}" title="Премахни от любими" aria-label="Премахни от любими">
-            <i class="bi bi-heartbreak-fill"></i>
+            <i class="bi bi-heartbreak-fill pm-photo-icon"></i>
             <span>Премахни</span>
           </button>
         </div>

@@ -151,7 +151,7 @@ function createHomePropertyCard(property) {
           </span>
           ${property.is_active === false ? `
           <span class="position-absolute top-0 end-0 m-3 badge text-bg-warning">
-            <i class="bi bi-eye-slash me-1"></i>Деактивирана
+            <i class="bi bi-eye-slash-fill me-1 pm-photo-icon"></i>Деактивирана
           </span>` : ''}
         </div>
         <div class="card-body">

@@ -113,7 +113,7 @@ function createMyPropertyCard(property) {
                 ${typeMap[property.listing_type]}
             </span>
             <span class="position-absolute top-0 start-0 m-2 badge ${property.is_active === false ? 'text-bg-warning' : 'text-bg-success'}">
-              ${property.is_active === false ? '<i class="bi bi-eye-slash me-1"></i>Деактивирана' : '<i class="bi bi-eye me-1"></i>Активна'}
+              ${property.is_active === false ? '<i class="bi bi-eye-slash-fill me-1 pm-photo-icon"></i>Деактивирана' : '<i class="bi bi-eye-fill me-1 pm-photo-icon"></i>Активна'}
             </span>
         </div>
         <div class="card-body d-flex flex-column">

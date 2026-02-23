@@ -646,9 +646,8 @@ function createListingCard(property) {
              <h4 class="text-primary fw-bold mb-3">${priceFormatted}</h4>
              
              <div class="d-flex justify-content-between border-top pt-3 text-secondary small">
-               <span title="Площ"><i class="bi bi-arrows-fullscreen me-1"></i>${property.area_sq_m} м²</span>
-               <span title="Стаи"><i class="bi bi-door-closed me-1"></i>${property.rooms} стаи</span>
-               <span title="Цена на кв.м."><i class="bi bi-calculator me-1"></i>${(property.price / property.area_sq_m).toFixed(0)} €/м²</span>
+               <span title="Площ"><i class="bi bi-aspect-ratio-fill me-1 pm-accent-icon"></i>${property.area_sq_m} м²</span>
+               <span title="Стаи"><i class="bi bi-door-closed-fill me-1 pm-accent-icon"></i>${property.rooms} стаи</span>
              </div>
              <a href="#/property/${property.id}" class="btn btn-outline-primary btn-sm w-100 mt-3 position-relative z-2">Детайли</a>
           </div>

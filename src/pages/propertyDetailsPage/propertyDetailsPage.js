@@ -235,15 +235,15 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
               <div class="card-body">
                 <div class="details-facts-stack">
                   <div class="details-fact-item">
-                    <span class="details-fact-label">Площ</span>
+                    <span class="details-fact-label"><i class="bi bi-aspect-ratio-fill me-1 pm-accent-icon"></i>Площ</span>
                     <span class="details-fact-value">${property.area_sq_m} м²</span>
                   </div>
                   <div class="details-fact-item">
-                    <span class="details-fact-label">Стаи</span>
+                    <span class="details-fact-label"><i class="bi bi-door-closed-fill me-1 pm-accent-icon"></i>Стаи</span>
                     <span class="details-fact-value">${property.rooms}</span>
                   </div>
                   <div class="details-fact-item">
-                    <span class="details-fact-label">Тип</span>
+                    <span class="details-fact-label"><i class="bi bi-house-door-fill me-1 pm-accent-icon"></i>Тип</span>
                     <span class="details-fact-value">${typeMap[property.property_type]}</span>
                   </div>
                 </div>

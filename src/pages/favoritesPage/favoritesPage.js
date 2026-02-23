@@ -161,8 +161,8 @@ function createFavoriteCard(fav) {
              <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city} • ${typeMap[property.property_type]}
           </div>
           <div class="d-flex justify-content-between text-secondary border-top pt-3 small">
-             <span><i class="bi bi-arrows-fullscreen me-1"></i>${property.area_sq_m} м²</span>
-             <span><i class="bi bi-door-closed me-1"></i>${property.rooms} стаи</span>
+             <span><i class="bi bi-aspect-ratio-fill me-1 pm-accent-icon"></i>${property.area_sq_m} м²</span>
+             <span><i class="bi bi-door-closed-fill me-1 pm-accent-icon"></i>${property.rooms} стаи</span>
           </div>
         </div>
         <div class="card-footer bg-white border-top-0 pt-0 pb-3">

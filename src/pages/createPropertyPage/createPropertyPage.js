@@ -55,12 +55,12 @@ export function createPropertyPage() {
         </div>
 
         <div class="col-md-4">
-          <label for="prop-area" class="form-label">Площ (кв.м) *</label>
+          <label for="prop-area" class="form-label"><i class="bi bi-aspect-ratio-fill me-1 pm-accent-icon"></i>Площ (кв.м) *</label>
           <input type="number" class="form-control" id="prop-area" min="1" step="0.01" required>
         </div>
 
         <div class="col-md-4">
-          <label for="prop-rooms" class="form-label">Брой стаи *</label>
+          <label for="prop-rooms" class="form-label"><i class="bi bi-door-closed-fill me-1 pm-accent-icon"></i>Брой стаи *</label>
           <input type="number" class="form-control" id="prop-rooms" min="1" step="1" required>
         </div>
 

@@ -122,7 +122,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
     <div class="row g-4">
       <div class="col-lg-8">
         <div class="position-relative mb-4 details-main-card rounded-4">
-          <div id="${carouselId}" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" data-bs-touch="true">
+          <div id="${carouselId}" class="carousel slide carousel-fade" data-bs-touch="true">
             ${images.length > 1 ? `
               <div class="carousel-indicators">
                 ${images.map((_, index) => `
@@ -355,15 +355,17 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
     });
   }
 
-  // Initialize Carousel manually to ensure it autoplays immediately
   const carouselEl = document.getElementById(carouselId);
-  if (carouselEl) {
-    const carousel = new bootstrap.Carousel(carouselEl, {
-      interval: 4000,
-      ride: 'carousel'
+  if (carouselEl && window.bootstrap?.Carousel) {
+    requestAnimationFrame(() => {
+      const carousel = window.bootstrap.Carousel.getOrCreateInstance(carouselEl, {
+        interval: 3000,
+        pause: false,
+        wrap: true,
+        touch: true
+      });
+      carousel.cycle();
     });
-    // Force start cycling
-    carousel.cycle();
   }
 }
 

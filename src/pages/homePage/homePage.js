@@ -52,9 +52,10 @@ export function createHomePage() {
       </div>
     </section>
 
-    <section aria-label="Препоръчани обяви" class="py-5">
+    <section aria-label="Препоръчани обяви" class="py-5 home-featured-section">
       <div class="container">
-        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+        <div class="home-featured-spacer" aria-hidden="true"></div>
+        <div class="d-flex justify-content-between align-items-end mb-2.9 border-bottom pb-2">
           <div>
             <h2 class="h3 fw-bold mb-1">Най-нови предложения</h2>
             <p class="text-secondary mb-0">Разгледайте последните добавени имоти</p>

@@ -9,6 +9,7 @@ export function createHeader(currentPath = '/') {
   ].includes(normalizedPath);
 
   const isCreatePropertyActive = normalizedPath === '/create-property';
+  const isAboutMenuActive = ['/about', '/contacts'].includes(normalizedPath);
 
   // Check auth state from localStorage (sync logic for immediate render)
   const isAuthenticated = localStorage.getItem('pm_is_authenticated') === 'true';
@@ -26,8 +27,12 @@ export function createHeader(currentPath = '/') {
     <li class="nav-item">
       <a class="nav-link header-menu-link ${isListingsActive ? 'active' : ''}" href="#/listings">Обяви</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link header-menu-link ${normalizedPath === '/about' ? 'active' : ''}" href="#/about">За нас</a>
+    <li class="nav-item dropdown">
+      <a class="nav-link header-menu-link dropdown-toggle ${isAboutMenuActive ? 'active' : ''}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">За нас</a>
+      <ul class="dropdown-menu border-0 shadow-sm">
+        <li><a class="dropdown-item header-dropdown-item" href="#/about">За нас</a></li>
+        <li><a class="dropdown-item header-dropdown-item" href="#/contacts">Контакти</a></li>
+      </ul>
     </li>
   `;
 

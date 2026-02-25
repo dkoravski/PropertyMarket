@@ -1,5 +1,6 @@
 import { createHomePage } from '../pages/homePage/homePage.js';
 import { createAboutPage } from '../pages/aboutPage/aboutPage.js';
+import { createContactsPage } from '../pages/aboutPage/contactsPage.js';
 import { createListingsPage } from '../pages/listingsPage/listingsPage.js';
 import { createPropertyDetailsPage } from '../pages/propertyDetailsPage/propertyDetailsPage.js';
 import { createLoginPage } from '../pages/loginPage/loginPage.js';
@@ -16,6 +17,7 @@ import { createResetPasswordPage } from '../pages/resetPasswordPage/resetPasswor
 const routes = {
   '/': { pageFactory: createHomePage },
   '/about': { pageFactory: createAboutPage },
+  '/contacts': { pageFactory: createContactsPage },
   '/listings': { pageFactory: createListingsPage },
   '/listings-sales': { pageFactory: () => createListingsPage('Продажби') },
   '/listings-rent': { pageFactory: () => createListingsPage('Наеми') },

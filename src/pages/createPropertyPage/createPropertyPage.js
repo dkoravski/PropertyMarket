@@ -50,7 +50,7 @@ export function createPropertyPage() {
 
         <!-- Details -->
         <div class="col-md-4">
-          <label for="prop-price" class="form-label">Цена (€) *</label>
+          <label for="prop-price" class="form-label"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Цена (€) *</label>
           <input type="number" class="form-control" id="prop-price" min="1" step="0.01" required>
         </div>
 
@@ -112,9 +112,9 @@ function initCreatePropertyPage() {
     if (listingTypeSelect && priceLabel) {
       listingTypeSelect.addEventListener('change', (e) => {
         if (e.target.value === 'rent') {
-          priceLabel.textContent = 'Месечна цена (€) *';
+          priceLabel.innerHTML = '<i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Месечна цена (€) *';
         } else {
-          priceLabel.textContent = 'Цена (€) *';
+          priceLabel.innerHTML = '<i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Цена (€) *';
         }
       });
     }

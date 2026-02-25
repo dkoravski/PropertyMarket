@@ -164,7 +164,7 @@ function createHomePropertyCard(property) {
               </a>
             </h5>
           </div>
-          <p class="text-primary fw-bold mb-2">${price}</p>
+          <p class="text-primary fw-bold mb-2"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>${price}</p>
           <p class="card-text text-secondary small mb-3">
             <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}
           </p>

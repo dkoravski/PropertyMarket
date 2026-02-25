@@ -125,7 +125,7 @@ function createMyPropertyCard(property) {
              <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}
            </p>
            <div class="mt-auto d-flex justify-content-between align-items-center gap-1">
-             <span class="text-primary fw-bold fs-5">${price}</span>
+             <span class="text-primary fw-bold fs-5"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>${price}</span>
              <div class="d-flex gap-1 position-relative z-2">
                <button class="btn btn-sm ${property.is_active === false ? 'btn-outline-success' : 'btn-outline-secondary'} toggle-my-prop-btn"
                  data-id="${property.id}" data-active="${property.is_active !== false}" data-user-id="${property.owner_id}"

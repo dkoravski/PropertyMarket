@@ -67,8 +67,8 @@ export function createAdminPage() {
               <thead class="table-light">
                 <tr>
                   <th>Заглавие</th>
-                  <th>Тип</th>
-                  <th>Цена</th>
+                  <th><i class="bi bi-house-door-fill me-1 pm-accent-icon"></i>Тип</th>
+                  <th class="text-end"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Цена (€)</th>
                   <th>Собственик</th>
                   <th>Създадена на</th>
                   <th>Статус</th>
@@ -188,7 +188,7 @@ async function loadProperties() {
       <tr class="${prop.is_active === false ? 'table-secondary text-muted' : ''}">
         <td class="fw-semibold">${escapeHtml(prop.title)}</td>
         <td>${typeLabels[prop.property_type] || prop.property_type} <span class="text-muted small">(${listingTypeLabels[prop.listing_type]})</span></td>
-        <td class="fw-bold text-primary">${prop.price.toLocaleString()} €</td>
+        <td class="fw-bold text-primary text-nowrap text-end">${prop.price.toLocaleString()}</td>
         <td>${escapeHtml(prop.profiles?.email || 'Неизвестен')}</td>
         <td>${new Date(prop.created_at).toLocaleDateString()}</td>
         <td>

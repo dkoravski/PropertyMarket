@@ -142,7 +142,7 @@ export function createListingsPage(category = 'Всички обяви') {
 
                 <!-- Price Range -->
                 <div class="mb-3">
-                  <label class="form-label fw-semibold small text-uppercase text-secondary">Цена (€)</label>
+                  <label class="form-label fw-semibold small text-uppercase text-secondary"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Цена (€)</label>
                   <div class="d-flex gap-2">
                     <input type="number" class="form-control" id="filter-price-min" placeholder="От" min="0">
                     <input type="number" class="form-control" id="filter-price-max" placeholder="До" min="0">
@@ -151,7 +151,7 @@ export function createListingsPage(category = 'Всички обяви') {
 
                 <!-- Area Range -->
                 <div class="mb-3">
-                  <label class="form-label fw-semibold small text-uppercase text-secondary">Площ (кв.м)</label>
+                  <label class="form-label fw-semibold small text-uppercase text-secondary"><i class="bi bi-aspect-ratio-fill me-1 pm-accent-icon"></i>Площ (кв.м)</label>
                   <div class="d-flex gap-2">
                     <input type="number" class="form-control" id="filter-area-min" placeholder="От" min="0">
                     <input type="number" class="form-control" id="filter-area-max" placeholder="До" min="0">
@@ -160,7 +160,7 @@ export function createListingsPage(category = 'Всички обяви') {
 
                 <!-- Rooms -->
                 <div class="mb-3">
-                  <label for="filter-rooms" class="form-label fw-semibold small text-uppercase text-secondary">Минимум стаи</label>
+                  <label for="filter-rooms" class="form-label fw-semibold small text-uppercase text-secondary"><i class="bi bi-door-closed-fill me-1 pm-accent-icon"></i>Минимум стаи</label>
                   <input type="number" class="form-control" id="filter-rooms" placeholder="Брой стаи" min="1">
                 </div>
 
@@ -643,7 +643,7 @@ function createListingCard(property) {
           </p>
           
           <div class="mt-auto">
-             <h4 class="text-primary fw-bold mb-3">${priceFormatted}</h4>
+             <h4 class="text-primary fw-bold mb-3"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>${priceFormatted}</h4>
              
              <div class="d-flex justify-content-between border-top pt-3 text-secondary small">
                <span title="Площ"><i class="bi bi-aspect-ratio-fill me-1 pm-accent-icon"></i>${property.area_sq_m} м²</span>

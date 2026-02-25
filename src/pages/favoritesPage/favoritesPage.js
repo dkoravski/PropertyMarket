@@ -156,7 +156,7 @@ function createFavoriteCard(fav) {
         </div>
         <div class="card-body">
           <h5 class="card-title text-truncate mb-1" title="${property.title}">${property.title}</h5>
-          <p class="text-primary fw-bold mb-2 fs-5">${price}</p>
+          <p class="text-primary fw-bold mb-2 fs-5"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>${price}</p>
           <div class="text-secondary small mb-3">
              <i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city} • ${typeMap[property.property_type]}
           </div>

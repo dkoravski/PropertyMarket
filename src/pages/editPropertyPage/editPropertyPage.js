@@ -109,17 +109,17 @@ function renderEditForm(container, property, images) {
           </div>
 
           <div class="col-md-4">
-            <label for="prop-price" class="form-label fw-semibold">${property.listing_type === 'rent' ? 'Месечна цена (€)' : 'Цена (€)'}</label>
+            <label for="prop-price" class="form-label fw-semibold"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>${property.listing_type === 'rent' ? 'Месечна цена (€)' : 'Цена (€)'}</label>
             <input type="number" class="form-control" id="prop-price" value="${property.price}" required min="1">
           </div>
 
           <div class="col-md-4">
-            <label for="prop-area" class="form-label fw-semibold">Площ (кв.м)</label>
+            <label for="prop-area" class="form-label fw-semibold"><i class="bi bi-aspect-ratio-fill me-1 pm-accent-icon"></i>Площ (кв.м)</label>
             <input type="number" class="form-control" id="prop-area" value="${property.area_sq_m}" required min="1">
           </div>
 
           <div class="col-md-4">
-            <label for="prop-rooms" class="form-label fw-semibold">Брой стаи</label>
+            <label for="prop-rooms" class="form-label fw-semibold"><i class="bi bi-door-closed-fill me-1 pm-accent-icon"></i>Брой стаи</label>
             <input type="number" class="form-control" id="prop-rooms" value="${property.rooms}" required min="1">
           </div>
 
@@ -268,9 +268,9 @@ function renderEditForm(container, property, images) {
   if (listingTypeSelect && priceLabel) {
     listingTypeSelect.addEventListener('change', (e) => {
       if (e.target.value === 'rent') {
-        priceLabel.textContent = 'Месечна цена (€)';
+        priceLabel.innerHTML = '<i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Месечна цена (€)';
       } else {
-        priceLabel.textContent = 'Цена (€)';
+        priceLabel.innerHTML = '<i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Цена (€)';
       }
     });
   }

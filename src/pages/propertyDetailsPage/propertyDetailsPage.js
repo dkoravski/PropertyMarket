@@ -226,7 +226,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
                 <p class="text-secondary fs-5"><i class="bi bi-geo-alt-fill me-1 pm-accent-icon"></i>${property.city}, ${property.address}</p>
               </div>
               <div class="text-end ms-3 flex-shrink-0">
-                <div class="h2 fw-bold text-primary mb-0">${price}</div>
+                <div class="h2 fw-bold text-primary mb-0"><i class="bi bi-cash-stack me-1 pm-accent-icon"></i>${price}</div>
               </div>
             </div>
           </div>

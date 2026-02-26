@@ -1,109 +1,184 @@
-# PropertyMarket 🏠
+# PropertyMarket
 
-**PropertyMarket** е модерно уеб приложение за покупка, продажба и наем на недвижими имоти. Платформата предоставя интуитивен интерфейс за потребителите, позволявайки им лесно да публикуват обяви, да търсят мечтания дом и да запазват любими предложения.
+PropertyMarket е уеб приложение за публикуване и разглеждане на обяви за жилищни имоти (продажба и наем), разработено с Vanilla JavaScript и Supabase.
 
-Проектът е разработен като Single Page Application (SPA) с използване на **Vanilla JavaScript** и **Supabase** за backend услуги.
+## Описание на проекта
 
----
+### Какво прави приложението
+- Публично разглеждане на активни обяви (без вход).
+- Детайли за конкретен имот (цена, площ, стаи, адрес, снимки, описание).
+- Регистрация/вход и управление на профил.
+- Създаване, редакция, деактивация и изтриване на собствени обяви.
+- Добавяне/премахване на обяви в Любими.
 
-## 🚀 Функционалности
+### Роли и права
+- Гост (невписан): вижда публични обяви и детайли.
+- Потребител: създава и управлява собствените си обяви, използва Любими, редактира профил.
+- Администратор: има пълен достъп до потребители и всички обяви през Админ панел.
+- Неактивен потребител: ограничен за insert/update операции според RLS политиките.
 
-### 👤 Потребителски профил и Аутентикация
-*   **Регистрация и Вход:** Сигурна система за вход с имейл и парола (чрез Supabase Auth).
-*   **Профил:** Управление на лични данни.
-*   **Моите обяви:** Секция в профила за преглед и управление на собствените обяви.
-*   **Любими:** Възможност за добавяне на имоти в списък "Любими" за бърз достъп.
+## Архитектура и технологии
 
-### 🏠 Обяви за имоти
-*   **Разглеждане:** Списък с всички активни обяви с опции за филтриране (Продажби / Наеми).
-*   **Детайлен преглед:** Страница с пълна информация, галерия със снимки, цена, описание и контакти на продавача.
-*   **Създаване на обява:** Форма за добавяне на нов имот с качване на снимки.
-*   **Редактиране и Изтриване:** Потребителите имат пълен контрол върху собствените си обяви.
+### Front-end
+- Vanilla JavaScript (ES Modules)
+- HTML + CSS + Bootstrap 5 + Bootstrap Icons
+- Vite за dev/build
+- Hash-based routing (SPA поведение)
 
-### 🛡️ Административен панел
-*   Достъпен само за потребители с роля `admin`.
-*   Управление на всички потребители в системата.
-*   Преглед и модерация (изтриване/редакция) на всички обяви.
+### Back-end (BaaS)
+- Supabase (PostgreSQL + Auth + Storage)
+- Supabase Auth за регистрация, вход и сесии
+- Supabase Storage bucket `properties` за снимки
+- RLS политики за контрол на достъпа на ниво ред
 
----
+### Основни технологични зависимости
+- `@supabase/supabase-js`
+- `vite`
 
-## 🛠️ Технологичен стек
+## Дизайн на базата данни
 
-**Client-Side:**
-*   **JavaScript (ES6+):** Vanilla JS без твърди зависимости от рамки като React/Vue.
-*   **HTML5 & CSS3:** Семантичен HTML и персонализирани стилове.
-*   **Bootstrap 5:** За responsive дизайн, грид система и UI компоненти.
-*   **Vite:** build tool за бърза разработка и оптимизация.
-*   **Navigo / Custom Router:** Hash-based рутиране за SPA функционалност.
+### Основни таблици
+- `profiles` — профил към `auth.users` (1:1), роля и статус на потребителя.
+- `properties` — обяви за имоти, собственик, тип, цена, локация, площ, стаи, статус.
+- `property_images` — снимки към обява (1:N), включително корица.
+- `favorites` — many-to-many връзка между потребители и обяви.
 
-**Server-Side & Database:**
-*   **Supabase:** Отворена алтернатива на Firebase.
-*   **PostgreSQL:** Релационна база данни.
-*   **Supabase Auth:** Управление на потребители и сесии.
-*   **Supabase Storage:** Съхранение на изображения за имотите.
-*   **Row Level Security (RLS):** Политики за сигурност на данните директно в базата.
+### Връзки между таблиците
+```mermaid
+erDiagram
+	PROFILES ||--o{ PROPERTIES : "owner_id"
+	PROPERTIES ||--o{ PROPERTY_IMAGES : "property_id"
+	PROFILES ||--o{ FAVORITES : "user_id"
+	PROPERTIES ||--o{ FAVORITES : "property_id"
 
----
+	PROFILES {
+		uuid id PK
+		citext email
+		text full_name
+		text phone
+		user_role role
+		boolean is_active
+		timestamptz created_at
+	}
 
-## 📂 Структура на проекта
+	PROPERTIES {
+		uuid id PK
+		uuid owner_id FK
+		text title
+		text description
+		property_type property_type
+		listing_type listing_type
+		numeric price
+		text city
+		text address
+		numeric area_sq_m
+		int rooms
+		boolean is_active
+		timestamptz created_at
+	}
 
+	PROPERTY_IMAGES {
+		uuid id PK
+		uuid property_id FK
+		text image_url
+		boolean is_cover
+		timestamptz created_at
+	}
+
+	FAVORITES {
+		uuid id PK
+		uuid user_id FK
+		uuid property_id FK
+		timestamptz created_at
+	}
 ```
-PropertyMarket/
-├── src/
-│   ├── components/       # UI компоненти (Header, Footer, Cards)
-│   ├── pages/            # Логика и темплейти за страниците (Home, Listings, etc.)
-│   ├── router/           # Конфигурация на маршрутизатора
-│   ├── services/         # Supabase клиент и API извиквания
-│   ├── styles/           # Global CSS
-│   ├── utils/            # Помощни функции (render, formatters)
-│   ├── app.js            # Входна точка на приложението
-│   └── main.js           # Инициализация
-├── supabase/
-│   └── migrations/       # SQL файлове за структурата на базата данни
-├── index.html            # Основен HTML файл
-├── package.json          # Зависимости и скриптове
-└── vite.config.js        # Vite конфигурация
-```
 
----
+### Бележки по схемата
+- `favorites` има уникално ограничение за двойката `(user_id, property_id)`.
+- `property_images` позволява най-много 1 корична снимка на обява (partial unique index).
+- Enum типове: `user_role`, `property_type`, `listing_type` (вкл. `studio`).
+- Добавени колони `is_active` в `profiles` и `properties` за soft-deactivation.
 
-## 🏁 Инсталация и Стартиране
+## Локална среда за разработка
 
-### 1. Клониране на репозиторито
-```bash
-git clone https://github.com/dkoravski/PropertyMarket.git
-cd PropertyMarket
-```
+### 1) Изисквания
+- Node.js 18+ (препоръчително LTS)
+- npm
+- Supabase проект (URL + ключ)
+- По желание: Supabase CLI (за автоматично прилагане на миграции)
 
-### 2. Инсталиране на зависимостите
+### 2) Инсталация
 ```bash
 npm install
 ```
 
-### 3. Настройка на Environment Variables
-Създайте файл `.env` в основната директория и добавете вашите Supabase ключове:
+### 3) Environment променливи
+Създай `.env` в root папката:
 
 ```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+VITE_SUPABASE_ANON_KEY=YOUR_ANON_OR_PUBLISHABLE_KEY
 ```
 
-### 4. Настройка на Базата данни (Supabase)
-Ако стартирате проекта наново, изпълнете SQL заявките от папката `supabase/migrations` във вашия Supabase проект (SQL Editor), за да създадете необходимите таблици:
-1.  `profiles`
-2.  `properties`
-3.  `property_images`
-4.  `favorites`
-*   Не забравяйте да активирате и Storage bucket с име `property-images`.
+Допустимо е и:
+```env
+VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
+```
 
-### 5. Стартиране на Development сървър
+### 4) Подготовка на база данни
+Изпълни SQL миграциите от `supabase/migrations` в реда на имената им (timestamp order).
+
+Вариант A (Supabase SQL Editor):
+- копирай и изпълни файловете последователно.
+
+Вариант B (CLI + скрипт):
+```powershell
+$env:SUPABASE_ACCESS_TOKEN = "YOUR_SUPABASE_ACCESS_TOKEN"
+./scripts/apply-supabase-migrations.ps1 -ProjectRef "YOUR_PROJECT_REF"
+```
+
+### 5) Стартиране
 ```bash
 npm run dev
 ```
-Приложението ще бъде достъпно на адрес `http://localhost:5173`.
 
----
+### 6) Build за production
+```bash
+npm run build
+npm run preview
+```
 
-## 📝 Лиценз
+## Ключови папки и файлове
 
-Този проект е създаден с учебна цел за курса "Software Technologies with AI" в SoftUni.
+### Root
+- `index.html` — входен HTML шаблон.
+- `package.json` — npm скриптове и зависимости.
+- `vite.config.js` — конфигурация на Vite.
+- `netlify.toml` — настройки за деплой в Netlify.
+
+### `src/`
+- `main.js` — стартова точка на front-end приложението.
+- `app.js` — инициализира header/footer, router и auth redirect логика.
+- `router/router.js` — дефинира маршрутите и guard правила (`requiresAuth`, `requiresAdmin`).
+- `components/` — общи UI компоненти (header, footer).
+- `pages/` — логика и шаблони за всяка страница (Home, Listings, Details, Create/Edit, Profile, Favorites, Admin и др.).
+- `services/supabaseClient/supabaseClient.js` — създава и експортира Supabase client.
+- `styles/` — глобални и page-specific стилове.
+- `utils/` — помощни функции за рендериране и UI feedback.
+
+### `supabase/`
+- `migrations/` — SQL миграции за schema, RLS policies, storage policies и trigger-и.
+
+### `scripts/`
+- `apply-supabase-migrations.ps1` — помощен PowerShell скрипт за `supabase db push`.
+
+## Сигурност и контрол на достъпа
+
+- RLS е активиран за `profiles`, `properties`, `property_images`, `favorites`.
+- Политиките ограничават write операции до собственик/админ.
+- Използват се helper функции като `public.is_admin()`, `public.is_active_user()`, `public.is_user_active()`.
+- Публичните потребители виждат само допустимите обяви според активност и политики.
+
+## Статус
+
+Проектът е разработен с учебна цел за курса „Software Technologies with AI“ (SoftUni).

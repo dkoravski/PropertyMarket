@@ -6,7 +6,7 @@
   --pm-surface-650: rgba(218, 234, 255, 0.95);
   --pm-border-soft: rgba(34, 70, 128, 0.18);
   --pm-text-main: #1f2a44;
-  --pm-text-soft: #5f6f8e;
+  --pm-text-soft: #2f4668;
   --pm-logo-blue: #10408f;
   --pm-accent-warm: #b7792f;
   --pm-accent-warm-hover: #a36b29;
@@ -182,8 +182,10 @@ main {
 .text-secondary,
 .text-muted,
 .form-text,
-small {
+small,
+.card-text {
   color: var(--pm-text-soft) !important;
+  font-weight: 700 !important;
 }
 
 .form-control,
@@ -195,7 +197,7 @@ small {
 }
 
 .form-control::placeholder {
-  color: #8ea1bf !important;
+  color: #6f83a5 !important;
 }
 
 .admin-table-wrap {

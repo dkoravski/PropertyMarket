@@ -26,12 +26,6 @@ export function createContactsPage() {
             <p class="mb-0"><a href="tel:+359888123456" class="link-primary">+359 888 123 456</a></p>
           </div>
         </div>
-        <div class="col-12">
-          <div class="p-3 rounded-3 border bg-light">
-            <h2 class="h6 fw-semibold mb-2">Адрес</h2>
-            <p class="mb-0">гр. София, бул. „Витоша“ 100</p>
-          </div>
-        </div>
       </div>
     </section>
   `;

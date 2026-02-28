@@ -79,6 +79,10 @@
 	padding-bottom: 2rem;
 }
 
+.home-hero .text-white.text-opacity-75 {
+	--bs-text-opacity: 0.9;
+}
+
 .home-hero-search {
 	backdrop-filter: none;
 	border: 1px solid rgba(var(--bs-primary-rgb), 0.08);

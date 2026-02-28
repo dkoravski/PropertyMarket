@@ -80,6 +80,15 @@ main {
 
 .site-header-surface .navbar-toggler {
   border-color: rgba(var(--bs-primary-rgb), 0.2);
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.site-header-surface .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(16, 64, 143, 0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.4' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.site-header-surface .navbar-toggler:focus {
+  box-shadow: 0 0 0 0.16rem rgba(var(--bs-primary-rgb), 0.3);
 }
 
 .site-header .navbar-nav.me-auto {

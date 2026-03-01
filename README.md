@@ -158,6 +158,106 @@ npm run preview
 
 ## Ключови папки и файлове
 
+### Структура на проекта
+```text
+PropertyMarket/
+├─ index.html
+├─ netlify.toml
+├─ package.json
+├─ README.md
+├─ vite.config.js
+├─ scripts/
+│  └─ apply-supabase-migrations.ps1
+├─ src/
+│  ├─ app.js
+│  ├─ main.js
+│  ├─ components/
+│  │  ├─ footer/
+│  │  │  └─ footer.js
+│  │  └─ header/
+│  │     └─ header.js
+│  ├─ pages/
+│  │  ├─ aboutPage/
+│  │  │  ├─ aboutPage.js
+│  │  │  └─ contactsPage.js
+│  │  ├─ adminPage/
+│  │  │  └─ adminPage.js
+│  │  ├─ createPropertyPage/
+│  │  │  └─ createPropertyPage.js
+│  │  ├─ editPropertyPage/
+│  │  │  └─ editPropertyPage.js
+│  │  ├─ favoritesPage/
+│  │  │  └─ favoritesPage.js
+│  │  ├─ forgotPasswordPage/
+│  │  │  └─ forgotPasswordPage.js
+│  │  ├─ homePage/
+│  │  │  └─ homePage.js
+│  │  ├─ listingsPage/
+│  │  │  └─ listingsPage.js
+│  │  ├─ loginPage/
+│  │  │  └─ loginPage.js
+│  │  ├─ myListingsPage/
+│  │  │  └─ myListingsPage.js
+│  │  ├─ profilePage/
+│  │  │  └─ profilePage.js
+│  │  ├─ propertyDetailsPage/
+│  │  │  └─ propertyDetailsPage.js
+│  │  ├─ registerPage/
+│  │  │  └─ registerPage.js
+│  │  └─ resetPasswordPage/
+│  │     └─ resetPasswordPage.js
+│  ├─ router/
+│  │  └─ router.js
+│  ├─ services/
+│  │  └─ supabaseClient/
+│  │     └─ supabaseClient.js
+│  ├─ styles/
+│  │  ├─ main.css
+│  │  └─ pages/
+│  │     ├─ aboutPage.css
+│  │     ├─ adminPage.css
+│  │     ├─ contactsPage.css
+│  │     ├─ createPropertyPage.css
+│  │     ├─ editPropertyPage.css
+│  │     ├─ favoritesPage.css
+│  │     ├─ forgotPasswordPage.css
+│  │     ├─ homePage.css
+│  │     ├─ listingsPage.css
+│  │     ├─ loginPage.css
+│  │     ├─ myListingsPage.css
+│  │     ├─ profilePage.css
+│  │     ├─ propertyDetailsPage.css
+│  │     ├─ registerPage.css
+│  │     └─ resetPasswordPage.css
+│  └─ utils/
+│     ├─ ui.js
+│     └─ render/
+│        └─ render.js
+└─ supabase/
+	└─ migrations/
+		├─ 20260216120000_create_propertymarket_schema.sql
+		├─ 20260216121000_enable_rls_and_policies.sql
+		├─ 20260216123000_add_profiles_on_auth_signup_trigger.sql
+		├─ 20260216124000_seed_initial_admin_by_email.sql
+		├─ 20260216133000_bulletproof_signup_trigger.sql
+		├─ 20260216140000_create_storage_bucket_properties.sql
+		├─ 20260216143000_promote_admin_user.sql
+		├─ 20260219100000_allow_public_profile_read_for_property_owners.sql
+		├─ 20260221100000_add_studio_to_property_types.sql
+		├─ 20260221110000_add_is_active_to_profiles.sql
+		├─ 20260221111000_rls_block_inactive_users.sql
+		├─ 20260221112000_hide_properties_of_inactive_users.sql
+		├─ 20260221120000_fix_rls_circular_dependency.sql
+		└─ 20260221130000_add_is_active_to_properties.sql
+```
+
+### Легенда
+- `src/pages/` — отделни екрани (страници) на приложението.
+- `src/router/router.js` — URL навигация и route guard-и (`requiresAuth`, `requiresAdmin`).
+- `src/services/supabaseClient/` — връзка към Supabase (DB/Auth/Storage).
+- `supabase/migrations/` — схема на базата данни, RLS политики и промени по сигурността.
+- `src/components/` + `src/styles/` — UI компоненти и responsive стилове.
+
 ### Root
 - `index.html` — входен HTML шаблон.
 - `package.json` — npm скриптове и зависимости.

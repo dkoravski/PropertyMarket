@@ -4,3 +4,158 @@
 
 [dev]
   command = "npm run dev"
+
+[[redirects]]
+  from = "/"
+  to = "/home"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/homePage/homePage.html"
+  to = "/home"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/aboutPage/aboutPage.html"
+  to = "/about"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/aboutPage/contactsPage.html"
+  to = "/contacts"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/listingsPage/listingsPage.html"
+  to = "/listings"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/propertyDetailsPage/propertyDetailsPage.html"
+  to = "/property"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/loginPage/loginPage.html"
+  to = "/login"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/registerPage/registerPage.html"
+  to = "/register"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/forgotPasswordPage/forgotPasswordPage.html"
+  to = "/forgot-password"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/resetPasswordPage/resetPasswordPage.html"
+  to = "/reset-password"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/createPropertyPage/createPropertyPage.html"
+  to = "/create-property"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/editPropertyPage/editPropertyPage.html"
+  to = "/edit-property"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/profilePage/profilePage.html"
+  to = "/profile"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/myListingsPage/myListingsPage.html"
+  to = "/my-listings"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/favoritesPage/favoritesPage.html"
+  to = "/favorites"
+  status = 301
+
+[[redirects]]
+  from = "/src/pages/adminPage/adminPage.html"
+  to = "/admin"
+  status = 301
+
+[[redirects]]
+  from = "/home"
+  to = "/src/pages/homePage/homePage.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/src/pages/aboutPage/aboutPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/contacts"
+  to = "/src/pages/aboutPage/contactsPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/listings"
+  to = "/src/pages/listingsPage/listingsPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/property"
+  to = "/src/pages/propertyDetailsPage/propertyDetailsPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/login"
+  to = "/src/pages/loginPage/loginPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/register"
+  to = "/src/pages/registerPage/registerPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/forgot-password"
+  to = "/src/pages/forgotPasswordPage/forgotPasswordPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/reset-password"
+  to = "/src/pages/resetPasswordPage/resetPasswordPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/create-property"
+  to = "/src/pages/createPropertyPage/createPropertyPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/edit-property"
+  to = "/src/pages/editPropertyPage/editPropertyPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/profile"
+  to = "/src/pages/profilePage/profilePage.html"
+  status = 200
+
+[[redirects]]
+  from = "/my-listings"
+  to = "/src/pages/myListingsPage/myListingsPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/favorites"
+  to = "/src/pages/favoritesPage/favoritesPage.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/src/pages/adminPage/adminPage.html"
+  status = 200

@@ -5,7 +5,7 @@
 	min-height: 44px;
 }
 
-a[href="#/forgot-password"] {
+a[href$="forgotPasswordPage.html"] {
 	font-weight: 600;
 }
 

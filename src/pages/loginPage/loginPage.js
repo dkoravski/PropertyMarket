@@ -1,4 +1,4 @@
-﻿import '../../styles/pages/loginPage.css';
+﻿import './loginPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
@@ -77,8 +77,12 @@ async function handleLogin(e) {
     localStorage.setItem('pm_user_name', (profile?.full_name || '').trim());
 
     // Redirect
-    window.location.hash = '#/';
-    window.location.reload(); 
+    if (typeof window.pmNavigateToHashRoute === 'function') {
+      window.pmNavigateToHashRoute('#/');
+    } else {
+      window.location.href = '/home';
+    }
+    return;
     
   } catch (err) {
     console.error('Login error:', err);

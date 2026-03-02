@@ -1,6 +1,7 @@
-import '../../styles/pages/resetPasswordPage.css';
+import './resetPasswordPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
+import { PAGE_URLS } from '../../multipage/routes.js';
 
 export function createResetPasswordPage() {
   setTimeout(initResetPage, 0);
@@ -50,7 +51,7 @@ async function initResetPage() {
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         Невалиден или изтекъл линк за нулиране на парола.
       </div>
-      <a href="#/forgot-password" class="btn btn-primary w-100">Заяви нов линк</a>
+      <a href="${PAGE_URLS.forgotPassword}" class="btn btn-primary w-100">Заяви нов линк</a>
     `;
     return;
   }
@@ -130,7 +131,7 @@ async function handleResetPassword(e) {
     if (error) throw error;
 
     showPageFeedback('success', 'Паролата е сменена успешно!');
-    setTimeout(() => { window.location.hash = '#/login'; }, 2000);
+    setTimeout(() => { window.pmNavigateToHashRoute?.('#/login'); }, 2000);
 
   } catch (err) {
     console.error('Reset password error:', err);

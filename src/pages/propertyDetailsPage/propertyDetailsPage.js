@@ -1,4 +1,4 @@
-import '../../styles/pages/propertyDetailsPage.css';
+import './propertyDetailsPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showConfirmModal, showPageFeedback } from '../../utils/ui.js';
 
@@ -271,7 +271,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
       if (dest === 'admin-properties') {
         sessionStorage.removeItem('pm_back_dest');
         sessionStorage.setItem('pm_admin_tab', 'properties');
-        window.location.hash = '#/admin';
+        window.pmNavigateToHashRoute?.('#/admin');
       } else {
         history.back();
       }
@@ -318,7 +318,7 @@ function renderDetails(container, property, user, canEdit, isAdmin, isFavorited,
         
         showPageFeedback('success', 'Обявата е изтрита успешно!');
         setTimeout(() => {
-          window.location.hash = '#/listings';
+          window.pmNavigateToHashRoute?.('#/listings');
         }, 500);
       } catch (err) {
         showPageFeedback('danger', 'Грешка: ' + err.message);

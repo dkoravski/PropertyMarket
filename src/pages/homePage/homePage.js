@@ -1,9 +1,13 @@
-import '../../styles/pages/homePage.css';
+import './homePage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
+import { showPageFeedback } from '../../utils/ui.js';
 
 export function createHomePage() {
   loadFeaturedProperties();
-  setTimeout(initHeroSearch, 0);
+  setTimeout(() => {
+    initHeroSearch();
+    showLogoutSuccessMessage();
+  }, 0);
 
   return `
     <section class="hero-section home-hero home-hero-3d text-center">
@@ -75,6 +79,14 @@ export function createHomePage() {
   `;
 }
 
+function showLogoutSuccessMessage() {
+  const shouldShow = sessionStorage.getItem('pm_logout_success') === 'true';
+  if (!shouldShow) return;
+
+  sessionStorage.removeItem('pm_logout_success');
+  showPageFeedback('success', 'Излязохте успешно.');
+}
+
 function initHeroSearch() {
   const form = document.getElementById('hero-search-form');
   if (!form) return;
@@ -84,7 +96,7 @@ function initHeroSearch() {
     const propType = document.getElementById('hero-prop-type').value;
     const location = document.getElementById('hero-location').value.trim();
     sessionStorage.setItem('pm_hero_search', JSON.stringify({ listingType, propType, location }));
-    window.location.hash = '#/listings';
+    window.pmNavigateToHashRoute?.('#/listings');
   });
 }
 

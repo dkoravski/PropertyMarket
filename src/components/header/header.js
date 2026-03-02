@@ -1,4 +1,6 @@
 
+import { PAGE_URLS } from '../../multipage/routes.js';
+
 export function createHeader(currentPath = '/') {
   const normalizedPath = currentPath.split('#')[0].split('?')[0];
 
@@ -22,16 +24,16 @@ export function createHeader(currentPath = '/') {
   // Navigation Links (Left side)
   let navLinks = `
     <li class="nav-item">
-      <a class="nav-link header-menu-link ${normalizedPath === '/' ? 'active' : ''}" href="#/">Начало</a>
+      <a class="nav-link header-menu-link ${normalizedPath === '/' ? 'active' : ''}" href="${PAGE_URLS.home}">Начало</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link header-menu-link ${isListingsActive ? 'active' : ''}" href="#/listings">Обяви</a>
+      <a class="nav-link header-menu-link ${isListingsActive ? 'active' : ''}" href="${PAGE_URLS.listings}">Обяви</a>
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link header-menu-link dropdown-toggle ${isAboutMenuActive ? 'active' : ''}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">За нас</a>
       <ul class="dropdown-menu border-0 shadow-sm">
-        <li><a class="dropdown-item header-dropdown-item" href="#/about">За нас</a></li>
-        <li><a class="dropdown-item header-dropdown-item" href="#/contacts">Контакти</a></li>
+        <li><a class="dropdown-item header-dropdown-item" href="${PAGE_URLS.about}">За нас</a></li>
+        <li><a class="dropdown-item header-dropdown-item" href="${PAGE_URLS.contacts}">Контакти</a></li>
       </ul>
     </li>
   `;
@@ -43,7 +45,7 @@ export function createHeader(currentPath = '/') {
     // User is logged in
     authButtons = `
       <li class="nav-item me-2">
-        <a class="nav-link header-menu-link position-relative ${normalizedPath === '/favorites' ? 'active' : ''}" href="#/favorites" title="Любими">
+        <a class="nav-link header-menu-link position-relative ${normalizedPath === '/favorites' ? 'active' : ''}" href="${PAGE_URLS.favorites}" title="Любими">
           <i class="bi bi-heart${normalizedPath === '/favorites' ? '-fill' : ''} fs-5"></i>
           <span class="ms-1 d-lg-inline">Любими</span>
         </a>
@@ -54,20 +56,20 @@ export function createHeader(currentPath = '/') {
           <span class="d-none d-lg-inline">Профил</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
-          <li><a class="dropdown-item header-dropdown-item" href="#/profile">Моят Профил</a></li>
-          <li><a class="dropdown-item header-dropdown-item" href="#/my-listings">Моите Обяви</a></li>
+          <li><a class="dropdown-item header-dropdown-item" href="${PAGE_URLS.profile}">Моят Профил</a></li>
+          <li><a class="dropdown-item header-dropdown-item" href="${PAGE_URLS.myListings}">Моите Обяви</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item header-dropdown-item" href="#" onclick="window.pmLogout && window.pmLogout(); return false;">Изход</a></li>
         </ul>
       </li>
       ${isAdmin ? `
       <li class="nav-item me-2">
-        <a class="nav-link header-menu-link fw-semibold ${normalizedPath === '/admin' ? 'active' : ''}" href="#/admin">
+        <a class="nav-link header-menu-link fw-semibold ${normalizedPath === '/admin' ? 'active' : ''}" href="${PAGE_URLS.admin}">
           <i class="bi bi-shield-lock-fill me-1"></i>Админ панел
         </a>
       </li>` : ''}
       <li class="nav-item ms-2">
-        <a class="nav-link header-menu-link d-flex align-items-center gap-1 ${isCreatePropertyActive ? 'active' : ''}" href="#/create-property">
+        <a class="nav-link header-menu-link d-flex align-items-center gap-1 ${isCreatePropertyActive ? 'active' : ''}" href="${PAGE_URLS.createProperty}">
           <i class="bi bi-plus-lg me-1"></i>Добави обява
         </a>
       </li>
@@ -76,13 +78,13 @@ export function createHeader(currentPath = '/') {
     // Guest User
     authButtons = `
       <li class="nav-item ms-lg-2">
-        <a class="nav-link header-menu-link ${normalizedPath === '/login' ? 'active' : ''}" href="#/login">Вход</a>
+        <a class="nav-link header-menu-link ${normalizedPath === '/login' ? 'active' : ''}" href="${PAGE_URLS.login}">Вход</a>
       </li>
       <li class="nav-item ms-lg-2">
-        <a class="nav-link header-menu-link ${normalizedPath === '/register' ? 'active' : ''}" href="#/register">Регистрация</a>
+        <a class="nav-link header-menu-link ${normalizedPath === '/register' ? 'active' : ''}" href="${PAGE_URLS.register}">Регистрация</a>
       </li>
       <li class="nav-item ms-lg-3">
-         <a class="nav-link header-menu-link d-flex align-items-center gap-1 ${isCreatePropertyActive ? 'active' : ''}" href="#/create-property">
+         <a class="nav-link header-menu-link d-flex align-items-center gap-1 ${isCreatePropertyActive ? 'active' : ''}" href="${PAGE_URLS.createProperty}">
           <i class="bi bi-plus-lg me-1"></i>Добави обява
         </a>
       </li>
@@ -92,7 +94,7 @@ export function createHeader(currentPath = '/') {
   return `
     <header class="site-header site-header-surface sticky-top" style="z-index: 1030;">
       <nav class="site-navbar navbar navbar-expand-lg navbar-dark container py-2">
-        <a class="navbar-brand fw-bold text-white fs-3 d-flex align-items-center gap-2" href="#/">
+        <a class="navbar-brand fw-bold text-white fs-3 d-flex align-items-center gap-2" href="${PAGE_URLS.home}">
           <i class="bi bi-house-door-fill"></i>
           PropertyMarket
         </a>

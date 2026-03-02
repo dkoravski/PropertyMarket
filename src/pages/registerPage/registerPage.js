@@ -1,4 +1,4 @@
-import '../../styles/pages/registerPage.css';
+import './registerPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
@@ -52,7 +52,7 @@ async function handleRegister(e) {
     if (error) throw error;
 
     showPageFeedback('success', 'Регистрацията е успешна!');
-    setTimeout(() => { window.location.hash = '#/login'; }, 2000);
+    setTimeout(() => { window.pmNavigateToHashRoute?.('#/login'); }, 2000);
 
   } catch (err) {
     console.error('Registration error:', err);

@@ -1,4 +1,4 @@
-import '../../styles/pages/myListingsPage.css';
+import './myListingsPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback, showConfirmModal, showMessageModal } from '../../utils/ui.js';
 
@@ -35,7 +35,7 @@ async function initMyListingsPage() {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      window.location.hash = '#/login';
+      window.pmNavigateToHashRoute?.('#/login');
       return;
     }
 

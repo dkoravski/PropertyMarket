@@ -1,4 +1,4 @@
-﻿import '../../styles/pages/editPropertyPage.css';
+﻿import './editPropertyPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
@@ -179,7 +179,7 @@ function renderEditForm(container, property, images) {
       if (dest === 'admin-properties') {
         sessionStorage.removeItem('pm_back_dest');
         sessionStorage.setItem('pm_admin_tab', 'properties');
-        window.location.hash = '#/admin';
+        window.pmNavigateToHashRoute?.('#/admin');
       } else {
         history.back();
       }
@@ -422,7 +422,7 @@ async function handleEditSubmit(e, propertyId, deletedImages = []) {
 
     showPageFeedback('success', 'Промените са запазени успешно!');
     setTimeout(() => {
-      window.location.hash = `#/property/${propertyId}`;
+      window.pmNavigateToHashRoute?.(`#/property/${propertyId}`);
     }, 1500);
 
   } catch (err) {

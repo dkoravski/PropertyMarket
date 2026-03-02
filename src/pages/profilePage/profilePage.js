@@ -1,4 +1,4 @@
-import '../../styles/pages/profilePage.css';
+import './profilePage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
@@ -40,7 +40,7 @@ async function initProfilePage() {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      window.location.hash = '#/login';
+      window.pmNavigateToHashRoute?.('#/login');
       return;
     }
 

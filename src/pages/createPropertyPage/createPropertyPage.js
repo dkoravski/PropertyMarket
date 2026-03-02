@@ -1,4 +1,4 @@
-﻿import '../../styles/pages/createPropertyPage.css';
+﻿import './createPropertyPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback } from '../../utils/ui.js';
 
@@ -271,7 +271,7 @@ async function handleCreateProperty(e) {
     // Success
     showPageFeedback('success', 'Обявата е създадена успешно! Пренасочване...');
     setTimeout(() => {
-        window.location.hash = '#/listings';
+        window.pmNavigateToHashRoute?.('#/listings');
     }, 1500);
 
   } catch (err) {

@@ -1,4 +1,4 @@
-import '../../styles/pages/favoritesPage.css';
+import './favoritesPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 import { showPageFeedback, showConfirmModal } from '../../utils/ui.js';
 

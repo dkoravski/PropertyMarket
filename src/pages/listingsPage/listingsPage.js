@@ -1,4 +1,4 @@
-import '../../styles/pages/listingsPage.css';
+import './listingsPage.css';
 import { supabase } from '../../services/supabaseClient/supabaseClient.js';
 
 const PAGE_SIZE = 9;
@@ -227,12 +227,8 @@ function getSortConfig(sortKey) {
 }
 
 function restoreListingsStateFromUrl() {
-  const hash = window.location.hash || '#/listings';
-  const queryIndex = hash.indexOf('?');
-  if (queryIndex === -1) return null;
-
-  const query = hash.slice(queryIndex + 1);
-  const params = new URLSearchParams(query);
+  const params = new URLSearchParams(window.location.search);
+  if (!params.toString()) return null;
 
   const pageParam = Number(params.get('page'));
   if (Number.isFinite(pageParam) && pageParam > 0) {
@@ -290,11 +286,13 @@ function applyFilterStateToForm(filterState) {
 }
 
 function syncListingsStateToUrl(filters) {
-  const hash = window.location.hash || '#/listings';
-  const queryIndex = hash.indexOf('?');
-  const baseHash = queryIndex === -1 ? hash : hash.slice(0, queryIndex);
-
   const params = new URLSearchParams();
+  const categoryParam = new URLSearchParams(window.location.search).get('category');
+
+  if (categoryParam === 'sale' || categoryParam === 'rent') {
+    params.set('category', categoryParam);
+  }
+
   params.set('page', String(currentPage));
   params.set('sort', currentSort);
 
@@ -307,9 +305,11 @@ function syncListingsStateToUrl(filters) {
   if (filters.rooms) params.set('rooms', filters.rooms);
   if (filters.location) params.set('location', filters.location);
 
-  const newHash = `${baseHash}?${params.toString()}`;
-  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-  const nextUrl = `${window.location.pathname}${window.location.search}${newHash}`;
+  const query = params.toString();
+  const nextUrl = query
+    ? `${window.location.pathname}?${query}`
+    : window.location.pathname;
+  const currentUrl = `${window.location.pathname}${window.location.search}`;
 
   if (currentUrl !== nextUrl) {
     window.history.replaceState({}, '', nextUrl);

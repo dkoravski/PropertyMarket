@@ -1,4 +1,4 @@
-﻿import '../../styles/pages/aboutPage.css';
+﻿import './aboutPage.css';
 
 export function createAboutPage() {
   return `

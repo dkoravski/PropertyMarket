@@ -155,7 +155,20 @@ function renderEditForm(container, property, images) {
                 </div>
               `).join('')}
             </div>
-            <input type="file" class="form-control" id="prop-image" accept="image/*" multiple>
+            <div class="input-group">
+              <button type="button" class="btn btn-outline-primary fw-normal" id="prop-image-trigger">
+                Избери снимки
+              </button>
+              <input
+                type="text"
+                class="form-control"
+                id="prop-image-label"
+                value="Няма избрани снимки"
+                readonly
+                aria-label="Избрани снимки"
+              >
+            </div>
+            <input type="file" class="d-none" id="prop-image" accept="image/*" multiple>
           </div>
 
           <div class="col-12 mt-4 d-flex justify-content-end gap-2">
@@ -197,8 +210,29 @@ function renderEditForm(container, property, images) {
   
   // Live preview for newly selected images
   const imageInput = container.querySelector('#prop-image');
+  const imageTrigger = container.querySelector('#prop-image-trigger');
+  const imageLabel = container.querySelector('#prop-image-label');
   const allGrid = container.querySelector('#all-images-grid');
   let selectedFiles = [];
+
+  if (imageTrigger && imageInput) {
+    imageTrigger.addEventListener('click', () => imageInput.click());
+  }
+
+  function updateSelectedImagesLabel() {
+    if (!imageLabel) return;
+    if (selectedFiles.length === 0) {
+      imageLabel.value = 'Няма избрани снимки';
+      return;
+    }
+
+    if (selectedFiles.length === 1) {
+      imageLabel.value = `Избрана е 1 снимка (${selectedFiles[0].name})`;
+      return;
+    }
+
+    imageLabel.value = `Избрани са ${selectedFiles.length} снимки`;
+  }
 
   imageInput.addEventListener('change', () => {
     const newFiles = Array.from(imageInput.files);
@@ -210,6 +244,7 @@ function renderEditForm(container, property, images) {
     });
     imageInput.value = '';
     syncInputFiles();
+    updateSelectedImagesLabel();
   });
 
   function appendPreview(file) {
@@ -233,6 +268,7 @@ function renderEditForm(container, property, images) {
       selectedFiles = selectedFiles.filter(f => f !== file);
       card.remove();
       syncInputFiles();
+      updateSelectedImagesLabel();
     });
     allGrid.appendChild(card);
   }

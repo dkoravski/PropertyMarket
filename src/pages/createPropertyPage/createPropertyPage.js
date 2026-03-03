@@ -80,8 +80,12 @@ export function createPropertyPage() {
 
         <!-- Image Upload -->
         <div class="col-12">
-          <label for="prop-images" class="form-label">Снимки на имота *</label>
-          <input class="form-control" type="file" id="prop-images" accept="image/*" multiple required>
+          <label class="form-label">Снимки на имота *</label>
+          <div class="input-group">
+            <button type="button" class="btn btn-outline-primary create-submit-btn fw-normal" id="prop-images-trigger">Избери снимки</button>
+            <input type="text" class="form-control" id="prop-images-label" value="Няма избрани снимки" readonly aria-label="Избрани снимки">
+          </div>
+          <input class="d-none" type="file" id="prop-images" accept="image/*" multiple required>
           <div class="form-text">Можете да изберете повече от една снимка. Първата избрана ще бъде корица.</div>
         </div>
 
@@ -115,6 +119,27 @@ function initCreatePropertyPage() {
           priceLabel.innerHTML = '<i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Месечна цена (€) *';
         } else {
           priceLabel.innerHTML = '<i class="bi bi-cash-stack me-1 pm-accent-icon"></i>Цена (€) *';
+        }
+      });
+    }
+
+    const imageInput = document.getElementById('prop-images');
+    const imageTrigger = document.getElementById('prop-images-trigger');
+    const imageLabel = document.getElementById('prop-images-label');
+
+    if (imageTrigger && imageInput) {
+      imageTrigger.addEventListener('click', () => imageInput.click());
+    }
+
+    if (imageInput && imageLabel) {
+      imageInput.addEventListener('change', () => {
+        const count = imageInput.files?.length || 0;
+        if (count === 0) {
+          imageLabel.value = 'Няма избрани снимки';
+        } else if (count === 1) {
+          imageLabel.value = `Избрана е 1 снимка (${imageInput.files[0].name})`;
+        } else {
+          imageLabel.value = `Избрани са ${count} снимки`;
         }
       });
     }

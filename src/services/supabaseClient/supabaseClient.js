@@ -8,7 +8,15 @@ export const supabaseConfig = {
     '',
 };
 
-export const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey);
+const authStorage = typeof window !== 'undefined' ? window.sessionStorage : undefined;
+
+export const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey, {
+  auth: {
+    storage: authStorage,
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+});
 
 export function isSupabaseConfigured() {
   return Boolean(supabaseConfig.url && supabaseConfig.anonKey);

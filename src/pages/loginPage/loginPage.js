@@ -69,12 +69,16 @@ async function handleLogin(e) {
     }
 
     // Save auth state for router
-    localStorage.setItem('pm_is_authenticated', 'true');
+    sessionStorage.setItem('pm_is_authenticated', 'true');
     if (profile?.role) {
-      localStorage.setItem('pm_user_role', profile.role);
+      sessionStorage.setItem('pm_user_role', profile.role);
     }
-    localStorage.setItem('pm_user_email', data.user.email || '');
-    localStorage.setItem('pm_user_name', (profile?.full_name || '').trim());
+    sessionStorage.setItem('pm_user_email', data.user.email || '');
+    sessionStorage.setItem('pm_user_name', (profile?.full_name || '').trim());
+    localStorage.removeItem('pm_is_authenticated');
+    localStorage.removeItem('pm_user_role');
+    localStorage.removeItem('pm_user_email');
+    localStorage.removeItem('pm_user_name');
 
     // Redirect
     if (typeof window.pmNavigateToHashRoute === 'function') {

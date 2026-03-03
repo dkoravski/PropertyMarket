@@ -24,6 +24,8 @@ export async function initPage({
     return;
   }
 
+  clearLegacyAuthStorage();
+
   window.pmNavigateToHashRoute = navigateToHashRoute;
   installHashRouteClickHandler(document);
   window.pmLogout = async () => {
@@ -32,10 +34,11 @@ export async function initPage({
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      localStorage.removeItem('pm_is_authenticated');
-      localStorage.removeItem('pm_user_role');
-      localStorage.removeItem('pm_user_name');
-      localStorage.removeItem('pm_user_email');
+      sessionStorage.removeItem('pm_is_authenticated');
+      sessionStorage.removeItem('pm_user_role');
+      sessionStorage.removeItem('pm_user_name');
+      sessionStorage.removeItem('pm_user_email');
+      clearLegacyAuthStorage();
       sessionStorage.removeItem('pm_back_dest');
       sessionStorage.removeItem('pm_admin_tab');
       sessionStorage.removeItem('pm_hero_search');
@@ -92,13 +95,20 @@ function syncHeaderHeightVar() {
 }
 
 function getAuthStateFromStorage() {
-  const isAuthenticated = localStorage.getItem('pm_is_authenticated') === 'true';
-  const roleFromStorage = localStorage.getItem('pm_user_role');
+  const isAuthenticated = sessionStorage.getItem('pm_is_authenticated') === 'true';
+  const roleFromStorage = sessionStorage.getItem('pm_user_role');
 
   return {
     isAuthenticated,
     role: roleFromStorage,
   };
+}
+
+function clearLegacyAuthStorage() {
+  localStorage.removeItem('pm_is_authenticated');
+  localStorage.removeItem('pm_user_role');
+  localStorage.removeItem('pm_user_name');
+  localStorage.removeItem('pm_user_email');
 }
 
 function normalizeAuthState(authState) {

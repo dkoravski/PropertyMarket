@@ -484,7 +484,7 @@ function renderPagination(totalCount) {
 }
 
 async function initFavButtons(wrapper) {
-  const isAuthenticated = localStorage.getItem('pm_is_authenticated') === 'true';
+  const isAuthenticated = sessionStorage.getItem('pm_is_authenticated') === 'true';
   if (!isAuthenticated) return; // hide buttons for guests - they stay invisible
 
   // Show buttons now that user is logged in

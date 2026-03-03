@@ -13,12 +13,12 @@ export function createHeader(currentPath = '/') {
   const isCreatePropertyActive = normalizedPath === '/create-property';
   const isAboutMenuActive = ['/about', '/contacts'].includes(normalizedPath);
 
-  // Check auth state from localStorage (sync logic for immediate render)
-  const isAuthenticated = localStorage.getItem('pm_is_authenticated') === 'true';
-  const role = localStorage.getItem('pm_user_role');
+  // Check auth state from sessionStorage (sync logic for immediate render)
+  const isAuthenticated = sessionStorage.getItem('pm_is_authenticated') === 'true';
+  const role = sessionStorage.getItem('pm_user_role');
   const isAdmin = role === 'admin';
-  const userName = localStorage.getItem('pm_user_name') || '';
-  const userEmail = localStorage.getItem('pm_user_email') || '';
+  const userName = sessionStorage.getItem('pm_user_name') || '';
+  const userEmail = sessionStorage.getItem('pm_user_email') || '';
   const profileTooltip = userName || userEmail || 'Вписан потребител';
 
   // Navigation Links (Left side)
